@@ -1,4 +1,14 @@
-baseURL = 'http://hugo-quickstart-template.netlify.com'
+baseURL = 'https://blog.richtman.com.au/'
 languageCode = 'en-us'
-title = 'Netlify + Hugo Quickstart'
-theme = 'netlify-basic'
+title = "Ariel Richtman's technical blog"
+theme = 'paper'
+
+[params]
+
+twitter = 'ArielRichtman'
+github = 'arichtman'
+rss = true
+
+avatar = 'ariel@richtman.com.au'
+name = 'Ariel Richtman'
+bio = 'Personal tech blog'

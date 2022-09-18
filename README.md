@@ -10,6 +10,8 @@ Devcontainer credits to [exavolt](https://gist.github.com/exavolt/80cbdf4148fac4
 hugo new content/posts/full-sentence-lower-case-title.md
 ```
 
+When updating an artictle one can either add markdown with "updated at" or you can use `date -I` and update frontmatter date property.
+
 ## Current issues
 
 - DevContainer not running VSCode extensions due to some clash between workspace and container (This extension is disabled in this workspace because it is defined to run in the Remote Extension Host. Please install the extension in 'Dev Container: Hugo' to enable.)

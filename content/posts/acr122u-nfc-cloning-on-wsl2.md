@@ -1,7 +1,7 @@
 ---
 title: "Acr122u NFC Cloning on WSL2"
 date: 2022-08-28T11:31:43Z
-draft: true
+draft: false
 ---
 
 ## Acr122u NFC Cloning on WSL
@@ -14,7 +14,7 @@ Requirements:
 - WSL2
 - Ubuntu 20.04
 - ACR122U
-- MiFare Classic 1k gen 1 CUID block 0 rewritable tags
+- MiFare Classic 1k gen 1 FUID block 0 rewritable tags
 - Patience
 
 Package requirements:
@@ -27,7 +27,7 @@ Package requirements:
   1. Install usb passthrough on Windows
   1. Install reader drivers from manufacturer
   1. Blacklist kernel drivers for the chipset
-  1. [Setup for writing cards]
+  1. [Setup for writing tags]
   1. Reboot system
 1. Copying
   1. Read and dump source and target
@@ -105,7 +105,7 @@ References:
 
 - [James Ridgway](https://www.jamesridgway.co.uk/install-acr122u-drivers-on-linux-mint-and-kubuntu/)
 
-### Setup for writing cards
+### Setup for writing tags
 
 Package requirements:
 
@@ -145,7 +145,7 @@ References:
 
 ## Copying
 
-### Dumping cards
+### Dumping tags
 
 Package requirements:
 
@@ -194,122 +194,57 @@ References:
 
 - [Linus Karlsson](https://linuskarlsson.se/blog/acr122u-mfcuk-and-mfoc-cracking-mifare-classic-on-arch-linux/)
 
-### Writing cards
+### Writing tags
 
-** Under development **
+I wasn't able to get any variant of `nfc-mfclassic W a [$UID] urmet.dmp clone.dmp [f]` working fully.
+Even when it flashed the dump successfully it would not update the UID or Block 0.
+However libnfc-examples came to the rescue with a dedicated function.
+Note that this setuid tool can recover "bricked" tags as it will just blindly send the codes.
 
-```
-# Write fully unlocked to the card
-# for some reason the UID is completely wrong?
-sudo nfc-mfclassic W a urmet.dmp clone.dmp
-
-# When specifying the UID it yields
-Error: no tag was found or Error opening NFC reader
-sudo nfc-mfclassic W a UBD5D37F2 urmet.dmp clone.dmp
-# adding force yield only no tag found
-sudo nfc-mfclassic W a UBD5D37F2 urmet.dmp clone.dmp f
-```
-
-# I was able to flash using nfc-mfclassic W but the UID isn't updated even tho it's the 4-bit supported one
-# I wasn't able to get nfc-mfclassic working with U$UID but...
+```Bash
 sudo apt-get install libnfc-examples
 sudo nfc-mfsetuid $UID wrote the UID correctly
-Mifare classic app detects the UID as same as my FOB
-I tested the clone on the elevator and it's not working
-Looks like the sensor is writing bad UID/BCC combo onto the card as security
-I'm unable to read because of the check fail but nfc-mfsetuid can correct the issue
-```
-WARNING: BCC check failed!
-Sent bits:     93  70  0a  00  0a  00  0a  14  49
-Received bits: 08  b6  dd
-
-Found tag with
- UID: 0a000a00
-ATQA: 760a
- SAK: 08
 ```
 
-I bet it writes that same UID every time. So the question, is it detecting that it's a clone OR does it just spam those magic bits at everything anyway as defence.
-Spamming literally every transaction with rewrite sequences seems like overkill.
-I dump the card with repaired UID in MCT and diff
-- Manufacturer info is wrong
-- Keys are different (though this may not be fixable)
-- Access conditions are different
-- Still no data stored on either card
+### Beating Urmet
 
-Lets see what nxp tools says between manufacturer infos
-- Immediately identified as a clone, original is marked by nxp manufacturer (leading 0x04) as mifare classic ev1 (MF1S50)
-- SAK 0x08 is marked as error, original has 0x88
-- ATQA 0x0400 - same as original
-- ID is correct as is BCC 0x25
-- Manufacturer data 0x 46 59 25 58 49 10 23 02 - total rubbish I think, original 0x C8 47 00 20 00 00 00 17, TSMC rev c8 w47 2017. Interesting...
+Unfortunately, Urmet are across Gen 1/FUID tags
+Even with the UID cloned the reader seems to set the UID to `0a000a00` without updating the BCC.
+It's unclear whether it's checking for magic packet ack or just spamming the write codes.
+Either way looks like FUID/gen 1 tags won't work here.
+The tags can still be recovered using the setuid tool, but they're esssentially useless for my application.
 
-Apparently SAK and ATQA sensitivity is up to the card reader programmer. Urmet don't publish much technical information.
+In the end I ordered Gen 2/CUID type tags.
+Using the MiFare Classic Android application I tried the _Clone UID_ function.
+This wrote UID and BCC correctly but the tag still wouldn't work with the reader.
+This means it is defending with more than magic packet protection.
+I dump the copied tag in MCT and diff them dumps:
 
-TODO: dump the now fully cloned card and diff against the dump of my original FOB
-TODO: look into SAK errors and what they could mean
-TODO: clone manufacturer info fully and try again
-TODO: Try Gen 2 One-Time-Write (OTW) stickers (ordered)
-TODO: Clear out my Ubuntu install and re-visit all steps to test this documentation
+- Manufacturer info is different
+  NXP tools immediately identified the clone as a clone
+  Original is marked by NXP manufacturer (leading 0x04) as mifare classic ev1 (MF1S50)
+- ATQA same as original (0x400)
+- ID is correct as is BCC
+- Keys are different (fixable)
+- Access conditions are different (can be fixed)
+- SAK doesn't match (original 0x88, clone 0x08)
+- Still no data stored on either tag
+
+If Urmet are really dedicated, they could use the encryption keys to check access conditions and wallet/purse functions working during authentication.
+SAK/ATQA checks seem to be entirely up to the reader manufacturer, Urmet don't publish much technical information so we'll pray those aren't a factor either.
+Next step then is to copy both UID/BCC and manufacturer info, as well as the rest of the card data.
+
+I tried writing all blocks from the dump file, it worked but sector 0 wasn't updated correctly.
+In the end I copied block 0 sector 0 from the dump and wrote it using the manual/direct write feature.
+This set the manufacturer info as well as UID/BCC, and the tag now works.
+
+I may look into using the ACR122U to directly write block 0 in a future post.
 
 References:
 
 - [Lab401](https://lab401.com/blogs/academy/know-your-magic-cards)
 
 ## Reference
-
-### Source tag block 0
-
-```
-BD5D37F225880400C847002000000017
-01000000000000000000000000000000
-00000000000000000000000000000000
-8829DA9DAF767F0788008829DA9DAF76
-```
-
-All the other blocks are zeroed out with the same trailing line (i.e. same keys and access conditions).
-
-UID: 0xBD5D37F2
-BCC: 0x25
-
-### pcsc_scan of source fob
-
-```
- Reader 0: ACS ACR122U 00 00
-  Event number: 10
-  Card state: Card inserted,
-  ATR: 3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 01 00 00 00 00 6A
-
-ATR: 3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 01 00 00 00 00 6A
-+ TS = 3B --> Direct Convention
-+ T0 = 8F, Y(1): 1000, K: 15 (historical bytes)
-  TD(1) = 80 --> Y(i+1) = 1000, Protocol T = 0
------
-  TD(2) = 01 --> Y(i+1) = 0000, Protocol T = 1
------
-+ Historical bytes: 80 4F 0C A0 00 00 03 06 03 00 01 00 00 00 00
-  Category indicator byte: 80 (compact TLV data object)
-    Tag: 4, len: F (initial access data)
-      Initial access data: 0C A0 00 00 03 06 03 00 01 00 00 00 00
-+ TCK = 6A (correct checksum)
-
-Possibly identified card (using /usr/share/pcsc/smartcard_list.txt):
-3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 01 00 00 00 00 6A
-3B 8F 80 01 80 4F 0C A0 00 00 03 06 .. 00 01 00 00 00 00 ..
-        MIFARE Classic 1K (as per PCSC std part3)
-3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 01 00 00 00 00 6A
-3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 .. .. 00 00 00 00 ..
-        RFID - ISO 14443 Type A Part 3 (as per PCSC std part3)
-3B 8F 80 01 80 4F 0C A0 00 00 03 06 03 00 01 00 00 00 00 6A
-        NXP/Philips MIFARE Classic 1K (as per PCSC std part3)
-        http://www.nxp.com/#/pip/pip=[pfp=41863]|pp=[t=pfp,i=41863]
-        Oyster card - Transport for London (first-gen)
-        https://en.wikipedia.org/wiki/Oyster_card
-        ACOS5/1k Mirfare
-        vivotech ViVOcard Contactless Test Card
-        Bangkok BTS Sky SmartPass
-        Mifare Classic 1K (block 0 re-writeable)
-```
 
 ### Driver compilation
 
@@ -323,7 +258,6 @@ sudo apt install -y pkg-config
 sudo apt install -y libusb-dev
 sudo apt install libusb-1.0-0-dev -y
 ```
-
 
 ## Possible fixes for libnfc installation 
 

@@ -1,8 +1,10 @@
 ---
 title: "Poetry Package Development With VSCode Devcontainers"
-date: 2022-08-28T08:08:22Z
+date: 2022-09-19 18:48:23+10:00
 draft: false
 ---
+
+Updated for Poetry 1.2.0
 
 ## Problem
 
@@ -33,7 +35,7 @@ The error may look like this:
 [2022-08-28T07:26:56.629Z] Stop (25791 ms): Run: docker build -f /home/arichtman/repos/py-acr122u/.devcontainer/Containerfile -t vsc-py-acr122u-ca0eeac3cc1a8372c4a804bf742aac10 /home/arichtman/repos/py-acr122u
 ```
 
-[Just take me to the fix!](#using-poetry-virtual-environments)
+[Just take me to the fix!](#hybrid-install-method)
 
 ## Cause
 
@@ -61,7 +63,47 @@ Typical workflow for poetry is to run `poetry shell` when you want to access the
 
 ## Fix
 
-I suspect avoiding the `COPY` and using Poetry's `venv` is faster for build times, and accomodates volatility in the package specification slightly better. Virtual environments also are a bit less cluttered as they don't have whatever comes with the OS and Poetry itself
+### Hybrid install method
+
+As of Poetry 1.2.0 release we now have some new features that support a hybrid mode of installation.
+This will allow us to re-use our cached image layers with our packages installed, but still have correct pathing for an editable install of the package under development.
+
+`poetry.toml`:
+
+```TOML
+[virtualenvs]
+create = false
+```
+
+Dockerfile/Containerfile:
+
+```Docker
+COPY pyproject.toml poetry.lock ./
+RUN pip install poetry \
+    && poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-root --no-cache --quiet --sync
+```
+
+`.devcontainer.json`:
+
+```JSON5
+{
+  "onCreateCommand": [
+    "poetry"
+    ,"install"
+    ,"--no-interaction"
+    ,"--no-cache"
+    ,"--only-root"
+    ,"--quiet"
+  ],
+}
+```
+
+Explanation:
+
+We have to specify Poetry as a dependency in the `pyproject.toml` or else sync will uninstall it and our onCreateCommand to install locally will fail.
+The poetry config we set in the Dockerfile doesn't persist to the onCreateCommand. So we need to set local config to avoid virtualenv creation.
+We use the sync option to remove packages on the system install that aren't part of our specification, and might interfere.
 
 ### Using Poetry virtual environments
 

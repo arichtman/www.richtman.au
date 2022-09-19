@@ -69,3 +69,4 @@ Note: Pip doesn't have any publishing capability, so PIP_INDEX_URL was not teste
 - If you set `default = true` you'll completely avoid PyPi
 - If you define _any_ sources in `pyproject.toml` they will be searched before PyPi
 - If you want PyPi to still be the first search, set every source as `secondary = true`
+- Mounting the pypoetry config directory to a container can work but mind your config doesn't clash

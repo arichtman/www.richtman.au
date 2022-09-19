@@ -67,6 +67,7 @@ Typical workflow for poetry is to run `poetry shell` when you want to access the
 
 As of Poetry 1.2.0 release we now have some new features that support a hybrid mode of installation.
 This will allow us to re-use our cached image layers with our packages installed, but still have correct pathing for an editable install of the package under development.
+If you need to authenticate during the build or at runtime, see the optional sections.
 
 `poetry.toml`:
 
@@ -77,7 +78,12 @@ create = false
 
 Dockerfile/Containerfile:
 
-```Docker
+```Dockerfile
+# Optional, for build time source authentication
+ARG POETRY_HTTP_BASIC_GITLAB_USERNAME
+ARG POETRY_HTTP_BASIC_GITLAB_PASSWORD
+
+# Required
 COPY pyproject.toml poetry.lock ./
 RUN pip install poetry \
     && poetry config virtualenvs.create false \
@@ -86,8 +92,9 @@ RUN pip install poetry \
 
 `.devcontainer.json`:
 
-```JSON5
+```JSON
 {
+// Required
   "onCreateCommand": [
     "poetry"
     ,"install"
@@ -96,6 +103,18 @@ RUN pip install poetry \
     ,"--only-root"
     ,"--quiet"
   ],
+// Optional, for build time source authentication
+  "build": {
+    "args": {
+      "POETRY_HTTP_BASIC_GITLAB_USERNAME": "__token__"
+      ,"POETRY_HTTP_BASIC_GITLAB_PASSWORD": "${localEnv:GITLAB_PRIVATE_TOKEN}"
+    }
+  },
+// Optional, for run time source and publish authentication
+  "containerEnv": {
+    "POETRY_HTTP_BASIC_GITLAB_USERNAME": "__token__"
+    ,"POETRY_HTTP_BASIC_GITLAB_PASSWORD": "${localEnv:GITLAB_PRIVATE_TOKEN}"
+  }
 }
 ```
 
@@ -111,7 +130,7 @@ By setting our VSCode `settings.json` up in the container context, we're able to
 
 `devcontainer.json`:
 
-```json
+```JSON
 [
   "onCreateCommand": [
     "poetry",

@@ -118,11 +118,12 @@ RUN pip install poetry \
 }
 ```
 
-Explanation:
+Details:
 
 We have to specify Poetry as a dependency in the `pyproject.toml` or else sync will uninstall it and our onCreateCommand to install locally will fail.
 The poetry config we set in the Dockerfile doesn't persist to the onCreateCommand. So we need to set local config to avoid virtualenv creation.
 We use the sync option to remove packages on the system install that aren't part of our specification, and might interfere.
+Note that on some distributions with system Python the packages will install to a `dist-packages` directory instead [link](https://stackoverflow.com/questions/9387928/whats-the-difference-between-dist-packages-and-site-packages). You can simply use an `ENV` instruction to set the [PYTHONPATH variable](https://docs.python.org/3/tutorial/modules.html#the-module-search-path) to the `site-packages` location that Poetry uses (in my case it was /usr/lib/python3.9/site-packages). This _will_ leave an additional Poetry (and dependencies) install on your image though, unless you also `--target $PYTHONPATH` on your pip install.
 
 ### Using Poetry virtual environments
 

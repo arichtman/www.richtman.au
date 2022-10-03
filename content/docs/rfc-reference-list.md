@@ -1,6 +1,7 @@
 +++
-title = "Rfc Reference List"
+title = "RFC Reference List"
 date = 2022-09-21T13:06:39Z
+description = "Short list of personally useful RFCs"
 [taxonomies]
 categories = [ "Technical" ]
 tags = ["rfc", "reference" ]

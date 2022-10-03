@@ -1,18 +1,8 @@
-// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.128.0/containers/hugo
 {
-	"name": "Hugo",
+	"name": "Zola",
 	"build": {
 		"dockerfile": "Containerfile",
 		"args": {
-			// Update VARIANT to pick hugo variant.
-			// Example variants: hugo, hugo_extended
-			// Rebuild the container if it already exists to update.
-			"VARIANT": "hugo_extended",
-			// Update VERSION to pick a specific hugo version.
-			// Example versions: latest, 0.73.0, 0,71.1
-			// Rebuild the container if it already exists to update.
-			"VERSION": "latest",
 		}
 	},
 	"mounts": [
@@ -22,10 +12,9 @@
 		"bungcip.better-toml",
 		"davidanson.vscode-markdownlint",
 		"yzhang.markdown-all-in-one",
-		"bungcip.better-toml",
 		"davidanson.vscode-markdownlint"
 	],
 	"forwardPorts": [
-		1313
+		1111
 	],
 }

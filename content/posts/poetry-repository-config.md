@@ -1,8 +1,10 @@
----
-title: "Poetry Repository Config"
-date: 2022-09-19T07:40:22Z
-draft: false
----
++++
+title = "Poetry Repository Config"
+date = 2022-09-19T07:40:22Z
+[taxonomies]
+categories = [ "Technical" ]
+tags = ["python", "poetry" ]
++++
 
 ## Where and how to configure repositories using Poetry
 

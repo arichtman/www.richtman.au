@@ -1,8 +1,10 @@
----
-title: "Securing a Custom Domain on Netlify"
-date: 2022-08-21T06:57:13Z
-draft: false
----
++++
+title = "Securing a Custom Domain on Netlify"
+date = 2022-08-21T06:57:13Z
+[taxonomies]
+categories = [ "Technical" ]
+tags = ["netlify", "tls", "dns" ]
++++
 
 ## Problem
 

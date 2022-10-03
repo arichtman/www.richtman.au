@@ -1,8 +1,10 @@
----
-title: "Acr122u NFC Cloning on WSL2"
-date: 2022-08-28T11:31:43Z
-draft: false
----
++++
+title = "Acr122u NFC Cloning on WSL2"
+date = 2022-08-28T11:31:43Z
+[taxonomies]
+categories = [ "Technical" ]
+tags = [ "nfc", "acr122u", "wsl2" ]
++++
 
 ## Acr122u NFC Cloning on WSL
 

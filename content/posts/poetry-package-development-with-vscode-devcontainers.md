@@ -1,8 +1,10 @@
----
-title: "Poetry Package Development With VSCode Devcontainers"
-date: 2022-09-19 18:48:23+10:00
-draft: false
----
++++
+title = "Poetry Package Development With VSCode Devcontainers"
+date = 2022-09-19 18:48:23+10:00
+[taxonomies]
+categories = [ "Technical" ]
+tags = ["python", "poetry" ]
++++
 
 Updated for Poetry 1.2.0
 

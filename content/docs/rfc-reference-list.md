@@ -1,8 +1,10 @@
----
-title: "Rfc Reference List"
-date: 2022-09-21T13:06:39Z
-draft: false
----
++++
+title = "Rfc Reference List"
+date = 2022-09-21T13:06:39Z
+[taxonomies]
+categories = [ "Technical" ]
+tags = ["rfc", "reference" ]
++++
 
 ## RFC reference list
 

@@ -1,14 +1,91 @@
-baseURL = 'https://blog.richtman.com.au/'
-languageCode = 'en-us'
-title = "Ariel Richtman's technical blog"
-theme = 'paper'
+# Heavily drawn from https://github.com/RatanShreshtha/DeepThought/blob/main/config.toml
 
-[params]
+# The URL the site will be built for
+base_url = "https://www.richtman.com.au"
+theme = "deepthought"
+title = "richtman.com.au"
+description = "DevOps, SRE, Cloud Engineering, and all things in facilitative infrastructure"
 
-twitter = 'ArielRichtman'
-github = 'arichtman'
-rss = true
+generate_feed = true
 
-avatar = 'ariel@richtman.com.au'
-name = 'Ariel Richtman'
-bio = 'Personal tech blog'
+# Whether to automatically compile all Sass files in the sass directory
+compile_sass = true
+
+# Whether to build a search index to be used later on by a JavaScript library
+build_search_index = true
+
+taxonomies = [
+    { name = "categories", feed = true, paginate_by = 10 },
+    { name = "tags", fees = true, paginate_by = 10 },
+]
+
+[markdown]
+# Whether to do syntax highlighting
+# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
+highlight_code = true
+
+highlight_theme = "one-dark"
+
+external_links_target_blank = true
+
+render_emoji = true
+
+[link_checker]
+# Skip link checking for external URLs that start with these prefixes
+skip_prefixes = [
+    "http://[2001:db8::]/",
+]
+
+[slugify]
+paths = "on"
+taxonomies = "on"
+anchors = "on"
+
+[search]
+# Whether to include the title of the page/section in the index
+include_title = true
+# Whether to include the description of the page/section in the index
+include_description = false
+# Whether to include the path of the page/section in the index
+include_path = false
+# Whether to include the rendered content of the page/section in the index
+include_content = true
+
+[extra]
+katex.enabled = true
+katex.auto_render = true
+
+chart.enabled = true
+mermaid.enabled = true
+galleria.enabled = true
+
+navbar_items = [
+    { code = "en", nav_items = [
+        { url = "$BASE_URL/", name = "Home" },
+        { url = "$BASE_URL/posts", name = "Posts" },
+        { url = "$BASE_URL/docs", name = "Docs" },
+        { url = "$BASE_URL/tags", name = "Tags" },
+        { url = "$BASE_URL/categories", name = "Categories" },
+    ] },
+]
+
+
+[extra.favicon]
+favicon_16x16 = "/icons/favicon-16x16.png"
+favicon_32x32 = "/icons/favicon-32x32.png"
+#apple_touch_icon = "/icons/apple-touch-icon.png"
+#safari_pinned_tab = "/icons/safari-pinned-tab.svg"
+webmanifest = "/icons/site.webmanifest"
+
+[extra.author]
+name = "Ariel Richtman"
+avatar = "images/avatar.gif"
+
+[extra.social]
+github = "arichtman"
+gitlab = "arichtman"
+keybase = "arichtman"
+linkedin = "arichtman"
+stackoverflow = "19531788"
+email = "hello@richtman.com.au"
+twitter = "ArielRichtman"

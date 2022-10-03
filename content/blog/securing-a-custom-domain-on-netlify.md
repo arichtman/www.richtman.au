@@ -3,7 +3,7 @@ title = "Securing a Custom Domain on Netlify"
 date = 2022-08-21T06:57:13Z
 [taxonomies]
 categories = [ "Technical" ]
-tags = ["netlify", "tls", "dns" ]
+tags = [ "netlify", "tls", "dns" ]
 +++
 
 ## Problem

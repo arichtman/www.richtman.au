@@ -1,8 +1,10 @@
----
-title: "CI/CD Poetry Package Publishing"
-date: 2022-09-27T07:35:11Z
-draft: false
----
++++
+title = "CI/CD Poetry Package Publishing"
+date = 2022-09-27T07:35:11Z
+[taxonomies]
+categories = [ "Technical" ]
+tags = [ "python", "poetry" ]
++++
 
 ## CI/CD Poetry Package Publishing
 

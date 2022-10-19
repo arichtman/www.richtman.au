@@ -16,5 +16,6 @@ Short list of RFCs that I find or have found useful and relevant to my work. Not
 - [6125: X509/PKI for TLS](https://www.rfc-editor.org/rfc/rfc6125)
 - [8446: TLS 1.3](https://www.rfc-editor.org/rfc/rfc8446)
 - [5246: TLS 1.2](https://www.rfc-editor.org/rfc/rfc5246)
-- [1918: Private IP ranges](https://www.rfc-editor.org/rfc/rfc1918)
+- [1918: Private IPv4 ranges](https://www.rfc-editor.org/rfc/rfc1918)
+- [4193: Private IPv6 ranges](https://www.rfc-editor.org/rfc/rfc4193)
 - [2131: DHCP](https://www.rfc-editor.org/rfc/rfc1514)

@@ -12,7 +12,6 @@
 		"bungcip.better-toml",
 		"davidanson.vscode-markdownlint",
 		"yzhang.markdown-all-in-one",
-		"davidanson.vscode-markdownlint"
 	],
 	"forwardPorts": [
 		1111

@@ -2,6 +2,3 @@ FROM ghcr.io/getzola/zola:v0.16.1 AS builder
 
 FROM docker.io/rust:bullseye
 COPY --from=builder /bin/zola /usr/bin/zola
-WORKDIR /workdir
-ENTRYPOINT [ "/usr/bin/zola" ]
-CMD ["--help"]

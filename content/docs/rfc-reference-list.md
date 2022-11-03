@@ -20,3 +20,4 @@ Short list of RFCs that I find or have found useful and relevant to my work. Not
 - [4193: Private IPv6 ranges](https://www.rfc-editor.org/rfc/rfc4193)
 - [2131: DHCP](https://www.rfc-editor.org/rfc/rfc1514)
 - [5545: iCalendar format](https://www.rfc-editor.org/rfc/rfc5545)
+- [5737: Example IPv4 addresses for documentation](https://www.rfc-editor.org/rfc/rfc5737)

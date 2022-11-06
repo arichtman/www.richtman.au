@@ -1,10 +1,8 @@
-# Heavily drawn from https://github.com/RatanShreshtha/DeepThought/blob/main/config.toml
-
 # The URL the site will be built for
 base_url = "https://www.richtman.com.au"
 theme = "deepthought"
 title = "richtman.com.au"
-description = "DevOps, SRE, Cloud Engineering, and all things in facilitative infrastructure"
+description = "DevOps, Cloud/Platform Engineering, and all things in facilitative infrastructure"
 
 generate_feed = true
 
@@ -87,3 +85,4 @@ stackoverflow = "19531788"
 email = "hello@richtman.com.au"
 twitter = "ArielRichtman"
 medium = "arichtman"
+mastodon = "@ArielRichtman@mastodon.online"

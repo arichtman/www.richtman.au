@@ -11,7 +11,7 @@ tags = [ "wsl2", "nixos", "nix", "vscode", "development", "sde" ]
 
 NixOS on WSL2 fails to run VSCode.
 
-```Bash
+```bash
 $ nix-shell --packages wget git --run "code ."
     this path will be fetched (0.65 MiB download, 3.32 MiB unpacked):
       /nix/store/0hw3qygjvrk6bwljd0rgcvjkl7dsl6p5-wget-1.21.3
@@ -29,7 +29,7 @@ $ nix-shell --packages wget git --run "code ."
 
 Inspecting the binary indicates it's dynamically linked and we're missing libstdc++
 
-```Bash
+```bash
 $ ldd /home/nixos/.vscode-server/bin/d045a5eda657f4d7b676dedbfa7aab8207f8a075/node
         linux-vdso.so.1 (0x00007f6d58f63000)
         libdl.so.2 => /nix/store/v6szn6fczjbn54h7y40aj7qjijq7j6dc-glibc-2.34-210/lib/libdl.so.2 (0x00007f6d58f58000)
@@ -46,7 +46,7 @@ We don't have nix-locate yet so we'll run it in a temp shell.
 Whew, that nix-index command takes quite some time.
 I suspect NixOS does a load of disk i/o which WSL isn't known for doing well.
 
-```Bash
+```bash
 $ nix-shell --packages nix-index --run 'nix-index && nix-locate --top-level libstdc++.so.6 | grep gcc'
     + querying available packages
     + generating index: 55415 paths found :: 23657 paths not in binary cache :: 08452 paths in queue
@@ -65,7 +65,7 @@ $ nix-shell --packages nix-index --run 'nix-index && nix-locate --top-level libs
 
 Let's try that again with gcc installed...
 
-```Bash
+```bash
 $ nix-shell --packages wget git gcc --run "code ."
   /home/nixos/.vscode-server/bin/d045a5eda657f4d7b676dedbfa7aab8207f8a075/bin/remote-cli/code: line 12: /home/nixos/.vscode-server/bin/d045a5eda657f4d7b676dedbfa7aab8207f8a075/node: No such file or **directory**
 ```
@@ -75,7 +75,7 @@ There's no way I'm resorting to that on my shiny NixOS system, it's not in the s
 Then again, the NixOS way would be to include any and all dependencies in your NixPkg, or to statically link.
 Perhaps I'll just... install VSCode?
 
-```Bash
+```bash
 $ nix-env --query --available vscode
     vscode-1.69.2
 ```
@@ -93,7 +93,7 @@ Bingo! We'll add it to our system packages and we should be good to go.
 
 Now a rebuild with switch and voil...aah?
 
-```Bash
+```bash
 $ sudo nixos-rebuild switch
 $ code .
     To use Visual Studio Code with the Windows Subsystem for Linux, please install Visual Studio Code in Windows and uninstall the Linux version in WSL. You can then use the `code` command in a WSL terminal just as you would in a normal command prompt.
@@ -120,7 +120,7 @@ We'll need to update our `configuration.nix`, rebuild, and enable the service.
 }
 ```
 
-```Bash
+```bash
 sudo nixos-rebuild switch
 systemctl --user enable auto-fix-vscode-server.service
 # Ignore the warning

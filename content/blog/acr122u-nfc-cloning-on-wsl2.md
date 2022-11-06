@@ -204,7 +204,7 @@ Even when it flashed the dump successfully it would not update the UID or Block 
 However libnfc-examples came to the rescue with a dedicated function.
 Note that this setuid tool can recover "bricked" tags as it will just blindly send the codes.
 
-```Bash
+```bash
 sudo apt-get install libnfc-examples
 sudo nfc-mfsetuid $UID wrote the UID correctly
 ```

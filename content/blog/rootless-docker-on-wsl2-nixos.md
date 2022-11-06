@@ -25,7 +25,7 @@ So we can set `wsl.docker-native.enable = true` and that'll install the daemon f
 }
 ```
 
-```Bash
+```bash
 $ docker run --rm -it alpine
 docker: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/create": dial unix /var/run/docker.sock: connect: permission denied.
 See 'docker run --help'
@@ -43,7 +43,7 @@ We'll need to log out and log back in to pick up the group though.
 }
 ```
 
-```Bash
+```bash
 $ id
 uid=1000(nixos) gid=100(users) groups=100(users),1(wheel),131(docker)
 $ docker run --rm -it -v "$(pwd):/test" alpine touch /test/foo
@@ -65,7 +65,7 @@ Ok let's enable rootless config option, that looks like it'll fix it.
 }
 ```
 
-```Bash
+```bash
 $ sudo nixos-rebuild switch
 ~ yadda yadda ~
 $ docker run --rm -it -v "$(pwd):/test" alpine touch /test/foo
@@ -83,7 +83,7 @@ $ sudo systemctl restart docker
 Hmmm, definitely not fixed.
 Let's investigate the service we got here.
 
-```Bash
+```bash
 $ sudo systemctl cat docker.service
 [Unit]
 After=network.target docker.socket
@@ -146,7 +146,7 @@ Let's drop that and enable the virtualization option.
 }
 ```
 
-```Bash
+```bash
 $ sudo nixos-rebuild switch
 starting the following units: systemd-sysctl.service
 the following new units were started: docker.socket
@@ -194,7 +194,7 @@ Ruh-roh. Looks like The socket had some issues booting.
 Returning the wsl configuration statement fixes our `iptables` woes.
 Let's check our subuid/guids
 
-```Bash
+```bash
 $ grep ^$(whoami): /etc/subuid
 nixos:100000:65536
 $ grep ^$(whoami): /etc/subgid
@@ -203,7 +203,7 @@ nixos:100000:65536
 
 Hmm that seems fine. I'll try starting the service myself
 
-```Bash
+```bash
 $ systemctl --user start docker
 $ systemctl --user status docker
 Failed to execute 'pager', using next fallback pager: Permission denied
@@ -233,7 +233,7 @@ Nov 01 15:41:16 nixos dockerd-rootless[44415]: time="2022-11-01T15:41:16.7516560
 Aha... so we _do_ have the capability to run rootless...
 Let's try using this instance of the Docker engine by specifying the socket.
 
-```Bash
+```bash
 $ DOCKER_HOST=unix:///run/user/1000/docker.sock docker run --rm  -it -v "$(pwd):/test" alpine touch /test/foo
 Unable to find image 'alpine:latest' locally
 latest: Pulling from library/alpine
@@ -263,7 +263,7 @@ Let's add some configuration for setting that socket variable and rebooting.
 }
 ```
 
-```Bash
+```bash
 $ env | grep -i docker
 
 $
@@ -300,7 +300,7 @@ And as a tidy bonus we can clear off the rootful docker service as well as the g
 }
 ```
 
-```Bash
+```bash
 $ sudo nixos-rebuild switch
   ~ snip ~
 $ sudo reboot

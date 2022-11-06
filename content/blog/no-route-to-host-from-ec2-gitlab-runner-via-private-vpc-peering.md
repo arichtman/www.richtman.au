@@ -31,7 +31,7 @@ Service is running on destination instance.
 
 Let's poke on the runner machine.
 
-```Bash
+```bash
 $ host artifactory-bne.silverrail.io
 artifactory-bne.silverrail.io has address 172.31.151.55
 $ curl -IL https://artifactory-bne.silverrail.io
@@ -45,7 +45,7 @@ From ip-172-31-0-1.ap-southeast-2.compute.internal (172.31.0.1) icmp_seq=1 Desti
 Ok so DNS looks OK.
 Let's try public IP access.
 
-```Bash
+```bash
 $ host artifactory-bne.silverrail.io 1.1.1.1
 Using domain server:
 Name: 1.1.1.1
@@ -65,7 +65,7 @@ We've determined that it's definitely working via public routing.
 But what could be fouling it?
 Could it be our Allow/Denylists?
 
-```Bash
+```bash
 $ cat /etc/hosts.allow
 #
 # hosts.allow   This file contains access rules which are used to
@@ -96,7 +96,7 @@ $ cat /etc/hosts.deny
 Nope, empty.
 Let's see what interfaces are configured, maybe it's getting the wrong one.
 
-```Bash
+```bash
 $ ifconfig
 br-368fedb58e20: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         inet 172.23.0.1  netmask 255.255.0.0  broadcast 172.23.255.255
@@ -155,7 +155,7 @@ default via 172.18.2.129 dev eth0
 Ok now I'm super suss.
 What has Docker been doing to the networking here...
 
-```Bash
+```bash
 $ docker network ls
 NETWORK ID     NAME                                                                  DRIVER    SCOPE
 1349ab7b2802   bridge                                                                bridge    local
@@ -184,7 +184,7 @@ If it doesn't clear up previous virtual networks, it'll just keep taking new pri
 Eventually, the private IP range may climb high enough to interfere with one's actual routing.
 However simply removing the network won't work if it still has endpoints pointing to containers.
 
-```Bash
+```bash
 $ NETWORK_SLUGS=$(docker network ls --filter driver=bridge --filter type=custom --format "{{.ID}}" --no-trunc)
 
 $ for NETWORK_SLUG in $NETWORK_SLUGS

@@ -19,7 +19,7 @@ So long as the repository name matches in all points, this will work fine.
 In the example below, the repository name is _gitlab_.
 PS: If you know how to avoid the `--repository` on the publish command let me know!
 
-```Bash
+```bash
 export POETRY_REPOSITORIES_GITLAB_URL=https://gitlab.com/api/v4/projects/1/packages/pypi
 export POETRY_HTTP_BASIC_GITLAB_USERNAME=__token__
 export POETRY_HTTP_BASIC_GITLAB_PASSWORD=<redacted>

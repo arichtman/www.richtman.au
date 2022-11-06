@@ -39,7 +39,7 @@ User-specific or shared can go in config, which lives at `$HOME/.config/pypoetry
 Authentication is similar, just living at `$HOME/.config/pypoetry/auth.toml`
 Note the lack of `/simple` URN on the end as opposed to the pulling URI.
 
-```Bash
+```bash
 poetry config repositories.gitlab https://gitlab.com/api/v4/projects/1/packages/pypi
 poetry config http-basic.gitlab someuser somepassword
 ```

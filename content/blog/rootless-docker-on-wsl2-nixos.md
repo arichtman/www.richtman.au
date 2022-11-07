@@ -3,7 +3,7 @@ title = "Rootless Docker on WSL2 NixOS"
 date = 2022-11-01T16:11:00Z
 description = "Another mousehunt for you to follow"
 [taxonomies]
-categories = [ "Technical" ]
+categories = [ "Technical", "Troubleshooting" ]
 tags = [ "wsl2", "nixos", "docker", "containers", "docker-engine", "rootless", "security" ]
 +++
 

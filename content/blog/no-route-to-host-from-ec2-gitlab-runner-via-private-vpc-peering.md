@@ -3,7 +3,7 @@ title = "No Route to Host from EC2 GitLab Runner via Private VPC Peering"
 date = 2022-11-02T08:54:20Z
 description = "Follow along a magical adventure of routing."
 [taxonomies]
-categories = [ "Technical" ]
+categories = [ "Technical", "Troubleshooting" ]
 tags = [ "ec2", "aws", "gitlab", "containers", "docker-engine", "docker", "networking", "routing", "private-routing" ]
 +++
 

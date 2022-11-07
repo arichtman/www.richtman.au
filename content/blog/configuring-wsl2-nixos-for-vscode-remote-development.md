@@ -3,7 +3,7 @@ title = "Configuring WSL2 NixOS for VSCode remote development"
 date = 2022-10-31T14:01:00Z
 description = "An as-it-happened adventure, with code."
 [taxonomies]
-categories = [ "Technical" ]
+categories = [ "Technical", "Troubleshooting" ]
 tags = [ "wsl2", "nixos", "nix", "vscode", "development", "sde" ]
 +++
 

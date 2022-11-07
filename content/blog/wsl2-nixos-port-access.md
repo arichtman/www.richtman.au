@@ -18,9 +18,13 @@ Either way let's get a-fixin'
 
 ## Solution
 
+Running with elevated privileges:
+
 ```Powershell
 Set-NetTCPSetting -DynamicPortRangeStartPort 10240 -DynamicPortRangeNumberOfPorts $(65535 - 10240)
 ```
+
+You'll now have to restart your PC but you should be good to go after that.
 
 ## References
 

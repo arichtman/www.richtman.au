@@ -1,7 +1,7 @@
 +++
 title = "AWS cloud-init on Windows"
 date = 2022-11-14T06:56:37Z
-description = "Avoiding race conditions on instance initialization."
+description = "Avoiding race conditions on instance initialization"
 [taxonomies]
 categories = [ "Technical", "Troubleshooting" ]
 tags = [ "aws", "ec2", "windows", "user-data", "cloud-init" ]

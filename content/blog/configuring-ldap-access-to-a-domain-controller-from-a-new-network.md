@@ -1,7 +1,7 @@
 +++
 title = "Configuring LDAP access to a domain controller from a new network"
 date = "2022-11-03 02:09:05+00:00"
-description = "Practical steps when moving client machines to separate networks to enable auth access to domain controllers ."
+description = "Practical steps when moving client machines to separate networks to enable auth access to domain controllers"
 [taxonomies]
 categories = [ "Technical" ]
 tags = [ "domain-controller", "aws", "windows", "microsoft" ]

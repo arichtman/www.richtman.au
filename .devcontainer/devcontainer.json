@@ -1,19 +1,18 @@
 {
-	"name": "Zola",
-	"build": {
-		"dockerfile": "Containerfile",
-		"args": {
-		}
-	},
-	"mounts": [
-		"source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,consistency=cached",
-	],
-	"extensions": [
-		"bungcip.better-toml",
-		"davidanson.vscode-markdownlint",
-		"yzhang.markdown-all-in-one",
-	],
-	"forwardPorts": [
-		1111
-	],
+  "build": {
+    "args": {},
+    "dockerfile": "Containerfile"
+  },
+  "extensions": [
+    "bungcip.better-toml",
+    "davidanson.vscode-markdownlint",
+    "yzhang.markdown-all-in-one"
+  ],
+  "forwardPorts": [
+    1111
+  ],
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,consistency=cached"
+  ],
+  "name": "Zola"
 }

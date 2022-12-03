@@ -6,8 +6,13 @@ Contains Zola theme + content for my blog
 
 ## Authoring
 
-When updating an article one can either add markdown with "updated at" or you can use `date -I` and update frontmatter date property.
+When updating an article one you can use `date -Iseconds` and update frontmatter date property.
+
+## Development
+
+Use the Nix Flake to enter development environment.
 
 ## Issues
 
-- I don't like overriding the index content block to style the text centered, we'll miss important updates to the theme. However it's hardly worth exposing as a config item upstream.
+- I don't like overriding the index content block to style the text centered, we'll miss important updates to the theme.
+  However it's hardly worth exposing as a config item upstream.

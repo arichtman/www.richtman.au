@@ -1,0 +1,40 @@
+default_language_version:
+  python: python3.10
+
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: mixed-line-ending
+    args: [--fix, lf]
+  - id: check-yaml
+  - id: check-toml
+  - id: check-json
+  - id: pretty-format-json
+    args: [--autofix]
+  - id: check-added-large-files
+  - id: check-case-conflict
+  - id: check-merge-conflict
+  - id: check-docstring-first
+  - id: check-executables-have-shebangs
+  - id: check-vcs-permalinks
+  - id: debug-statements
+  - id: detect-private-key
+  - id: forbid-new-submodules
+- repo: https://github.com/jackdewinter/pymarkdown
+  rev: v0.9.8
+  hooks:
+  - id: pymarkdown
+    args: [--config, .pymarkdown.json, scan]
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.4.0
+  hooks:
+  - id: pretty-format-yaml
+    args: [--autofix, --indent, '2']
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.19.2
+  hooks:
+  - id: check-renovate
+  - id: check-github-actions

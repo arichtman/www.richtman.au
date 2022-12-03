@@ -1,2 +1,16 @@
-- name: Pre-commit autoupdate
-  uses: browniebroke/pre-commit-autoupdate-action@v1.0.0
+name: Update Pre-Commit refs
+
+on:
+  # Allow manual triggers.
+  workflow_dispatch:
+
+  # Automatically run once a week.
+  schedule:
+  - cron: 0 7 * * MON
+
+jobs:
+  update-pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: browniebroke/pre-commit-autoupdate-action@v1.0.0
+

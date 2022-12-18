@@ -2,5 +2,11 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>netlify-templates/renovate-config"
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": [ "minor", "patch", "bump" ],
+      "automerge": true,
+    }
   ]
 }

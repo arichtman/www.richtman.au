@@ -262,7 +262,7 @@ sudo apt install -y libusb-dev
 sudo apt install libusb-1.0-0-dev -y
 ```
 
-## Possible fixes for libnfc installation 
+## Possible fixes for libnfc installation
 
 The ./configure install skipped some drivers with its default configuration, I can't recall if we had to do this for it to work or what.
 

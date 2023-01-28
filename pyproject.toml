@@ -3,7 +3,7 @@ name = "www-richtman-com-au"
 version = "0.1.0"
 description = "developer tooling for my website"
 authors = ["Richtman, Ariel <10679234+arichtman@users.noreply.github.com>"]
-license = "GPL-3.0-or-later"
+license = "GPL-3.0-only"
 readme = "README.md"
 packages = [{include = "www"}]
 

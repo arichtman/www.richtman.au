@@ -15,4 +15,4 @@ jobs:
     - uses: Apakottur/action-poetry-package-update@v1
       with:
         base-branch: main
-        poetry-version: "1.2.2"
+        poetry-version: 1.2.2

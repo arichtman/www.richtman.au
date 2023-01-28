@@ -37,4 +37,5 @@ repos:
   rev: 0.21.0
   hooks:
   - id: check-renovate
+    additional_dependencies: [json5]
   - id: check-github-actions

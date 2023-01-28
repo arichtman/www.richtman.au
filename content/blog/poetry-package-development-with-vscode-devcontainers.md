@@ -23,16 +23,16 @@ The error may look like this:
 
 ```text
   /src/py_acr122u does not contain any element
-[2022-08-28T07:26:56.367Z] 
+[2022-08-28T07:26:56.367Z]
   at /usr/local/lib/python3.10/site-packages/poetry/core/masonry/utils/package_include.py:60 in check_elements
 [2022-08-28T07:26:56.371Z]       56│         return any(element.suffix == ".py" for element in self.elements)
-[2022-08-28T07:26:56.371Z]       57│ 
+[2022-08-28T07:26:56.371Z]       57│
 [2022-08-28T07:26:56.372Z]       58│     def check_elements(self):  # type: () -> PackageInclude
 [2022-08-28T07:26:56.372Z]       59│         if not self._elements:
 [2022-08-28T07:26:56.372Z]     → 60│             raise ValueError(
 [2022-08-28T07:26:56.372Z]       61│                 "{} does not contain any element".format(self._base / self._include)
       62│             )
-[2022-08-28T07:26:56.372Z]       63│ 
+[2022-08-28T07:26:56.372Z]       63│
 [2022-08-28T07:26:56.372Z]       64│         root = self._elements[0]
 [2022-08-28T07:26:56.624Z] Error: error building at STEP "RUN pip install poetry     && poetry config virtualenvs.create false     && poetry install --no-interaction": error while running runtime: exit status 1
 [2022-08-28T07:26:56.629Z] Stop (25791 ms): Run: docker build -f /home/arichtman/repos/py-acr122u/.devcontainer/Containerfile -t vsc-py-acr122u-ca0eeac3cc1a8372c4a804bf742aac10 /home/arichtman/repos/py-acr122u
@@ -141,8 +141,8 @@ By setting our VSCode `settings.json` up in the container context, we're able to
     "install",
     "--no-interaction"
   ],
-  "settings": { 
-    "terminal.integrated.defaultProfile.linux": "poetry", 
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "poetry",
     "terminal.integrated.profiles.linux": {
         "poetry": {
             "path": "/usr/local/bin/poetry",

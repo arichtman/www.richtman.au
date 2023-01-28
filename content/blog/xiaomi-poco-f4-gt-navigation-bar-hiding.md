@@ -76,7 +76,7 @@ $ # After inspecting these a bit I'm willing to gamble that overlay \
 $ #  means something specific in Android dev land
 $ pm list packages | grep -v overlay
 < 358 packages >
-$ # OoOkay then, how about we look for com.mi* 
+$ # OoOkay then, how about we look for com.mi*
 $ pm list packages | grep -v overlay | grep '\.mi'
 < 52 packages >
 $ # Muuuch better. I'll use the magic of editing to shortlist some suspects here
@@ -88,7 +88,7 @@ package:com.mi.android.globallauncher
 package:com.xiaomi.micloud.sdk
 package:com.xiaomi.mipicks
 package:com.xiaomi.misettings
-$ # Ok let's find 
+$ # Ok let's find
 ```
 
 I'm thinking maybe we could limit the permissions of the settings app so it can't reset the immersive.status setting.

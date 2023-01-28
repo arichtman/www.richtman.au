@@ -23,7 +23,7 @@ By enabling these along with the requisite network connectivity we are able to m
 This is pretty practical and rough but it works, I'm no MS Engineer. Happy to take feedback!
 
 For DNS we need service discovery endpoints and then actual A records for the domain controllers themselves.
-For UNC paths and retrieval of Group Policy, we need some apex domain A records and local settings 
+For UNC paths and retrieval of Group Policy, we need some apex domain A records and local settings
 
 First we're going to pilfer the old DNS entries.
 Run this and take note of the outputs.

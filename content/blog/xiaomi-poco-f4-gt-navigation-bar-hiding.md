@@ -143,7 +143,7 @@ Three-step solution
    - Advanced > Rules per app > Pause on lock screen = untoggled
 1. Use ADB to configure Android
    - Grant FNG permissions permanently `adb shell pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS`
-   - Force full screen navigation `adb shellsettings put global force_fsg_nav_bar 1`
+   - Force full screen navigation `adb shell settings put global force_fsg_nav_bar 1`
 
 Note that only the last step must be repeated if the bar comes back.
 The rest should persist though I make no promises about system updates.

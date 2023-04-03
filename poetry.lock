@@ -16,7 +16,7 @@ python-versions = "*"
 
 [[package]]
 name = "filelock"
-version = "3.10.6"
+version = "3.10.7"
 description = "A platform independent file lock."
 category = "dev"
 optional = false
@@ -85,7 +85,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "setuptools"
-version = "67.6.0"
+version = "67.6.1"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "dev"
 optional = false
@@ -128,8 +128,8 @@ distlib = [
     {file = "distlib-0.3.6.tar.gz", hash = "sha256:14bad2d9b04d3a36127ac97f30b12a19268f211063d8f8ee4f47108896e11b46"},
 ]
 filelock = [
-    {file = "filelock-3.10.6-py3-none-any.whl", hash = "sha256:52f119747b2b9c4730dac715a7b1ab34b8ee70fd9259cba158ee53da566387ff"},
-    {file = "filelock-3.10.6.tar.gz", hash = "sha256:409105becd604d6b176a483f855e7e8903c5cb2873e47f2c64f66a370c046aaf"},
+    {file = "filelock-3.10.7-py3-none-any.whl", hash = "sha256:bde48477b15fde2c7e5a0713cbe72721cb5a5ad32ee0b8f419907960b9d75536"},
+    {file = "filelock-3.10.7.tar.gz", hash = "sha256:892be14aa8efc01673b5ed6589dbccb95f9a8596f0507e232626155495c18105"},
 ]
 identify = [
     {file = "identify-2.5.22-py2.py3-none-any.whl", hash = "sha256:f0faad595a4687053669c112004178149f6c326db71ee999ae4636685753ad2f"},
@@ -190,8 +190,8 @@ pyyaml = [
     {file = "PyYAML-6.0.tar.gz", hash = "sha256:68fb519c14306fec9720a2a5b45bc9f0c8d1b9c72adf45c37baedfcd949c35a2"},
 ]
 setuptools = [
-    {file = "setuptools-67.6.0-py3-none-any.whl", hash = "sha256:b78aaa36f6b90a074c1fa651168723acbf45d14cb1196b6f02c0fd07f17623b2"},
-    {file = "setuptools-67.6.0.tar.gz", hash = "sha256:2ee892cd5f29f3373097f5a814697e397cf3ce313616df0af11231e2ad118077"},
+    {file = "setuptools-67.6.1-py3-none-any.whl", hash = "sha256:e728ca814a823bf7bf60162daf9db95b93d532948c4c0bea762ce62f60189078"},
+    {file = "setuptools-67.6.1.tar.gz", hash = "sha256:257de92a9d50a60b8e22abfcbb771571fde0dbf3ec234463212027a4eeecbe9a"},
 ]
 virtualenv = [
     {file = "virtualenv-20.21.0-py3-none-any.whl", hash = "sha256:31712f8f2a17bd06234fa97fdf19609e789dd4e3e4bf108c3da71d710651adbc"},

@@ -2,7 +2,7 @@
 base_url = "https://www.richtman.com.au"
 theme = "deepthought"
 title = "richtman.com.au"
-description = "DevOps, Cloud/Platform Engineering, and all things in facilitative infrastructure"
+description = "DevOps, Cloud & Platform Engineering, and all things in facilitative infrastructure"
 
 generate_feed = true
 
@@ -86,5 +86,5 @@ email = "hello@richtman.com.au"
 twitter = "ArielRichtman"
 medium = "arichtman"
 mastodon_username = "arichtman"
-mastodon_server = "mastodon.online"
+mastodon_server = "eigenmagic.net"
 #signal = "61490028679"

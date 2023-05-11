@@ -1,16 +1,12 @@
 {
   description = "Zola flake";
-  nixConfig.bash-prompt = "\[nix-develop\]$ ";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     utils = {
       url = github:numtide/flake-utils;
     };
-    # https://github.com/nix-community/poetry2nix/issues/734
-    # ModuleNotFoundError: No module named 'hatchling'
-    # Needed a more recent version of poetry2nix where overrides/build-systems.json had an entry for datadog Python package
-    # Can be removed when nixpkgs unstable has poetry2nix >=1.32.0
+    # Use p2nix directly for the updates
     poetry2nix = {
       url = "github:nix-community/poetry2nix";
       inputs.nixpkgs.follows = "nixpkgs";

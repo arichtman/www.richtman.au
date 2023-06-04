@@ -10,7 +10,6 @@ packages = [{include = "www"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 
-
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.0"
 

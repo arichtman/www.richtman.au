@@ -11,7 +11,7 @@ packages = [{include = "www"}]
 python = "^3.10"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.0.0"
+pre-commit = "^3.3.2"
 
 [build-system]
 requires = ["poetry-core"]

@@ -6,6 +6,9 @@ description = "DevOps, Cloud & Platform Engineering, and all things in facilitat
 
 generate_feed = true
 
+# Don't publish development infrastructure to the website
+ignored_content = [ "flake.*", ".pymarkdown.json", ".pre-commit-config", "*.lock", ".git*" ]
+
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
 
@@ -59,6 +62,7 @@ navbar_items = [
         { url = "$BASE_URL/", name = "Home" },
         { url = "$BASE_URL/blog", name = "Blog" },
         { url = "$BASE_URL/docs", name = "Docs" },
+        { url = "$BASE_URL/nomicon", name = "Nomicon" },
         { url = "$BASE_URL/tags", name = "Tags" },
         { url = "$BASE_URL/categories", name = "Categories" },
     ] },

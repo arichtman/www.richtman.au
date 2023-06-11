@@ -1,6 +1,5 @@
 +++
 title = "Python"
-description = "The snek"
-sort_by = "date"
-paginate_by = 5
+#description = "The snek"
+#template = "section.html"
 +++

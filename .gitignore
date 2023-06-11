@@ -1,3 +1,7 @@
+# Zola output
+
+public/
+
 # Created by https://www.toptal.com/developers/gitignore/api/python,direnv,linux,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,direnv,linux,macos
 

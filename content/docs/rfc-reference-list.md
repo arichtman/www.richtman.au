@@ -21,3 +21,4 @@ Short list of RFCs that I find or have found useful and relevant to my work. Not
 - [2131: DHCP](https://www.rfc-editor.org/rfc/rfc1514)
 - [5545: iCalendar format](https://www.rfc-editor.org/rfc/rfc5545)
 - [5737: Example IPv4 addresses for documentation](https://www.rfc-editor.org/rfc/rfc5737)
+- [6761: Example and reserved domains](https://www.rfc-editor.org/rfc/rfc6761)

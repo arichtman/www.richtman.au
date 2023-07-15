@@ -1,7 +1,7 @@
 # The URL the site will be built for
-base_url = "https://www.richtman.com.au"
+base_url = "https://www.richtman.au"
 theme = "deepthought"
-title = "richtman.com.au"
+title = "richtman.au"
 description = "DevOps, Cloud & Platform Engineering, and all things in facilitative infrastructure"
 
 generate_feed = true

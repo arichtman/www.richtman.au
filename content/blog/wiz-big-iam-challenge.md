@@ -2,7 +2,6 @@
 title = "Wiz Big IAM Challenge"
 date = 2023-06-25T16:58:18+10:00
 description = "Applying myself practically"
-draft = true
 [taxonomies]
 categories = [ "Technical", "Troubleshooting" ]
 tags = [ "aws", "iam", "ctf" ]
@@ -358,3 +357,55 @@ REDACTED
 - [S3API list-objects v2](https://docs.aws.amazon.com/cli/latest/reference/s3api/list-objects-v2.html)
 - [S3API list-objects v1](https://docs.aws.amazon.com/cli/latest/reference/s3api/list-objects.html)
 - [S3 ls](https://docs.aws.amazon.com/cli/latest/reference/s3/ls.html)
+
+## Stage 4
+
+The s3 permissions look like they're just there so we can retrieve the flag.
+Let's focus on cognito.
+I see we have a `*` grant for cognito-sync, let's focus on that.
+
+```bash
+$ aws cognito-sync list-identity-pool-usage
+
+An error occurred (AccessDeniedException) when calling the ListIdentityPoolUsage operation: User: arn:aws:sts::657483584613:assumed-ro
+le/shell_basic_iam/iam_shell is not authorized to perform: cognito-sync:ListIdentityPoolUsage on resource: arn:aws:cognito-sync:us-eas
+t-1:657483584613:identitypool/null because no identity-based policy allows the cognito-sync:ListIdentityPoolUsage action
+
+$ aws cognito-sync get-identity-pool-configuration
+
+usage: aws [options] <command> <subcommand> [<subcommand> ...] [parameters]
+To see help text, you can run:
+
+  aws help
+  aws <command> help
+  aws <command> <subcommand> help
+aws: error: the following arguments are required: --identity-pool-id
+```
+
+There's only a handful of cognito-sync subcommands.
+After poking a couple more it seems I'll need to specify an identity pool or more for most.
+The most general/basic `list-` subcommand says identitypool is null.
+This makes me think we're supposed to register our own pool.
+
+Poking further it seems like we're supposed to:
+
+1. Locate the identity pool ID
+1. Register a device to the identity pool
+1. Subscribe the identity pool to the data set
+1. Trigger a sync event
+1. Retrieve the object path
+1. Retrieve the flag from S3
+
+I'm not fucking around with registering mobile apps or using the mobile SDK.
+That last bit with setting up an endpoint for webhooks was enough.
+Was fun while it lasted.
+
+Update: I checked out the ending.
+I should have thought to check the page source code but also that's not really testing IAM?
+I did make a mistake connecting subcommands to API calls one-to-one.
+I should have thought of checking the other cognito-related subcommands.
+
+### References
+
+- [AWS CLI](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/cognito-sync/index.html)
+- [Cognito docs](https://docs.aws.amazon.com/cognitoidentity/latest/APIReference/Welcome.html)

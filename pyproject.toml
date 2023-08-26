@@ -16,3 +16,8 @@ pre-commit = "^3.3.2"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pymarkdown]
+# Always fails with front matter
+plugins.first-line-heading.enabled = false
+plugins.line-length.line_length = 160

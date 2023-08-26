@@ -31,7 +31,6 @@ repos:
   rev: v0.9.12
   hooks:
   - id: pymarkdown
-    args: [--config, .pymarkdown.json, scan]
     additional_dependencies: [wcwidth]
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks

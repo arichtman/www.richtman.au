@@ -22,7 +22,7 @@ This does not go according to plan as the overscan feature was deprecated sudden
 Google further locked down their Android bug tracker so they couldn't get complaints. Hrm.
 Digging a little deeper it seems it's moved to settings, let's try the more recent advice.
 
-```shell
+```bash
 255|ingres:/ $ settings put global policy_control immersive.status=apps
 
 Exception occurred while executing 'put':
@@ -57,7 +57,7 @@ They say you can use throwaway accounts.
 That prompted me three times, each with timer before I could enable it.
 Let's try it.
 
-```shell
+```bash
 $ adb shell pm grant com.fb.fluid android.permission.WRITE_SECURE_SETTINGS
 $ # Success!
 $ settings put global policy_control immersive.status=apps
@@ -69,7 +69,7 @@ Let's try locking and unlocking...
 Aha! So it _is_ removed when firing up the screen but something is putting it back...
 Let's find a package listing and see what we can temporarily disable.
 
-```shell
+```bash
 $ pm list packages
 < 434 packages >
 $ # After inspecting these a bit I'm willing to gamble that overlay \
@@ -95,7 +95,7 @@ I'm thinking maybe we could limit the permissions of the settings app so it can'
 Ok but how to granularly block that setting?
 Surface-level it looks like `pm revoke` is too broad a tool...
 
-```shell
+```bash
 $ pm revoke android.miui.poco.launcher.res android.permission.WRITE_SECURE_SETTINGS
 
 Exception occurred while executing 'revoke':
@@ -119,7 +119,7 @@ package:com.xiaomi.misettings
 Let's try a rando's comment.
 This should be totally safe and not a problem at all.
 
-```shell
+```bash
 settings put global force_fsg_nav_bar 1
 ```
 
@@ -159,7 +159,7 @@ There's probably some logic behind resetting the force FSG setting on reboot as 
 
 ### Package manager help
 
-```shell
+```bash
 $ pm help
 
 Package manager (package) commands:
@@ -1096,7 +1096,7 @@ Package manager (package) commands:
 
 ### Auth context
 
-```shell
+```bash
 255|ingres:/ $ pm list permission-groups
 permission group:com.google.android.gms.permission.CAR_INFORMATION
 permission group:android.permission-group.CONTACTS

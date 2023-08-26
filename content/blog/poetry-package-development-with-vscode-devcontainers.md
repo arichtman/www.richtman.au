@@ -21,7 +21,7 @@ packages = [
 
 The error may look like this:
 
-```text
+```bash
   /src/py_acr122u does not contain any element
 [2022-08-28T07:26:56.367Z]
   at /usr/local/lib/python3.10/site-packages/poetry/core/masonry/utils/package_include.py:60 in check_elements

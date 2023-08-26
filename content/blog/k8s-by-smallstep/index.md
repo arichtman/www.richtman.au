@@ -1,11 +1,11 @@
----
++++
 title = "Kubernetes Bootstrapping with Smallstep CLI"
 date = 2023-08-26T12:07:57+10:00
 description = "I suffered so you don't have to"
 [taxonomies]
 categories = [ "Technical" ]
 tags = [ "k8s", "tls", "kubernetes", "x509", "mtls", "certificates", "trust" ]
----
++++
 
 # Kubernetes Bootstrapping with Smallstep CLI
 

@@ -157,4 +157,43 @@ It's important to determine the payoffs for acting on wrong decisions, as much a
 
 _Reward Function Engineering_: the job of determining tHe rewards to various actions, given the predictions that the AI makes.
 
-p107
+For the forseeable future, humans will have a role in prediction and judgment when unusual situations arise.
+
+To observe the counterfactual, two solutions:
+- _Experiments_
+- _Modeling_
+Experiments are more powerful but modeling is cheaper and more feasible.
+
+_Satisficing_
+
+_Automation_: when a machine undertakes an entire task, not just prediction.
+
+When speed is needed, the benefit of ceding control to the machine is high.
+However, if the prrediction leads too directly to an obvious course of action, then the case for leaving human judgment in the loop is diminished.
+
+_Externalities_: costs that are incurred by others than the decision maker.
+
+Tasks most likely to be automated first:
+- Other elements already automated bar prediction
+- Gains from speed improvements to prediction are appealing
+- Gains from improved signal-response delay are appealing
+
+_Stakes_: expected losses that arise when there is an error in prediction
+
+When the stakes are high, utilizing AI prediction involves complementary investments in measures that manage the additional risks created.
+That management will involve either some form of insurance or protection.
+
+_True Positive_
+
+_False Positive_
+
+When AI predictions are faster and cheaper, but not better, than human ones, adopters need to be careful.
+When the consequences of a mistake are low, faster and cheaper may be enough.
+
+_Loss Functions_: measures of how accurate a prediction is relative to the stakes and the consequences of following the prediction with action.
+
+While judgment tells you what the value of different possibilities is overall, stakes focus on one particular aspect of that judgment - i.e. the relative consequences of errors.
+
+The choice about whether to fully automate a decision or not on the basis of AI prediction relies on how measurable stakes can be.
+
+part 3

@@ -128,4 +128,33 @@ _Prediction by Exception_: the prediction machine runs as normal, but when it hi
 
 ## Decision-Making
 
-p85
+When a _decision_ is made, _input data_ from the world is used to make a _prediction_.
+The _prediction_ is possible because _training_ occurred about relationships between different types of data, and which data is most closely associated with a situation.
+Combining the prediction with _judgment_ on what matters, the decision maker can choose an _action_.
+The _action_ leads to an _outcome_, which has an associated _reward_ or payoff.
+The outcome is a consequence of the decision.
+Outcomes may also provide _feedback_ to help improve the next _prediction.
+
+Judgment, data, and action, for now, remain firmly in the realm of humans.
+They are cmplements to prediction, meaning they incraese in value as prediction becomes cheap.
+
+_Reward Function_
+
+Prediction machines are valuable because:
+- often faster, better, cheaper than humans
+- prediction is key in decision-making under uncertainty
+- decition-makins is ubiquitous
+
+Prediction machines don't provide judgment, only humans do.
+
+Better faster, and cheaper predictions will give us more decisions to make.
+
+The cost of figuring out payoffs will mostly be in time.
+Humans experience the cognitive costs of judgment as a slower decision-making process.
+Humans have their own knowledge of why they are doing something, which gives them weights that are both idiosyncratic and subjective.
+Uncertainty increases the cost of judging the payoffs for a given decision.
+It's important to determine the payoffs for acting on wrong decisions, as much as right ones.
+
+_Reward Function Engineering_: the job of determining tHe rewards to various actions, given the predictions that the AI makes.
+
+p107

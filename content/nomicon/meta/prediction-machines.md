@@ -196,4 +196,68 @@ While judgment tells you what the value of different possibilities is overall, s
 
 The choice about whether to fully automate a decision or not on the basis of AI prediction relies on how measurable stakes can be.
 
-part 3
+## Tools
+
+AI use requires rethinking processes.
+
+The unit of AI tool design is not:
+- the job
+- the occupation
+- the strategy
+It's the task.
+Tasks are collections of decisions.
+Decisions are based on prediction and judgment and informed by data.
+
+Tools can change workflows in two ways:
+- Removing tasks
+- Adding tasks
+
+Deriving a real benefit from implementing an AI tool requires rethinking or re-engineering the entire workflow.
+
+Tool design can be aided by using _The AI Canvas_.
+Which looks at several lenses.
+
+- Action: What are you trying to do?
+- Prediction: What do you need to know to make the decision?
+- Judgment: How do you value different outcomes and errors?
+- Outcome: What are your metrics for task success?
+- Input: What data do you need to run the predictive algorithm?
+- Training: What data do you need to train the algorithm?
+- Feedback: How can you use the outcomes to improve the algorithm?
+
+Fully automated tasks can fail if even one piece fails.
+
+Automation that elimenatess a human from a task does not necessarily eliminate them from a job.
+
+Implementation of AI tools has 4 implications for jobs:
+- Augmentation - like spreadsheets
+- Contract - like fulfillment
+- Reconstitution - some shifting/redistribution of tasks
+- Shift - skills focus of a role may change
+
+## Strategy
+
+Three drivers of AI at the strategic level:
+- Strategic trade-off or dilemma
+- Can be addressed by reducing uncertainty
+- Feasible prediction machine that reduces uncertainty _enough_
+
+Eventually the demand will grow and supply costs will drop enough.
+Where this balance is depends on the business.
+
+External senior advisors are common for AI implementations.
+
+To make the most of predictoin machines, you need to rethink the reward functions throughout your organization to better align with your true goals.
+
+Training data is used at the beginning to train an algorithm, but once the prediction machine is running, it is not useful anymore.
+
+C-suite leadership must not fully delegate AI strategy to ICT.
+Powerful AI tools must cross organizational boundaries to reengineer processes.
+AI tools in one portion of the business may have effects on other parts.
+Further, the productivity enhancements themselves may become a key factor/driver of the strategy itself.
+
+The increasing value of judgment may lead to changes in organizational hierarchy.
+There may be higher returns in putting different roles or people in positions of power.
+
+Uncertainty has a major impact on a business's boundaries.
+Better prediction drives more outsourcing, while complexity tends to reduce it.

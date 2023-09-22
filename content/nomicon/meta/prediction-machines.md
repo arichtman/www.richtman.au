@@ -261,3 +261,71 @@ There may be higher returns in putting different roles or people in positions of
 
 Uncertainty has a major impact on a business's boundaries.
 Better prediction drives more outsourcing, while complexity tends to reduce it.
+
+AI will shift HR management toward the relational and away from the transactional.
+
+The importance of judgment means that employee contracts need to be more subjective.
+
+Better prediction increases the uncertainty you have over the quality of human workh performed.
+Thus, you need to keep your reward function engineers and other judgment-focussed workers in-house.
+
+For AI startups, owning the data that allows them to learn is particularly crucial.
+Otherwise they will be unable to improve their product over time.
+
+Companies buy data because they can't collect it themselves.
+[Ed. Not really, as always it's a trade-off]
+Not surprisingLy, they buy data that hElps them identiffy high-value customers.
+They also may buy data that helps them avoid advertising to low-value customers.
+
+Without direct access to the data, the advertiser buys the prediction.
+[Ed. Here we go with the rent-seeking capitalists again]
+
+Data and prediction machines are complements, procuring or developing an AI will be of limited value unless you have the data to feed it.
+If the data resides with others, you need a strategy to get it.
+If the data resides with an exclusive or monopoly provider, then you may find yourself at risk of having that provider appropriate the entire value of your AI.
+If the data resides with competitors, there may be no strategy that would make it worthwhile to procure it from them.
+If the data resides with consumers, it can be exchanged in return for a better product or higher-quality service.
+
+If the prediction machine is an input that you can take off the shelf, then you can treat it as a commodity and purchase, provided AI isn't a core strategic pillar.
+If AI is core to strategy, then both machine and data must be insourced.
+
+Judgment quality is hard to specify in-contract and difficult to monitor.
+
+AI-first means devoting resources to data collection and learning at the expense of important short-term considerations like;
+immediate customer experience,
+revenue,
+user numbers.
+
+Learning takes time, and often results in inferior performance (especially for consumers).
+
+_Disruptive technologies_: ones some established companies will find difficult to adopt quickly.
+
+_Inventor's dilemma_: where established firms don't want to disrupt existing customers, even if long-term it would be optimal.
+
+When they first appear, innovations might not be bgood enough to serve the customers of established companies in an industry, but they may be good *enough* to provide a new startup with enough customers in some niche area to build a product.
+
+Where the long-term potential impact is likely to be enormous, the whiff of disruptino may drive early adoption, even by incumbents.
+
+_Learning-by-using_: where firms improve their product design through interactions with users.
+
+_Supervised learning_: when you already have good data.
+
+_Reinforcement learning_: No good data but you can evaluate performance after the fact.
+
+_Dog fooding_
+
+_Beta testing_
+
+We have different definitions for _good enough_ when it comes to how much training humans require in different jobs.
+Same for machines.
+
+It can be a major strategic decision when to shift from in-house training to on-the-job.
+Putting products in the wild earlier accelerates learning but risks harming the brand and customers.
+Putting later slows learning but allows more time to improve the product in-house, and protect brand and customers.
+Simulation-based learning protects brand and customer, but has risks as no simulation is sufficiently complete.
+AI can be retrained in short feedback loops based on real data, but at the cost of quality assurance.
+Companies must trade-off how quickly they should use an AI in the real world.
+
+_Adversarial machine learning_
+
+p216

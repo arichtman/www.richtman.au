@@ -328,4 +328,49 @@ Companies must trade-off how quickly they should use an AI in the real world.
 
 _Adversarial machine learning_
 
-p216
+When learning-by-using, it's important to jolt the system so that consumers actually experience something new that the machine can learn from.
+Similarly, you may sometimes need to degrade the product experience for customers in order to learn about them.
+
+Experience is a scarce resource, some of which needs to be allocated to humans to prevent deskilling.
+Placing a human in the loop for escalation prevents the machine from gaining experience.
+
+An AI-first strategy places maximizing prediction accuracy as the central goal of the organization,
+even if that means compromising on other goals such as revenue and customer experience.
+
+AI-enabled products are often inferior at first.
+The benefit to deploying earlier is faster learning, at the cost of greater risk.
+
+# Managing AI risk
+
+_Protected Classes_
+
+_Disparate Impact_
+
+To determine if AI is discriminating, you must examine the output.
+
+_AI Neuroscience_
+
+The black box of AI is not an excuse to ignore potential discrimination or a way to avoid using AI in situations where discrimination might matter.
+
+AI trained on data that involves lots of ads and sales does not get to see wha happens with few ads.
+
+Crashes might seem bad but at least you know they have occurred.
+
+A seemingly easy solutino to the problem of systemwide failure is to encourage diversity in the prediction machines you deploy.
+This will reduce the security risks, but at the cost of reduced performance.
+It may also increase the risk of incidental smaller failures, due to lack of standardization.
+
+The strategic issue is that when you have an AI, if a competitor can observe the data entered and the output reported,
+it has the raw materiaals to employ it's own AI to engage in in supervised learning and reconstruct the algorithm.
+Unusual quantities of queries or an unusual diversity of queries should raise red flags.
+
+6 most salient risk types:
+
+- Descrimination liability
+- Sparse data leads to false confidence when you really have unknown unknowns
+- Input data is sensitive to meddling
+- Diversity and systemwide failure balance
+- Public availability open to IP theft and hackers
+- Feedback data is sensitive to meddling
+
+## Society

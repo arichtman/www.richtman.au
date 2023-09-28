@@ -130,6 +130,8 @@ _Prediction by Exception_: the prediction machine runs as normal, but when it hi
 
 ## Decision-Making
 
+![Anatomy of a task](./task-anatomy.jpg)
+
 When a _decision_ is made, _input data_ from the world is used to make a _prediction_.
 The _prediction_ is possible because _training_ occurred about relationships between different types of data, and which data is most closely associated with a situation.
 Combining the prediction with _judgment_ on what matters, the decision maker can choose an _action_.

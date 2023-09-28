@@ -11,7 +11,8 @@ tags = [ "reference", "book", "professional-development", "summary" ]
 
 ## Introduction
 
-AI is a prediction technology, predictions are inputs to decision-making, and economics provides a perfect framework for understanding the trade-offs underlying any decision.
+AI is a prediction technology, predictions are inputs to decision-making,
+and economics provides a perfect framework for understanding the trade-offs underlying any decision.
 
 When the price of something falls, we use more of it. [Ed. Jevon's Paradox]
 
@@ -70,7 +71,8 @@ _Deep Learning_
 _Back Propagation_
 
 Traditional statistical methods require the articulation of hypotheses or at least of human intuition for a model specification.
-Machine learning has less need to specify in advance what goes into the model and can accommodate the equivalent of much more complex models with many more interactiosn between variables.
+Machine learning has less need to specify in advance what goes into the model,
+and can accommodate the equivalent of much more complex models with many more interactiosn between variables.
 
 _The New Oil_ == Data
 
@@ -192,7 +194,8 @@ When the consequences of a mistake are low, faster and cheaper may be enough.
 
 _Loss Functions_: measures of how accurate a prediction is relative to the stakes and the consequences of following the prediction with action.
 
-While judgment tells you what the value of different possibilities is overall, stakes focus on one particular aspect of that judgment - i.e. the relative consequences of errors.
+While judgment tells you what the value of different possibilities is overall,
+stakes focus on one particular aspect of that judgment - i.e. the relative consequences of errors.
 
 The choice about whether to fully automate a decision or not on the basis of AI prediction relies on how measurable stakes can be.
 
@@ -302,7 +305,8 @@ _Disruptive technologies_: ones some established companies will find difficult t
 
 _Inventor's dilemma_: where established firms don't want to disrupt existing customers, even if long-term it would be optimal.
 
-When they first appear, innovations might not be bgood enough to serve the customers of established companies in an industry, but they may be good *enough* to provide a new startup with enough customers in some niche area to build a product.
+When they first appear, innovations might not be bgood enough to serve the customers of established companies in an industry,
+but they may be good *enough* to provide a new startup with enough customers in some niche area to build a product.
 
 Where the long-term potential impact is likely to be enormous, the whiff of disruptino may drive early adoption, even by incumbents.
 
@@ -340,7 +344,7 @@ even if that means compromising on other goals such as revenue and customer expe
 AI-enabled products are often inferior at first.
 The benefit to deploying earlier is faster learning, at the cost of greater risk.
 
-# Managing AI risk
+## Managing AI risk
 
 _Protected Classes_
 
@@ -374,3 +378,53 @@ Unusual quantities of queries or an unusual diversity of queries should raise re
 - Feedback data is sensitive to meddling
 
 ## Society
+
+When thinking about society as a whole, the economics of AI are not so simple anymore.
+
+We anticipate growth in the number of jobs that involve reward function engineering.
+
+When prediction is no longer a binding constraint, demand may increase for complementary skills that are more widespread,
+leading to more employment but at lower wages.
+
+Once AI is better than humans at a particular task, job losses will happen quickly.
+
+Jobs will still exist but some people will have less appealing jobs than they have now.
+
+If AI is a new, efficient form of capital, then the capital share of the economy will likely continue to rise at the expense of labor.
+
+We have polidies that can reduce inequality but likely at the cost of lower income overall.
+
+We see many reasons that the productive use of AI will require additional skills.
+
+Businesses should not expect the system to change quickly enough to supply them with the workers they need to compete in the AI age.
+
+Under the right conditions, once a company's AI leads in performance, its competitors may never catch up.
+
+If AI scales economies, that will not affect all industries equally.
+
+This suggests that historical data may be less useful than many suppose, perhaps because the world shanges too quickly.
+
+Leading AI companies might bet too big. They might buy out the startups before they become a threat, stifling new ideas and reducing productivity in the long run.
+
+China will become the world leader in AI, 3 reasons:
+- Massive expenditure on AI
+- Massive scale (population)
+- Data access (digital surveilance)
+
+Research is not a zero-sum game, more innovation worldwide is good for everyone.
+
+There may be a "race to the bottom" as countries compete to relax privacy restrictions to improve their AI position.
+
+Users want better products trained using personal data, but they prefer that data be collected from other people, not them.
+
+One emerging technology, the blockchain, offers a way of decentralizing databases and lowering the cost of verifying data.
+Such technologies could be paired with AI to overcome privacy and security concerns, especially since they are already used for financial transactions.
+
+Competition underpins it all.
+
+_Invisible Hand_
+
+Three salient trade-offs at society level:
+- Productivity vs distribution
+- Innovation vs competition
+- Performance vs privacy

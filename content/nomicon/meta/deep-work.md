@@ -76,3 +76,55 @@ One helpful ritual is:
 1. Final email sweep, anything urgent gets a reply, nothing else
 1. Review tomorrow's calendar and plan deep work spots
 1. Shutdown ritual, use a phrase, habit, food or drink, candle, whatever, just officially close it off
+
+Make focus the default state and any breaks be _from_ focus, not _into_ it.
+
+Use a framework/approach in evaluating uses of time in your life.
+Include the intangibles like opportunity cost or alignment.
+This applies to internet habits.
+Here's one such procedure.
+
+1. Identify the main high-level goals in your professional and personal life.
+1. List the two or three most important activities that help you satisfy each goal.
+1. Consider the network tools you have, and categorise their impact on successfully participating in each activity.
+   Substantially positive, substantially negative, little impact.
+1. Go cold turkey on the ones that score poorly.
+
+Suggestion to cold turkey any social media for 30 days without notice.
+Then ask: Would the last 30 days have been notably better if I had been able to use this service?
+Did people care that I wasn't using this service?
+If both are clear "no"s, quit.
+
+Put more thought into how you spend your leisure time.
+The brain doesn't tire like muscle, it more wants for variety.
+Aimlessly scrolling or browsing leave you unfulfilled personally and easier to distract.
+
+Shallow work is a waste, mostly, and should be tamed until it no longer interferes with the deep.
+Assuming maximum daily of four hours of focussed work, you appear to have four more hours for shallow.
+This gets eaten surprisingly quickly and often in a way that fragments the deep work.
+
+One suggested approach is to schedule every minute of the workday, in thirty-minute blocks.
+If you get interrupted, reschedule.
+If you run over, consider split-purpose overrun blocks or get better at estimating.
+Beat back the shallow till it no longer impacts the deep.
+
+Try quantifying the depth of every activity.
+How long would it take in months to train a smart, recent college graduate with no specialized training in my field, to complete this task?
+Then beat back the shallow.
+
+Ask your boss for a shallow work budget.
+This one helps you cover your ass and say no with your bosses support.
+Beat back the shallow.
+
+Set a time to completely stop work for the day.
+Then work backwards to what you need to do to hit that commitment.
+This shifts mindset to scarcity, and helps force you to be selective.
+Beat back the shallow.
+
+Become hard to reach.
+Make people who contact you do more work (Wally deflector).
+Lower expectations about getting a response.
+Only reply if: something especially good will happen, ditto but bad, it's an exception (e.g. CEO/CTO)
+
+Take time to formulate a reply.
+What is the _project_ represented by this message, and what is the most efficient process for bringing this project to a successful conclusion?

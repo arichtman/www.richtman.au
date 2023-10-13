@@ -1,3 +1,6 @@
 
 # Ignore lockfile diffs
 *.lock -diff
+# Ignore drawings
+*.svg binary
+*.drawio binary

@@ -21,3 +21,4 @@ build-backend = "poetry.core.masonry.api"
 # Always fails with front matter
 plugins.first-line-heading.enabled = false
 plugins.line-length.line_length = 160
+plugins.line-length.code_block_line_length = 160

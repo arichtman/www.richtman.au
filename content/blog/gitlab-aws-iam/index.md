@@ -27,7 +27,7 @@ Granting staff IAM permissions can create large security holes.
 1. The team is now able to run GitLab CI jobs that have permissions in AWS to do what they need.
    The team is now free to iterate independently.
 
-![IAM Workflow](gitlab-aws-iam.svg)
+![IAM Workflow](gitlab-aws-iam.png)
 
 ### Details
 

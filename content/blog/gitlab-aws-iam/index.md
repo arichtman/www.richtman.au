@@ -117,7 +117,7 @@ It's also easier to understand and reason about permissions when it's not a huge
 
 ### SCP
 
-```json
+```hcl
 data "aws_iam_policy_document" "root_scp" {
   # Enforce a permission boundary
   statement {
@@ -164,11 +164,7 @@ data "aws_iam_policy_document" "root_scp" {
     actions   = ["iam:DeleteUserPermissionsBoundary", "iam:DeleteRolePermissionsBoundary"]
     resources = ["*"]
     effect    = "Deny"
-    condition {
-      variable = "aws:PrincipalArn"
-      test     = "StringNotLike"
-      values   = ["arn:aws:sts::*:assumed-role/AWSReservedSSO_AdministratorAccess_*"]
-    }
+    # See note 3
   }
 }
 ```
@@ -185,22 +181,19 @@ I think there's a reasonable argument that having to go via the `root` account t
 
 ### SSO IAM Policy
 
-```json
+```hcl
 # Grant IAM as an exception
 statement {
     sid = "IAMUnboundInSandbox"
-    actions = [
-      "iam:*",
-    ]
-    resources = [
-      "*"
-    ]
+    actions = ["iam:*"]
+    resources = ["*"]
     # This limits users to sandbox accounts
     condition {
       variable = "aws:ResourceAccount"
       test     = "StringEquals"
       values = [
         "999999999999", # $AccountAlias
+        # Put all sandbox accounts here
       ]
     }
     # This prevents users from setting IAM resources to the specially privileged group

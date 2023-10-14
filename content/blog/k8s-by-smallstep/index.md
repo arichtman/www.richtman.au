@@ -154,6 +154,9 @@ The last thing we need is a public & private key pair, encoded in x509 for signi
 
 Now we can configure that and it should be talking to `etcd` A-OK.
 
+We will now tidy up the permissions.
+You'll have to do this again for the component certificates too, but you got this :)
+
 ```bash
 # Own your certificates
 chown kubernetes: kube-apiserver*
@@ -172,23 +175,6 @@ chmod 400 ca-key.pem
 chmod 444 ca.pem
 ```
 
-And some of the configuration
-
-```bash
---client-ca-file=/var/lib/kubernetes/secrets/ca.pem \
---etcd-cafile=/var/lib/kubernetes/secrets/etcd.pem \
---kubelet-certificate-authority=/var/lib/kubernetes/secrets/ca.pem \
---etcd-certfile=/var/lib/kubernetes/secrets/kube-apiserver-etcd-client.pem \
---etcd-keyfile=/var/lib/kubernetes/secrets/kube-apiserver-etcd-client-key.pem \
---tls-cert-file=/var/lib/kubernetes/secrets/kube-apiserver.pem \
---tls-private-key-file=/var/lib/kubernetes/secrets/kube-apiserver-key.pem \
---kubelet-client-certificate=/var/lib/kubernetes/secrets/kube-apiserver-kubelet-client.pem \
---kubelet-client-key=/var/lib/kubernetes/secrets/kube-apiserver-kubelet-client-key.pem \
---proxy-client-cert-file=/var/lib/kubernetes/secrets/kube-apiserver-proxy-client.pem \
---proxy-client-key-file=/var/lib/kubernetes/secrets/kube-apiserver-proxy-client-key.pem \
---external-hostname="${NODE_DNS_NAME}"
-```
-
 Notes:
 
 - A few of the last ones could probably be the same certificate, but it's a bit nicer probably in tracing to have different CNs.
@@ -200,9 +186,34 @@ Notes:
   I _think_ it's possible to use one of the other certificates that we have both sides of. Unsure.
 - I'm not actually sure the service account public key has to be open but it would make sense if anything else wanted to verify the tokens
 
+## Remaining core components
+
+```
+# apiserver client access
+step certificate create system:kube-controller-manager controllermanager-apiserver-client.pem controllermanager-apiserver-client-key.pem \
+  --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
+  --not-after 2160h --set organization=system:kube-controller-manager
+# This one depends on your RBAC setup, adjust the CN as required, the O might be uneccessary
+step certificate create flannel-client flannel-apiserver-client.pem flannel-apiserver-client-key.pem \
+  --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
+  --not-after 2160h --set organization=flannel-client
+
+# TLS
+step certificate create kube-scheduler scheduler-tls.pem scheduler-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
+  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 2160h --bundle \
+  --san patient-zero --san patient-zero.local --san localhost --san 127.0.0.1 --san ::1
+
+step certificate create kube-controllermanager controllermanager-tls.pem controllermanager-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
+  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 2160h --bundle \
+  --san patient-zero --san patient-zero.local --san localhost --san 127.0.0.1 --san ::1
+
+step certificate create kubelet kubelet-tls.pem kubelet-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
+  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 2160h --bundle \
+  --san patient-zero --san patient-zero.local --san localhost --san 127.0.0.1 --san ::1
+```
+
 ## Onwards
 
-We still need `kube-scheduler` and `controller-manager`, but these are more of the same just simpler.
 From here forwards you should have a reasonably clear hammer to hit most cert requirements with.
 It's basically either for HTTPS and needs a SAN or it's for client auth and it _may_ need the `O` property set.
 

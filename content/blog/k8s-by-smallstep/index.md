@@ -87,7 +87,7 @@ step certificate create etcd etcd-tls.pem etcd-tls-key.pem --ca etcd.pem --ca-ke
 # kube-apiserver
 step certificate create kube-apiserver-etcd-client kube-apiserver-etcd-client.pem kube-apiserver-etcd-client-key.pem \
   --ca etcd.pem --ca-key etcd-key.pem --insecure --no-password --not-after 2160h \
-  --template granular-dn-leaf.tpl --set-file dn-defaults.json --set organization=system:masters
+  --template granular-dn-leaf.tpl --set-file dn-defaults.json
 ```
 
 For convenience here's my configuration.

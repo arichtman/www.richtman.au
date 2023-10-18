@@ -1,5 +1,5 @@
 +++
-title = "GitLab CI with Terraform and Private Git Modules"
+title = "CI/CD with Terraform and Private Git Modules"
 date = "2023-10-18T10:17:40+10:00"
 description = "Wiggly, but simple enough."
 draft = false

@@ -71,6 +71,9 @@ GIT_CONFIG_VALUE_0="https://${FQDN}" \
 git clone https://gitlab.com/arichtman-srt/oidc-test.git
 ```
 
+It's recommended to use a token not bound to a human user for this.
+In GitLab this means not using a _PAT_ but rather a _deploy token_.
+
 ## References
 
 - [Hashicorp TF module source docs](https://developer.hashicorp.com/terraform/language/modules/sources#generic-git-repository)

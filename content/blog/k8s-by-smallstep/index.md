@@ -189,14 +189,28 @@ Notes:
 ## Remaining core components
 
 ```
-# apiserver client access
+# Controller manager apiserver client
+# Note the Subject.CommonName being set not by flags but required arguments
 step certificate create system:kube-controller-manager controllermanager-apiserver-client.pem controllermanager-apiserver-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
   --not-after 2160h --set organization=system:kube-controller-manager
+# Flannel apiserver client
 # This one depends on your RBAC setup, adjust the CN as required, the O might be uneccessary
 step certificate create flannel-client flannel-apiserver-client.pem flannel-apiserver-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
   --not-after 2160h --set organization=flannel-client
+# Kubelet apiserver client
+step certificate create system:nodes:patient-zero kubelet-apiserver-client.pem kubelet-apiserver-client-key.pem \
+  --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
+  --not-after 2160h --set organization=system:nodes
+# Scheduler apiserver client
+step certificate create system:kube-scheduler scheduler-apiserver-client.pem scheduler-apiserver-client-key.pem \
+  --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
+  --not-after 2160h
+# Kube-proxy apiserver client
+step certificate create system:kube-proxy proxy-apiserver-client.pem proxy-apiserver-client-key.pem \
+  --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
+  --not-after 2160h --set organization=system:node-proxier
 
 # TLS
 step certificate create kube-scheduler scheduler-tls.pem scheduler-tls-key.pem --ca ca.pem --ca-key ca-key.pem \

@@ -11,6 +11,12 @@ tags = [ "cloud", "k8s", "kubernetes", "containers" ]
 
 CKA notes
 
+Stuff to work on:
+
+- NetworkPolicy
+- System-level stuff (logs, services, kubeconfig files)
+- RBAC
+
 Container runtimes
 
 - Containerd is _just_ the runtime daemon bit of the whole Docker setup

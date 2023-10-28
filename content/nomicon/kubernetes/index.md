@@ -14,8 +14,13 @@ CKA notes
 Stuff to work on:
 
 - NetworkPolicy
-- System-level stuff (logs, services, kubeconfig files)
+- System-level stuff (logs, services, kubeconfig files, config files)
 - RBAC
+- Taints/Tolerations
+- Node affinity
+- Nano use
+- Custom schedulers?
+- Volume types, claims, and binding
 
 Container runtimes
 
@@ -30,6 +35,7 @@ System stuff
 
 - `/etc/kubernetes/manifests` contains stuff for the kubelet to run
 - `/var/log/pods` and `/var/log/containers` for log files
+- `/var/lib/kubelet` and such for config files
 
 Kubectl
 
@@ -47,8 +53,12 @@ Kubectl
 - `create rolebinding --role pipeline --serviceaccount ns1:pipeline pipeline`
 - `get ns --no-headers -o custom-columns='N:.metadata.name,V:.metadata.resourceVersion'`
 - `get events -A --sort-by='{.metadata.creationTimestamp}'`
+- `taint no control-plane node-role.kubernetes.io/control-plane=:NoSchedule`
+- `patch no/node01 -p '{ "metadata": { "labels" : { "color" : "blue"}} }'`
+- `label po/whatever key=value foo=bar`
+- `top po --sort-by=memory|cpu`
 
-KillerKoda
+Labs
 
 ```shell
 alias k=kubectl
@@ -59,4 +69,8 @@ sudo add-apt-repository -y ppa:maveonair/helix-editor
 sudo apt update
 sudo apt install -y helix
 export EDITOR=hx
+export KUBE_EDITOR=nano # it's all KodeKloud comes with!
+echo 'set tabsize 2
+set tabstospaces' >> ~/.nanorc
+source <(kubectl competion bash)
 ```

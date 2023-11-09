@@ -53,8 +53,25 @@ We could do an `envsubst` call on the config file but now we're just in bodgevil
 
 Git has two features we can combine for this.
 One is the URL rewrite `insteadOf`, the second is the `GIT_CONFIG_*` options.
-This snippet speaks for itself.
+Let's look at the snippet below.
 <!-- Don't worry about the token, it's never been valid -->
+
+We use our Git username, for GitLab this is our user handle.
+For other platforms or deploy tokens, this may be something different, like `private-token` or `gitlab-ci-token`.
+
+For the server address we're using the FQDN.
+With GitLab multi-instance, you could genericize this using the out-the-box `$CI_SERVER_HOST`.
+
+We set the config count to one, because we're only setting one key-value pair.
+Setting this to zero will cause the other git enviroment variable config to have no effect.
+Conversely, if you wish to set more git config, increase the count.
+
+The we set the config key, in our case it's going to be a URL-specific setting.
+Except inside the URL we take advantage of RFC3986's _authority_ element (section 3.2).
+We inject our username and password to the URL, thereby granting us basic authentication.
+
+Finally, we set the *value* of this key to what we want to rewrite.
+The end effect is that any reference to a url that matches, will be rewritten with our authentication injected.
 
 ```bash
 # Setup, in CI at least the password should be protected
@@ -79,3 +96,20 @@ In GitLab this means not using a _PAT_ but rather a _deploy token_.
 - [Hashicorp TF module source docs](https://developer.hashicorp.com/terraform/language/modules/sources#generic-git-repository)
 - [Stack overflow answer about config env vars](https://stackoverflow.com/a/68697328)
 - [Git documentation](https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables)
+- [RFS3986](https://datatracker.ietf.org/doc/html/rfc3986)
+
+## Bonus
+
+Here's how it's done in GitLab CI using ephemeral tokens.
+Note that projects must have visibility setting of either _public_ or _internal_.
+Otherwise one must adjust the CI settings for project token access.
+
+Select protection and masking as appropriate.
+Note that you will not be able to mask the key.
+This is fine, as the token itself is masked anyway.
+
+```shell
+GIT_CONFIG_COUNT=1
+GIT_CONFIG_KEY_0=url.https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}.insteadOf
+GIT_CONFIG_VALUE_0=https://${CI_SERVER_HOST}
+```

@@ -96,7 +96,7 @@ In GitLab this means not using a _PAT_ but rather a _deploy token_.
 - [Hashicorp TF module source docs](https://developer.hashicorp.com/terraform/language/modules/sources#generic-git-repository)
 - [Stack overflow answer about config env vars](https://stackoverflow.com/a/68697328)
 - [Git documentation](https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables)
-- [RFS3986](https://datatracker.ietf.org/doc/html/rfc3986)
+- [RFC3986](https://datatracker.ietf.org/doc/html/rfc3986)
 
 ## Bonus
 

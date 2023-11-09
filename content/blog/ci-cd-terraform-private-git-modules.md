@@ -66,7 +66,7 @@ export FQDN=gitlab.com
 export GIT_CONFIG_GLOBAL=/dev/null
 
 GIT_CONFIG_COUNT=1 \
-GIT_CONFIG_KEY_0=url."https://${USERNAME}:${PASSWORD}@${FQDN}".insteadOf \
+GIT_CONFIG_KEY_0=url.https://${USERNAME}:${PASSWORD}@${FQDN}.insteadOf \
 GIT_CONFIG_VALUE_0="https://${FQDN}" \
 git clone https://gitlab.com/arichtman-srt/oidc-test.git
 ```

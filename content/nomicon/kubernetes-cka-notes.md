@@ -14,13 +14,19 @@ CKA notes
 Stuff to work on:
 
 - NetworkPolicy
-- System-level stuff (logs, services, kubeconfig files, config files)
-- RBAC
+- Ingress `rewrite-target` & cross-namespace shared ingress via pathing
+- System-level stuff (logs, services, kubeconfig files, config files, linux networking)
+- RBAC (auth modes, apiGroups, non resource URLs)
+- CNI (spec, isntallation, config, pod ip range vs service cluster ip range)
+- DownwardAPI
+- Security contexts
 - Taints/Tolerations
 - Node affinity
 - Nano use
 - Custom schedulers?
 - Volume types, claims, and binding
+- etcd administration (backup vs snapshot, api versions, wal vs member vs whatever)
+- Cluster-managed certificates, signing requests etc
 
 Container runtimes
 
@@ -36,6 +42,13 @@ System stuff
 - `/etc/kubernetes/manifests` contains stuff for the kubelet to run
 - `/var/log/pods` and `/var/log/containers` for log files
 - `/var/lib/kubelet` and such for config files
+- `kubeadm upgrade plan`
+- `apt show $package -a | grep $version`
+- `apt install --only-upgrade $package=$version`
+- `ETCDCTL_API=3 etcdctl snapshot $out_path`
+- `ip route; ip link; ip a`
+- `netstat -anp`
+- CNI default in `/opt/cni/bin`, config in `/etc/cni/net.d`
 
 Kubectl
 

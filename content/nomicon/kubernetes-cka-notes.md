@@ -13,20 +13,23 @@ CKA notes
 
 Stuff to work on:
 
-- NetworkPolicy
+- NetworkPolicy - practice writing manifests, allow and deny
 - Ingress `rewrite-target` & cross-namespace shared ingress via pathing
 - System-level stuff (logs, services, kubeconfig files, config files, linux networking)
 - RBAC (auth modes, apiGroups, non resource URLs)
 - CNI (spec, isntallation, config, pod ip range vs service cluster ip range)
 - DownwardAPI
+- EnvFrom and secret volumeMounts
 - Security contexts
-- Taints/Tolerations
-- Node affinity
-- Nano use
+- Taints/Tolerations - running stuff on control plane
+- Node affinity - podAffinity, topologies, topologyKey
+- TopologySpreadConstraints
+- Nano use - selecting, deleting lines, yank, copy-cut-paste
 - Custom schedulers?
-- Volume types, claims, and binding
+- Volume types, claims, and binding - making and using a PV and PVC, emptyDir, HostPath
 - etcd administration (backup vs snapshot, api versions, wal vs member vs whatever)
 - Cluster-managed certificates, signing requests etc
+- kubeadm cluster administration and upgrade
 
 Container runtimes
 
@@ -43,8 +46,10 @@ System stuff
 - `/var/log/pods` and `/var/log/containers` for log files
 - `/var/lib/kubelet` and such for config files
 - `kubeadm upgrade plan`
+- `kubeadm token create --print-join-command`
 - `apt show $package -a | grep $version`
 - `apt install --only-upgrade $package=$version`
+- `apt install kubectl=$version-00 kubelet=$version-00`
 - `ETCDCTL_API=3 etcdctl snapshot $out_path`
 - `ip route; ip link; ip a`
 - `netstat -anp`
@@ -78,10 +83,7 @@ alias k=kubectl
 alias j='journalctl -xe'
 alias s=systemctl
 alias kns='kubectl config set-context --current --namespace'
-sudo add-apt-repository -y ppa:maveonair/helix-editor
-sudo apt update
-sudo apt install -y helix
-export EDITOR=hx
+export EDITOR=nano
 export KUBE_EDITOR=nano # it's all KodeKloud comes with!
 echo 'set tabsize 2
 set tabstospaces' >> ~/.nanorc

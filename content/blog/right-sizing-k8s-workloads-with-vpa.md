@@ -13,7 +13,6 @@ tags = [ "k8s", "kubernetes", "vpa", "scaling", "containers" ]
 
 We have some workload we want to run on Kubernetes.
 We want to have an efficient mix of CPU and RAM.
-We have some idea of real-world load and usage patterns.
 
 [Just take me to the fix!](#solution)
 
@@ -24,7 +23,9 @@ CPU requests are typically guaranteed on the node by Completely Fair Scheduler c
 Memory requests are not compressible on Kubernetes, though are served also by cgroups.
 
 Workloads may consume more than they request, provided the resources are a) available on the node, and b) not in excess of the specificied resource limits.
-This means workloads can affect node-critical processes like the operating system or the kubelet, kube-proxy, etc.
+This means workloads can affect other workloads (noisy neighbours).
+This includes node-critical processes like the operating system or the kubelet, kube-proxy, etc.
+Though critical processes _should_ bet set with Quality-of-Service (QoS) of `Guaranteed`.
 
 Requests are also crucial information for scheduler bin-packing.
 If a workload has no indication of what it needs to run, it's impossible for the scheduler to efficiently and safely pack the nodes.
@@ -35,8 +36,7 @@ CPU is ensured for the lowest amount required but can burst.
 Since the CPU can be shared, your node won't jam up completely and be unrecoverable.
 
 It's worth noting that pod `Priority` or `PriorityClass` won't help with resource sharing.
-There is an advanced feature, _Quality-of-Service_ (QoS), which may help.
-I hope to cover it in future.
+These only affect scheduling and eviction.
 
 _Vertical Pod Autoscaler_ (VPA) is a Kubernetes project component.
 It's not as ubiquitous or well-supported as the _Horizontal Pod Autoscaler_ (HPA).
@@ -153,5 +153,6 @@ The performance characteristics of a load-balanced system may differ.
 - [VPA persistence issue](https://github.com/kubernetes/autoscaler/issues/4682#issuecomment-1384015090)
 - [VPA history issue](https://github.com/kubernetes/autoscaler/issues/4476#issuecomment-981456744)
 - [Kubernetes QoS docs](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/)
+- [QoS talk](https://youtu.be/8-apJyr2gi0)
 - [Numerator engineering article about CPU limits and throttling](https://www.numeratorengineering.com/requests-are-all-you-need-cpu-limits-and-throttling-in-kubernetes/)
 - [Kubernetes resource management docs](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)

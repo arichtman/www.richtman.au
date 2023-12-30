@@ -23,7 +23,7 @@ Substitute your node name as required.
 
 ```sh
 export NODE_DNS_NAME=proxmox
-step certificate create proxmox-tls pve-ssl.pem pve-ssl.key --ca pve-root-ca.pem --ca-key pve-root-ca.key \
+step certificate create proxmox-tls pve-tls.pem pve-tls.key --ca pve-root-ca.pem --ca-key pve-root-ca.key \
   --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 2160h --bundle \
   --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1 --san "$(getent hosts ${NODE_DNS_NAME} | cut -f1 -d' ')"
 ```
@@ -32,8 +32,8 @@ Now we'll load those up on the target machine and restart the service.
 **Note:** Backing up the original certificates is left up to you.
 
 ```sh
-rsync ./pve-ssl.pem proxmox:/etc/pve/nodes/proxmox/
-rsync ./pve-ssl.key proxmox:/etc/pve/nodes/proxmox/
+rsync ./pve-tls.pem proxmox:/etc/pve/nodes/proxmox/
+rsync ./pve-tls.key proxmox:/etc/pve/nodes/proxmox/
 
 rsync ./pve-root-ca.pem proxmox:/etc/pve/
 rsync ./pve-root-ca.key proxmox:/etc/pve/priv/

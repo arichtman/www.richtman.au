@@ -16,7 +16,8 @@ jobs:
         fetch-depth: 0
     - uses: DeterminateSystems/nix-installer-action@main
     - uses: DeterminateSystems/magic-nix-cache-action@main
-    - uses: nicknovitski/nix-develop@main
+    # - uses: nicknovitski/nix-develop@main
+    - uses: arichtman/nix-develop@main
     - name: Update stuff
       run: |
         nix flake update

@@ -1,0 +1,32 @@
+name: Update packages
+
+on:
+  # Automatically run once a week.
+  schedule:
+  - cron: 0 7 * * MON
+  # Allow manual triggers.
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4.1.1
+      with:
+        fetch-depth: 0
+    - uses: DeterminateSystems/nix-installer-action@main
+    - uses: DeterminateSystems/magic-nix-cache-action@main
+    - name: Update stuff
+      run: |
+        nix develop
+        nix flake update
+        pre-commit autoupdate
+        poetry update
+    - uses: peter-evans/create-pull-request@v5.0.2
+      with:
+        branch: auto-updates
+        title: 'chore(deps): Update development packages'
+        commit-message: 'chore(deps): Update development packages'
+        body: Update development packages
+        labels: dependencies
+        delete-branch: true

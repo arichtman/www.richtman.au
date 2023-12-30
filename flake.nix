@@ -29,6 +29,7 @@
               poetry
               poetryEnv
               zola
+              actionlint
             ];
             shellHook = ''
               pre-commit install --install-hooks

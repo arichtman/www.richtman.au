@@ -1,9 +1,8 @@
 +++
 title = "Prediction Machines"
-date = 1970-01-01
 description = "Summary of the 2022 revised edition."
 [taxonomies]
-categories = [ "Personal", "Meta" ]
+#categories = [ "Personal", "Meta" ]
 tags = [ "reference", "book", "professional-development", "summary" ]
 +++
 

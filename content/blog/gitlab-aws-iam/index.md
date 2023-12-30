@@ -3,7 +3,7 @@ title = "GitLab and AWS IAM Permissions"
 date = 2023-10-13T14:19:04+10:00
 description = "Allowing dynamic, independent iteration without giving security an aneurysm"
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "gitlab", "aws", "iam", "infosec", "access", "iac", "terraform", "cloud", "oidc" ]
 +++
 

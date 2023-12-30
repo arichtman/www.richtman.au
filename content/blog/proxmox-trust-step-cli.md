@@ -3,7 +3,7 @@ title = "Proxmox trust with Step CLI"
 description = "It's quick, easy, and free."
 date = 2023-10-22T19:09:51+10:00
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "proxmox", "virtualization", "tls", "trust", "certificates", "x509", "step-cli" ]
 +++
 

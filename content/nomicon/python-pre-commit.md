@@ -1,9 +1,8 @@
 +++
 title = "Pre-Commit"
-description = "Ideas for Pre-Commit"
-date = 1970-01-01
+description = ""
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "pre-commit" ]
 +++
 

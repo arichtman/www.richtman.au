@@ -3,7 +3,7 @@ title = "Recovering NixOS on WSL2"
 date = 2023-07-09T13:26:03+10:00
 description = "No part of this went well"
 [taxonomies]
-categories = [ "Technical", "Troubleshooting" ]
+#categories = [ "Technical", "Troubleshooting" ]
 tags = [ "nixos", "wsl", "wsl2" ]
 +++
 

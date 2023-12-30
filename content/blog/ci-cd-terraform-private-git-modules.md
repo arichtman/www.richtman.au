@@ -4,7 +4,7 @@ date = "2023-10-18T10:17:40+10:00"
 description = "Wiggly, but simple enough."
 draft = false
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "git", "gitlab", "iac", "terraform", "terragrunt", "cicd" ]
 +++
 

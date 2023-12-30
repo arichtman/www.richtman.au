@@ -1,9 +1,8 @@
 +++
 title = "Azure Mailboxes"
 description = "How to set up a shared mailbox, alerts, and enabling external mail"
-date = 1970-01-01
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "nomicon", "azure" ]
 +++
 

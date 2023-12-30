@@ -1,9 +1,8 @@
 +++
 title = "Nix"
 description = "Ideas for Nix{Lang,Pks,}"
-date = 1970-01-01
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "nix" ]
 +++
 

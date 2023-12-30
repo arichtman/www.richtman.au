@@ -1,9 +1,8 @@
 +++
 title = "SSG"
 description = "Ideas for Static Site Generation"
-date = 1970-01-01
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "ssg" ]
 +++
 

@@ -1,9 +1,8 @@
 +++
 title = "IAM"
 description = "Policy snippets"
-date = 1970-01-01
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "cloud", "aws", "iam", "access" ]
 +++
 

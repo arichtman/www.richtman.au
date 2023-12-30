@@ -3,7 +3,7 @@ title = "Wiz Big IAM Challenge"
 date = 2023-06-25T16:58:18+10:00
 description = "Applying myself practically"
 [taxonomies]
-categories = [ "Technical", "Troubleshooting" ]
+#categories = [ "Technical", "Troubleshooting" ]
 tags = [ "aws", "iam", "ctf" ]
 +++
 

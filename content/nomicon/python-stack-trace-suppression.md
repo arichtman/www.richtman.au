@@ -1,9 +1,8 @@
 +++
 title = "Python Stack Trace Suppression"
 description = "Not every idea is a good one"
-date = 1970-01-01
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "nomicon", "python" ]
 +++
 

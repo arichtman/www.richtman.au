@@ -1,9 +1,8 @@
 +++
 title = "Dynamic Resource Blocks"
 description = "Look, it's HCL, ok?"
-date = 1970-01-01
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "nomicon", "terraform", "hcl" ]
 +++
 

@@ -3,7 +3,7 @@ title = "Poetry Package Development With VSCode Devcontainers"
 date = 2022-09-19 18:48:23+10:00
 description = "Challenges and workarounds for development containers"
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "python", "poetry" ]
 +++
 

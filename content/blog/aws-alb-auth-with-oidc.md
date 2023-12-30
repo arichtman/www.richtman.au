@@ -3,7 +3,7 @@ title = "AWS ALB auth using OIDC via GitLab"
 date = 2023-11-29T14:39:19+10:00
 description = "T'aint much but it's handy"
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "aws", "ec2", "alb", "gitlab", "auth", "oidc", "authorization", "authentication" ]
 +++
 

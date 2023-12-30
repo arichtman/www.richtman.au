@@ -20,7 +20,7 @@ build_search_index = true
 
 taxonomies = [
     # tabi doesn't have the specific or generic templates
-    # https://www.getzola.org/documentation/templates/taxonomies/
+    # https://github.com/welpo/tabi/issues/229
     # { name = "categories", feed = true, paginate_by = 10 },
     { name = "tags", fees = true, paginate_by = 10 },
 ]
@@ -61,18 +61,18 @@ include_content = true
 
 [extra]
 theme_switcher = true
-skin = "evangelion"
+skin = "indigo_ingot"
 
 remote_repository_url = "https://github.com/arichtman/www.richtman.au"
 favicon = "icons/avatar.gif"
 
 menu = [
-    { url = "$BASE_URL/", name = "Home" },
-    { url = "$BASE_URL/blog", name = "Blog" },
-    { url = "$BASE_URL/docs", name = "Docs" },
-    { url = "$BASE_URL/nomicon", name = "Nomicon" },
-    { url = "$BASE_URL/tags", name = "Tags" },
-    { url = "$BASE_URL/categories", name = "Categories" },
+    { url = "", name = "Home" },
+    { url = "blog", name = "Blog" },
+    { url = "docs", name = "Docs" },
+    { url = "nomicon", name = "Nomicon" },
+    { url = "tags", name = "Tags" },
+    # { url = "$BASE_URL/categories", name = "Categories" },
 ]
 
 email = "aGVsbG9AcmljaHRtYW4uYXUK"
@@ -83,8 +83,10 @@ socials = [
     { name = "GitLab", url = "https://gitlab.com/arichtman", icon = "gitlab"},
     { name = "StackOverflow", url = "https://stackoverflow.com/users/19531788", icon = "stack-overflow"},
     { name = "StackExchange", url = "https://stackexchange.com/users/25787203", icon = "stack-exchange"},
-    { name = "KeyBase", url = "https://keybase.io/arichtman", icon = ""},
-    { name = "", url = "", icon = ""},
+    # Waiting for https://github.com/welpo/tabi/pull/231
+    # { name = "KeyBase", url = "https://keybase.io/arichtman", icon = ""},
+    # Keep a template one
+    # { name = "", url = "", icon = ""},
 ]
 
 [extra.analytics]

@@ -1,14 +1,11 @@
 +++
 title = "Latest posts"
-sort_by = "date"
-template = "section.html"
+sort_by = "none"
 
 [extra]
-header = {title = "Ariel Richtman", img = "images/avatar.gif", img_alt = "personal logo"}
+header = {title = "DevOps, Platform & Cloud Engineering, all things facilitative infrastructure", img = "images/avatar.gif", img_alt = "personal logo"}
 section_path = "blog/_index.md"
-max_posts = 5
+max_posts = 3
 +++
-
-DevOps, Platform & Cloud Engineering, plus all things in facilitative infrastructure!
 
 Here you'll find my personal technical blog, as well as reference documents.

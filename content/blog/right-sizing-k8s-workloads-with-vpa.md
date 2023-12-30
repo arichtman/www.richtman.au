@@ -3,7 +3,7 @@ title = "Right-sizing Kubernetes Workloads with Vertical Autoscaling"
 date = 2023-12-20T19:35:58+10:00
 description = "Nobody ever does this one weird trick"
 [taxonomies]
-categories = [ "Technical" ]
+#categories = [ "Technical" ]
 tags = [ "k8s", "kubernetes", "vpa", "scaling", "containers" ]
 +++
 

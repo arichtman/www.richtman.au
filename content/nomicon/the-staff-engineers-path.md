@@ -1,9 +1,9 @@
 +++
 title = "The Staff Engineer's Path"
-date = 1970-01-01
 description = "Summary of some of Tanya Reilly's book"
+draft = true
 [taxonomies]
-categories = [ "Personal", "Meta" ]
+#categories = [ "Personal", "Meta" ]
 tags = [ "reference", "book", "professional-development", "summary" ]
 +++
 

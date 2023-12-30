@@ -1,22 +1,27 @@
 # The URL the site will be built for
 base_url = "https://www.richtman.au"
-theme = "deepthought"
+theme = "tabi"
 title = "richtman.au"
-description = "DevOps, Cloud & Platform Engineering, and all things in facilitative infrastructure"
+description = "DevOps, Cloud & Platform Engineering, and all things facilitative infrastructure"
 
 generate_feed = true
 
 # Don't publish development infrastructure to the website
-ignored_content = [ "flake.*", ".pymarkdown.json", ".pre-commit-config", "*.lock", ".git*" ]
+ignored_content = [ "flake.*", ".pymarkdown.json", ".pre-commit-config.yaml", "*.lock", ".git*", "renovate.json5", "pyproject.toml" ]
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
+
+# Lighter weight
+minify_html = true
 
 # Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
 
 taxonomies = [
-    { name = "categories", feed = true, paginate_by = 10 },
+    # tabi doesn't have the specific or generic templates
+    # https://www.getzola.org/documentation/templates/taxonomies/
+    # { name = "categories", feed = true, paginate_by = 10 },
     { name = "tags", fees = true, paginate_by = 10 },
 ]
 
@@ -32,6 +37,8 @@ external_links_target_blank = true
 render_emoji = true
 
 [link_checker]
+# I was thinking to run zola check but cba tbh
+# internal_level = "warn"
 # Skip link checking for external URLs that start with these prefixes
 skip_prefixes = [
     "http://[2001:db8::]/",
@@ -53,42 +60,33 @@ include_path = false
 include_content = true
 
 [extra]
-chart.enabled = true
-mermaid.enabled = true
-galleria.enabled = true
+theme_switcher = true
+skin = "evangelion"
 
-navbar_items = [
-    { code = "en", nav_items = [
-        { url = "$BASE_URL/", name = "Home" },
-        { url = "$BASE_URL/blog", name = "Blog" },
-        { url = "$BASE_URL/docs", name = "Docs" },
-        { url = "$BASE_URL/nomicon", name = "Nomicon" },
-        { url = "$BASE_URL/tags", name = "Tags" },
-        { url = "$BASE_URL/categories", name = "Categories" },
-    ] },
+remote_repository_url = "https://github.com/arichtman/www.richtman.au"
+favicon = "icons/avatar.gif"
+
+menu = [
+    { url = "$BASE_URL/", name = "Home" },
+    { url = "$BASE_URL/blog", name = "Blog" },
+    { url = "$BASE_URL/docs", name = "Docs" },
+    { url = "$BASE_URL/nomicon", name = "Nomicon" },
+    { url = "$BASE_URL/tags", name = "Tags" },
+    { url = "$BASE_URL/categories", name = "Categories" },
 ]
 
+email = "aGVsbG9AcmljaHRtYW4uYXUK"
 
-[extra.favicon]
-favicon_16x16 = "/icons/favicon-16x16.png"
-favicon_32x32 = "/icons/favicon-32x32.png"
-#apple_touch_icon = "/icons/apple-touch-icon.png"
-#safari_pinned_tab = "/icons/safari-pinned-tab.svg"
-webmanifest = "/icons/site.webmanifest"
+socials = [
+    { name = "Fediverse", url = "https://eigenmagic.net/@arichtman", icon = "mastodon"},
+    { name = "GitHub", url = "https://github.com/arichtman", icon = "github"},
+    { name = "GitLab", url = "https://gitlab.com/arichtman", icon = "gitlab"},
+    { name = "StackOverflow", url = "https://stackoverflow.com/users/19531788", icon = "stack-overflow"},
+    { name = "StackExchange", url = "https://stackexchange.com/users/25787203", icon = "stack-exchange"},
+    { name = "KeyBase", url = "https://keybase.io/arichtman", icon = ""},
+    { name = "", url = "", icon = ""},
+]
 
-[extra.author]
-name = "Ariel Richtman"
-avatar = "images/avatar.gif"
-
-[extra.social]
-github = "arichtman"
-gitlab = "arichtman"
-keybase = "arichtman"
-# linkedin = "arichtman"
-stackoverflow = "19531788"
-email = "hello@richtman.au"
-# twitter = "ArielRichtman"
-# medium = "arichtman"
-mastodon_username = "arichtman"
-mastodon_server = "eigenmagic.net"
-#signal = "61490028679"
+[extra.analytics]
+service = "umami"
+id = "eb4024a-facb-4e4e-814d-2cdf131d453b"

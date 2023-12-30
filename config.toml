@@ -64,7 +64,7 @@ theme_switcher = true
 skin = "indigo_ingot"
 
 remote_repository_url = "https://github.com/arichtman/www.richtman.au"
-favicon = "icons/avatar.gif"
+favicon = "images/avatar.gif"
 
 menu = [
     { url = "", name = "Home" },

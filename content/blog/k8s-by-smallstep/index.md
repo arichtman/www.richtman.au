@@ -200,7 +200,7 @@ step certificate create flannel-client flannel-apiserver-client.pem flannel-apis
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
   --not-after 8760h --set organization=flannel-client
 # Kubelet apiserver client
-step certificate create "system:nodes:${NODE_DNS_NAME}" kubelet-apiserver-client.pem kubelet-apiserver-client-key.pem \
+step certificate create "system:node:${NODE_DNS_NAME}" kubelet-apiserver-client.pem kubelet-apiserver-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
   --not-after 8760h --set organization=system:nodes
 # Scheduler apiserver client

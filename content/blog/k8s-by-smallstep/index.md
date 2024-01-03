@@ -33,14 +33,14 @@ Notes:
 
 - Some of these commands still have my name etc in them.
   Use common sense and adjust as desired.
-	As Chef John says, _that's just you cooking_.
+  As Chef John says, _that's just you cooking_.
 
 ## Root CA
 
 1. [Optional] Create password
-   `xkcdpass --delimiter - --numwords 4 > root-ca.pass`
+   `xkcdpass --delimiter - --numwords 4 > root-ca-pass.txt`
 1. Create root CA
-   `step certificate create "ariel@richtman.example" ./root-ca.pem ./root-ca-key.pem --profile root-ca # Optional --password-file ./root-ca.pass`
+   `step certificate create "ariel@richtman.example" ./root-ca.pem ./root-ca-key.pem --profile root-ca # Optional --password-file ./root-ca-pass.txt`
 
 Notes:
 
@@ -53,9 +53,13 @@ I like setting the path length restriction so the trust chain can't be ported an
 
 See [downloads](#downloads) for templates and defaults.
 
-```
-step certificate create kubernetes-ca ./ca.pem ./ca-key.pem  --ca ./root-ca.pem --ca-key ./root-ca-key.pem --ca-password-file root-ca-pass.txt --insecure --no-password --template granular-dn-intermediate.tpl --set-file dn-defaults.json --not-after 2160h
-step certificate create etcd-ca ./etcd.pem ./etcd-key.pem  --ca ./root-ca.pem --ca-key ./root-ca-key.pem --ca-password-file root-ca-pass.txt --insecure --no-password --template granular-dn-intermediate.tpl --set-file dn-defaults.json --not-after 2160h
+```bash
+step certificate create kubernetes-ca ./ca.pem ./ca-key.pem  --ca ./root-ca.pem --ca-key ./root-ca-key.pem \
+  --ca-password-file root-ca-pass.txt --insecure --no-password --template granular-dn-intermediate.tpl \
+  --set-file dn-defaults.json --not-after 8760h
+step certificate create etcd-ca ./etcd.pem ./etcd-key.pem  --ca ./root-ca.pem --ca-key ./root-ca-key.pem \
+  --ca-password-file root-ca-pass.txt --insecure --no-password --template granular-dn-intermediate.tpl \
+  --set-file dn-defaults.json --not-after 8760h
 ```
 
 Notes:
@@ -82,11 +86,11 @@ Check the official Kubernetes documentation for a table of certificate requireme
 export NODE_DNS_NAME=<yourname>
 # etcd TLS
 step certificate create etcd etcd-tls.pem etcd-tls-key.pem --ca etcd.pem --ca-key etcd-key.pem \
-  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 2160h --bundle \
-  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1 --san etcd.local
+  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
 # kube-apiserver
 step certificate create kube-apiserver-etcd-client kube-apiserver-etcd-client.pem kube-apiserver-etcd-client-key.pem \
-  --ca etcd.pem --ca-key etcd-key.pem --insecure --no-password --not-after 2160h \
+  --ca etcd.pem --ca-key etcd-key.pem --insecure --no-password --not-after 8120h \
   --template granular-dn-leaf.tpl --set-file dn-defaults.json
 ```
 
@@ -102,17 +106,17 @@ ETCD_PEER_KEY_FILE = "/var/lib/kubernetes/secrets/etcd-tls-key.pem";
 ```
 
 Once that's confirmed running we can test it using our certificates and the conveniently-installed `etcdctl`.
-`etcdctl --cacert ca.pem --cert kube-apiserver-etcd-client.pem --key  kube-apiserver-etcd-client-key.pem --endpoints patient-zero:2379 auth status`
+`etcdctl --cacert ca.pem --cert kube-apiserver-etcd-client.pem --key  kube-apiserver-etcd-client-key.pem --endpoints "${NODE_DNS_NAME}:2379" auth status`
 
 Final step is to close the permissions.
-`chown etcd: etcd*; chmod 400 etcd-key.pem; chmod 444 etcd.pem`
+`chown etcd: etcd*; chmod 444 etcd.pem etcd-tls.pem; chmod 400 etcd-*key.pem`
 Note that the intermediate public certificate must be readable by kubernetes user, or it's group if you want to get fancy.
 
 Notes:
 
 - I'm not sure I'd bother doing different certificates per-node or not.
   Might help with traceability in the logs for etcd client at least.
-	If you _aren't_ doing different certificates per-node, you'll want to add **all** the node DNS entries to the SANs.
+  If you _aren't_ doing different certificates per-node, you'll want to add **all** the node DNS entries to the SANs.
 - I need to find a nicer way to collate and add the SANs for TLS. Probably nixable.
 - Adding loopback and localhost to SANS seems, off.
 - If using any more intermediate trust in the TLS chain, you'll probably have to bundle the intermediates.
@@ -131,19 +135,19 @@ We'll need a few new certificates for this one, all leaf type and only one for H
 
 ```bash
 # For the actual API server's HTTPS
-step certificate create kube-apiserver kube-apiserver.pem kube-apiserver-key.pem --ca ca.pem --ca-key ca-key.pem \
-  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 2160h --bundle \
+step certificate create kube-apiserver kube-apiserver-tls.pem kube-apiserver-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
+  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
   --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1 \
   --san kubernetes --san kubernetes.default --san kubernetes.default.svc \
   --san kubernetes.default.svc.cluster --san kubernetes.default.svc.cluster.local
 # For client authentication to kubelets
 step certificate create kube-apiserver-kubelet-client kube-apiserver-kubelet-client.pem kube-apiserver-kubelet-client-key.pem \
-  --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 2160h \
+  --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h \
   --set organization=system:masters
 # For client authentication to the proxy services
 step certificate create kube-apiserver-proxy-client kube-apiserver-proxy-client.pem kube-apiserver-proxy-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
-  --not-after 2160h
+  --not-after 8760h
 ```
 
 The last thing we need is a public & private key pair, encoded in x509 for signing service account tokens.
@@ -160,19 +164,15 @@ You'll have to do this again for the component certificates too, but you got thi
 ```bash
 # Own your certificates
 chown kubernetes: kube-apiserver*
-chmod 400 kube-apiserver*
-
-# Own the service account key pair
-chown kubernetes: service-account*
-chmod 400 service-account-key.pem
-chmod 444 service-account.pem
-
 # Take ownership of the int-ca files
 chown kubernetes: ca*.pem
-# Protect the ca key
-chmod 400 ca-key.pem
-# Leave the public cert open
-chmod 444 ca.pem
+# Own the service account key pair
+chown kubernetes: service-account*
+
+# Open all files
+chmod 444 *.pem
+# ... but protect the keys
+chmod 400 *key*.pem
 ```
 
 Notes:
@@ -188,48 +188,57 @@ Notes:
 
 ## Remaining core components
 
-```
+```bash
 # Controller manager apiserver client
 # Note the Subject.CommonName being set not by flags but required arguments
 step certificate create system:kube-controller-manager controllermanager-apiserver-client.pem controllermanager-apiserver-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
-  --not-after 2160h --set organization=system:kube-controller-manager
+  --not-after 8760h --set organization=system:kube-controller-manager
 # Flannel apiserver client
 # This one depends on your RBAC setup, adjust the CN as required, the O might be uneccessary
 step certificate create flannel-client flannel-apiserver-client.pem flannel-apiserver-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
-  --not-after 2160h --set organization=flannel-client
+  --not-after 8760h --set organization=flannel-client
 # Kubelet apiserver client
-step certificate create system:nodes:patient-zero kubelet-apiserver-client.pem kubelet-apiserver-client-key.pem \
+step certificate create "system:nodes:${NODE_DNS_NAME}" kubelet-apiserver-client.pem kubelet-apiserver-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
-  --not-after 2160h --set organization=system:nodes
+  --not-after 8760h --set organization=system:nodes
 # Scheduler apiserver client
 step certificate create system:kube-scheduler scheduler-apiserver-client.pem scheduler-apiserver-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
-  --not-after 2160h
+  --not-after 8760h
 # Kube-proxy apiserver client
 step certificate create system:kube-proxy proxy-apiserver-client.pem proxy-apiserver-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
-  --not-after 2160h --set organization=system:node-proxier
+  --not-after 8760h --set organization=system:node-proxier
 
 # TLS
 step certificate create kube-scheduler scheduler-tls.pem scheduler-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
-  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 2160h --bundle \
-  --san patient-zero --san patient-zero.local --san localhost --san 127.0.0.1 --san ::1
+  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
 
 step certificate create kube-controllermanager controllermanager-tls.pem controllermanager-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
-  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 2160h --bundle \
-  --san patient-zero --san patient-zero.local --san localhost --san 127.0.0.1 --san ::1
+  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
 
 step certificate create kubelet kubelet-tls.pem kubelet-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
-  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 2160h --bundle \
-  --san patient-zero --san patient-zero.local --san localhost --san 127.0.0.1 --san ::1
+  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
 ```
 
 ## Onwards
 
 From here forwards you should have a reasonably clear hammer to hit most cert requirements with.
 It's basically either for HTTPS and needs a SAN or it's for client auth and it _may_ need the `O` property set.
+
+For convenience, this will fix up all the key permissions:
+
+```bash
+chown kubernetes: *.pem
+chown etcd: etcd*.pem
+chmod 444 *.pem
+chmod 400 *key*.pem
+```
 
 General notes:
 

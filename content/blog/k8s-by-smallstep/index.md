@@ -189,11 +189,25 @@ Notes:
 ## Remaining core components
 
 ```bash
+# Control plane nodes
 # Controller manager apiserver client
 # Note the Subject.CommonName being set not by flags but required arguments
 step certificate create system:kube-controller-manager controllermanager-apiserver-client.pem controllermanager-apiserver-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
   --not-after 8760h --set organization=system:kube-controller-manager
+# Scheduler apiserver client
+step certificate create system:kube-scheduler scheduler-apiserver-client.pem scheduler-apiserver-client-key.pem \
+  --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
+  --not-after 8760h
+# TLS
+step certificate create kube-scheduler scheduler-tls.pem scheduler-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
+  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
+
+step certificate create kube-controllermanager controllermanager-tls.pem controllermanager-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
+  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
+## All node certs
 # Flannel apiserver client
 # This one depends on your RBAC setup, adjust the CN as required, the O might be uneccessary
 step certificate create flannel-client flannel-apiserver-client.pem flannel-apiserver-client-key.pem \
@@ -203,24 +217,11 @@ step certificate create flannel-client flannel-apiserver-client.pem flannel-apis
 step certificate create "system:node:${NODE_DNS_NAME}" kubelet-apiserver-client.pem kubelet-apiserver-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
   --not-after 8760h --set organization=system:nodes
-# Scheduler apiserver client
-step certificate create system:kube-scheduler scheduler-apiserver-client.pem scheduler-apiserver-client-key.pem \
-  --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
-  --not-after 8760h
 # Kube-proxy apiserver client
 step certificate create system:kube-proxy proxy-apiserver-client.pem proxy-apiserver-client-key.pem \
   --ca ca.pem --ca-key ca-key.pem --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json \
   --not-after 8760h --set organization=system:node-proxier
-
 # TLS
-step certificate create kube-scheduler scheduler-tls.pem scheduler-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
-  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
-  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
-
-step certificate create kube-controllermanager controllermanager-tls.pem controllermanager-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
-  --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
-  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
-
 step certificate create kubelet kubelet-tls.pem kubelet-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
   --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
   --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1

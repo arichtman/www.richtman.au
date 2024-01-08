@@ -110,6 +110,6 @@ This is fine, as the token itself is masked anyway.
 
 ```shell
 GIT_CONFIG_COUNT=1
-GIT_CONFIG_KEY_0=url.https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}.insteadOf
-GIT_CONFIG_VALUE_0=https://${CI_SERVER_HOST}
+GIT_CONFIG_KEY_0=url.https://gitlab-ci-token:$CI_JOB_TOKEN@$CI_SERVER_HOST.insteadOf
+GIT_CONFIG_VALUE_0=https://$CI_SERVER_HOST
 ```

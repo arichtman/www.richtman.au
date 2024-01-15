@@ -3,6 +3,12 @@ name: CI
 on:
   push:
   pull_request:
+  # For some dumb reason the PRs opened don't trigger reliably
+  workflow_run:
+    workflows:
+    - Update packages
+    types:
+    - completed
 
 jobs:
   check:

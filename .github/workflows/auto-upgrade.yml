@@ -26,6 +26,7 @@ jobs:
     - uses: peter-evans/create-pull-request@v5.0.2
       with:
         branch: auto-updates
+        token: ${{ secrets.WRITEBACK_TOKEN }}
         title: 'chore(deps): Update development packages'
         commit-message: 'chore(deps): Update development packages'
         body: Update development packages

@@ -25,7 +25,7 @@ repos:
   - id: forbid-new-submodules
 
 - repo: https://github.com/jackdewinter/pymarkdown
-  rev: v0.9.15
+  rev: 0.9.16
   hooks:
   - id: pymarkdown
     additional_dependencies: [wcwidth, pyyaml]

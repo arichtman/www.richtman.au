@@ -135,9 +135,10 @@ We'll need a few new certificates for this one, all leaf type and only one for H
 
 ```bash
 # For the actual API server's HTTPS
+# Note that your local domain and private IP for in-cluster may vary
 step certificate create kube-apiserver kube-apiserver-tls.pem kube-apiserver-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
   --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
-  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1 \
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1 --san 10.0.0.1 \
   --san kubernetes --san kubernetes.default --san kubernetes.default.svc \
   --san kubernetes.default.svc.cluster --san kubernetes.default.svc.cluster.local
 # For client authentication to kubelets

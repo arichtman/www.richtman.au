@@ -2,7 +2,7 @@
 title = "Kubernetes"
 description = "Personal notes"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "cloud", "k8s", "kubernetes", "containers" ]
 +++
 

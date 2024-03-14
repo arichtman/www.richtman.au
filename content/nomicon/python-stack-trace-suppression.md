@@ -2,7 +2,7 @@
 title = "Python Stack Trace Suppression"
 description = "Not every idea is a good one"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "nomicon", "python" ]
 +++
 

@@ -2,7 +2,7 @@
 title = "IAM"
 description = "Policy snippets"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "cloud", "aws", "iam", "access" ]
 +++
 

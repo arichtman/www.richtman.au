@@ -2,7 +2,7 @@
 title = "Yubkey ideas"
 description = "Dream big"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "yubikey" ]
 +++
 

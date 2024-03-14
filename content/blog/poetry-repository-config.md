@@ -3,7 +3,7 @@ title = "Poetry Repository Config"
 date = 2022-09-19T07:40:22Z
 description = "The what, where, and why of Poetry config files"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "python", "poetry" ]
 +++
 

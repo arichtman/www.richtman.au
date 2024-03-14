@@ -3,7 +3,7 @@ title = "WSL2 NixOS Port Access"
 date = 2022-11-07T12:24:04Z
 description = "Fixing port access from Windows to NixOS on WSL2"
 [taxonomies]
-#categories = [ "Technical", "Troubleshooting" ]
+categories = [ "Technical", "Troubleshooting" ]
 tags = [ "wsl2", "nixos", "networking" ]
 +++
 

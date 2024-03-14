@@ -2,7 +2,7 @@
 title = "Up Bank"
 description = "If we ever get decent banking APIs..."
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "api", "up-bank" ]
 +++
 

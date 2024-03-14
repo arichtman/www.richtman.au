@@ -3,7 +3,7 @@ title = "Helm repository credentials with Artifactory"
 date = 2023-01-25T13:53:50+10:00
 description = "Dancing with the devil"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "helm", "k8s", "kubernetes", "security" ]
 +++
 

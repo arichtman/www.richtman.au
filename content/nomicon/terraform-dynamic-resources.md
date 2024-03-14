@@ -2,7 +2,7 @@
 title = "Dynamic Resource Blocks"
 description = "Look, it's HCL, ok?"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "nomicon", "terraform", "hcl" ]
 +++
 

@@ -2,7 +2,7 @@
 title = "Nextcloud DAV"
 description = "just some endpoints"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "nomicon", "nextcloud" ]
 +++
 

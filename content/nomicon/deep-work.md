@@ -2,7 +2,7 @@
 title = "Deep Work"
 description = "Summary of the actionable bits."
 [taxonomies]
-#categories = [ "Personal", "Meta" ]
+categories = [ "Personal", "Meta" ]
 tags = [ "reference", "book", "professional-development", "summary" ]
 +++
 

@@ -2,7 +2,7 @@
 title = "SSG"
 description = "Ideas for Static Site Generation"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "ssg" ]
 +++
 

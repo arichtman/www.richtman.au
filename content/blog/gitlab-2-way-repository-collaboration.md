@@ -3,7 +3,7 @@ title = "GitLab 2-way Repository Collaboration"
 date = 2023-05-11T15:55:34+10:00
 description = "Code mirroring for fun and profit"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "gitlab", "git" ]
 +++
 

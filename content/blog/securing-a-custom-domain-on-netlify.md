@@ -3,7 +3,7 @@ title = "Securing a Custom Domain on Netlify"
 date = 2022-08-21T06:57:13Z
 description = "Save turning over an apex domain's nameservers"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "netlify", "tls", "dns" ]
 +++
 

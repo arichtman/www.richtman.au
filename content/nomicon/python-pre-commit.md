@@ -2,7 +2,7 @@
 title = "Pre-Commit"
 description = ""
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "pre-commit" ]
 +++
 

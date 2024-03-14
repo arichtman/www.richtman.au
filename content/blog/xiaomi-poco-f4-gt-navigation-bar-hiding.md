@@ -4,7 +4,7 @@ date = 2023-01-24T21:55:18+10:00
 description = "In which David wrestles with Goliath for control"
 draft = false
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "mobile", "xaiomi", "android", "troubleshooting" ]
 +++
 

@@ -2,7 +2,7 @@
 title = "Nix"
 description = "Ideas for Nix{Lang,Pks,}"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "nix" ]
 +++
 

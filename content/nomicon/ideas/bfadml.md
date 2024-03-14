@@ -2,7 +2,7 @@
 title = "BFADML"
 description = "Big Friendly API Data Model Layer"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "api", "data", "moonshot" ]
 +++
 

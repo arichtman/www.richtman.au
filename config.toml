@@ -19,9 +19,7 @@ minify_html = true
 build_search_index = true
 
 taxonomies = [
-    # tabi doesn't have the specific or generic templates
-    # https://github.com/welpo/tabi/issues/229
-    # { name = "categories", feed = true, paginate_by = 10 },
+    { name = "categories", feed = true, paginate_by = 10 },
     { name = "tags", fees = true, paginate_by = 10 },
 ]
 
@@ -72,7 +70,7 @@ menu = [
     { url = "docs", name = "Docs" },
     { url = "nomicon", name = "Nomicon" },
     { url = "tags", name = "Tags" },
-    # { url = "$BASE_URL/categories", name = "Categories" },
+    { url = "categories", name = "Categories" },
 ]
 
 email = "aGVsbG9AcmljaHRtYW4uYXUK"

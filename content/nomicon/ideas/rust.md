@@ -2,7 +2,7 @@
 title = "Rust"
 description = "Ideas for Rust"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "rust" ]
 +++
 

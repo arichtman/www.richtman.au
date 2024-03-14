@@ -3,7 +3,7 @@ title = "AWS SSO Role Assumption Traceability"
 date = 2023-06-14T10:30:55+10:00
 description = "Ensuring you can always point a finger via CloudTrail"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "aws", "sso", "iam", "audit", "infosec" ]
 +++
 

@@ -4,7 +4,7 @@ date = 2024-02-16T01:36:53+10:00
 description = ""
 draft = true
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = []
 +++
 

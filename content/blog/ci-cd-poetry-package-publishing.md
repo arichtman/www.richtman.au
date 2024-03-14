@@ -3,7 +3,7 @@ title = "CI/CD Poetry Package Publishing"
 date = 2022-09-27T07:35:11Z
 description = "Using environment variables to set publish endpoints"
 [taxonomies]
-#categories = [ "Technical" ]
+categories = [ "Technical" ]
 tags = [ "python", "poetry" ]
 +++
 

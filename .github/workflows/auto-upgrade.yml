@@ -23,7 +23,7 @@ jobs:
         nix develop --command pre-commit autoupdate
         nix develop --command poetry update
         git submodule update --remote
-    - uses: peter-evans/create-pull-request@v5.0.2
+    - uses: peter-evans/create-pull-request@v6
       with:
         branch: auto-updates
         token: ${{ secrets.WRITEBACK_TOKEN }}

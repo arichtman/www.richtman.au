@@ -100,3 +100,151 @@ _Semantic telemetry_: self-describing.
 The rest of this was just more sales talk for OpenTelmetry :yawn:.
 
 ## OpenTelemetry Overview
+
+Two primary solutions OpenTelemetry adds:
+Single solution for built-in, native instrumentation, and broad compatibility of telemetry with wider observability ecosystem.
+
+_Built-in_ or _Native_ instrumentation: creates signals directly from the code.
+
+_White Box_ approach to telemetry: directly adding telemetry code to the service or library.
+
+_Black Box_ appraoch to telmetry: use external agents or libraries to generate telemetry.
+Requires no code changes.
+
+Signal importance order (approximate); traces, metrics, logs.
+<!-- disagree here, entirely depends on what you're seeking and authors noted before that because you
+can't infer one type from another you need all of them -->
+Importance is based on goals of; capturing empiric relationships between services, enriching with metadata,
+definitively identifying correlations, efficient measurement of events.
+
+### Traces
+
+One way to model work in a distributed system.
+Can be thought of as consistently structured logs sharing a primary identifier.
+Collections of related logs are collated into _Spans_, which comprise a _Trace_.
+
+Benfits of traces:
+
+- One trace represents one transaction, suits modeling end-user experience.
+- Groups of traces, aggregated by dimensions, reveal tricky performance characteristics.
+- Can be transformed/downsampled into metrics or the _Golden Signals_.
+
+_Golden Signals: latency, traffic, errors, and saturation.
+<!-- I'm surprised it took this long for a mention -->
+
+_Latency_: time it takes to service a request.
+
+_Traffic_: number of requests.
+
+_Errors_: rate of failing requests.
+
+_Saturation_: utilization of resources.
+
+### Metrics
+
+Numeric measurements and recordings of system state.
+E.g. count of logged in users, disk free, RAM utilization.
+
+Pros:
+
+- Good "big picture" of system
+- Cheap to create and store
+- Good entry point for anaysis
+- Ubiquitous
+- Fast
+
+Challenges include:
+
+- Lacking hard context
+- Difficult-to-impossible to correlate to specific transactions
+- Can be difficult to modify if in third-party libraries or frameworks
+- Can be inconsistent in how or when things are reported
+
+### Logs
+
+OpenTelemetry aims mostly to support existing logging APIs rather than create something new.
+Existing solutions are weakly coupled to other signals though.
+Its solution to this is enriching logs with trace context, and links to relevant metrics and traces.
+
+Reasons to use logs in OpenTelemetry:
+
+- Perceived as more flexible and easier to use
+- Get signals out of untraceable services (legacy, mainframe, etc)
+- Correlate infrastructure resources (load balancers, managed databases)
+- Observe behaviour not tied to user interaction (cron jobs, batch processes, system noise)
+- Transform them into other signals
+
+### Observability context
+
+Three types of context; time, attributes, and the context object itself.
+
+Time, while obvious, is woeful for thinking about telemetry in distributed systems.
+Clocks are unreliable, processes pause, systems lose or gain time, and so forth.
+
+_Execution Unit_: thread, coroutine, or other sequential code execution construct.
+
+Contexts carry information across the gap between services, servers, threads, procedure calls etc.
+The goal is to provide a clean interfact to existing language context managers.
+Context is required and holds one or more _Propagators_.
+
+_Propagators_: how values are actually sent from one process to the next.
+
+On request instantiation OpenTelemetry creates a unique identifier for that request, based on registered propagators.
+The identifier is added to context, serialized, and sent to the next service, which then deserializes it and adds it to the local context.
+<!-- Very fancy way of saying generate UUIDv4 if none, pass it along -->
+
+Propagators also carry _baggag_ aka _soft context_.
+This is to transmit additional values that you may wish to put on other signals.
+Baggage is additive and cannot be removed.
+As it's maintained for the rest of the transaction, it will be made available to any involved service, including external ones.
+Be cautious about what baggage you add.
+
+OpenTelemetry project maintains semantic conventions for context data.
+This is in part thanks to merging with Elastic Common Schema project.
+
+### Attributes and Resources
+
+All telemetry emitted contains _attributes_, known elsewhere as _tags_ or _fields_.
+
+_Attribute_: key-value pair that describes dimension that's useful or of interest.
+OpenTelemetry flavor allow for values of types; string, boolean, floating point, signed integer, or a homogenous array of the former.
+Keys may not be duplicated and there is a maximum of 128 unique attributes, but no limit on value length.
+
+Attribute dangers include; memory exhaustion (PITA to debug cause no telemetry!), _cardinality explosion_ in a time-series database.
+
+_Resource Attributes_: attributes that remain static for the entire transaction.
+
+_Cardinality explosion_: basically when you blow out the number of ways you can slice the data and get a unique time series.
+High amounts of cardinality casue the TSDB to struggle.
+
+Methods to manage cardinality:
+
+- Drop cardinality before storage
+- Avoid attributes on metrics and enrich spans or logs instead
+
+### Semantic Conventions
+
+Standardise key names and value types/syntax.
+Save a *lot* of headache and litigating details.
+Just use it.
+
+Two main sources; OpenTelemetry standard, internally developed.
+
+### OpenTelemetry Protocol
+
+OTLP is a wire format for telemetry signals.
+
+Just sales fluff about how wonderful and compatible it is.
+
+### Compatibility and Future-Proofing
+
+Standard hubris that everything will be versioned and stable and v1.x will live forever.
+I appreciate the enthusiasm though.
+
+- APIS: 3-year support
+- Plug-in interfaces: 1-year support
+- Constructors: 1-year support
+
+Everything is schema-aware, which is nice.
+
+## The OpenTelemetry Architecture

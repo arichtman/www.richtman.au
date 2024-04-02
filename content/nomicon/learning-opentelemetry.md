@@ -248,3 +248,75 @@ I appreciate the enthusiasm though.
 Everything is schema-aware, which is nice.
 
 ## The OpenTelemetry Architecture
+
+OpenTelemetry components; instrumentation in applications, exporters for infrastructure, and pipeline componenets for shipping.
+
+### Application Telemety
+
+Must be in _every_ application to work properly.
+<!-- Side note, what do about upstream/external service dependencies? -->
+Can be explicit in code or automatic from agent.
+
+### Library Instrumentation
+
+Presently not baked-in to most libraries but can be installed separately.
+
+### OpenTelemetry API
+
+Both application telemetry and library instrumentation use the same API.
+The API is safe to call even when OpenTelemetry is not installed.
+<!-- not sure how that works but ok -->
+Upshot of this is that a library can be instrumented at no cost if OpenTelemetry is not used in the main application.
+
+### OpenTelemetry SDK
+
+The SDK is synonymous with the OpenTelemetry client.
+The SDK is a plug-in frmaework composed of; sampling algorithms, lifecycle hooks, and exporters.
+Configuration is done using environment variables or a YAML file.
+
+### Infrastructure Telemetry
+
+Infrastructure visibility is crucial.
+Slow but measurable progress is being made to integrate OpenTelemetry to the infrastructure layer.
+Some OpenTelemetry components exist to work with existing data options and add it to the pipeline.
+
+### Telemetry Pipelines
+
+Large, distributed systems, properly instrumented and under load, can produce sufficient amounts of data to create a problem of its own.
+Sufficiently large and nature enough systems are often older and more patchwork.
+OpenTelemetry employs two things to address these challenges; OTLP, and the collector.
+
+### Exclusions
+
+Long-term storage, analysis, GUIs, and any front-end components are not and will not be included.
+The aim is standardization, such that all storage and analysis tools may interoperate with OpenTelemetry.
+Producing an "official" or de facto observability backend would undermine competition and the ecosystem.
+
+### Summary
+
+Excluded as this document is already a summary.
+
+### Demo section
+
+Excluded, ibid.
+<!-- holy cannoli that demo is complicated across services -->
+
+### New Observability Model
+
+Observability tools are used out of necessity, more than anything else.
+Rarely do they have a large day-to-day impact.
+Most have been vertically integrated until now.
+This was a fine trade-off but not so for more homogenous, distributed, and complex systems.
+Breaking the vertical integration allows greater pipeline and storage control.
+This leads to better clustering, reaggregation, compaction, and other efficiencies.
+
+Future observability platforms will offer universal query APIs, as well as a variety of anaylsis tools.
+
+Existing tools like Prometheus and Jaeger don't fully support the high cardinality, highly contextual workflows of OpenTelemetry.
+To maximise value tools need to support; high-cardinality data, correlation across hard and soft contexts, and unified telemetry.
+There is promising indication of this coming.
+
+## Instrumenting Applications
+
+OpenTelemetry setup has two parts; installing the SDK, and installing instrumentation.
+The _SDK_ is the OpenTelemetry client, and the _Instrumentation_ is code written using the OpenTelemetry API to generate telmetry.

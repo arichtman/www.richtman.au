@@ -320,3 +320,102 @@ There is promising indication of this coming.
 
 OpenTelemetry setup has two parts; installing the SDK, and installing instrumentation.
 The _SDK_ is the OpenTelemetry client, and the _Instrumentation_ is code written using the OpenTelemetry API to generate telmetry.
+
+Instrumenting applications is the most time consuming and easy to overdo, leading to lopsided results.
+
+### Agents and Automated Setup
+
+Installing the SDK and all the libraries appropriate for the frameworks, database clients, common components etc is a lot.
+Unfortunately, language support for automation is extremely varied, with some having basically none.
+
+Installing the SDK and configuring manually involves:
+
+1. Configuring a set of providers
+1. Registering them with the OpenTelemetry API
+
+Here is a listing of auto-instrumentation:
+
+- Java: `javaagent`
+- .NET: .NET instrumentation agent
+- Node.js: `@opentelemetry/auto-instrumentations-node`
+- PHP: OpenTelemetry PHP extension (PHP 8.0+)
+- Python: Package _opentelemetery-instrumentation_ provides the `opentelemetry-instrument` command
+- Ruby: _opentelemetry-instrumentation-all_ package will instrument, but SDK set up and config is manual
+- Go: the OpenTelemetry Go Instrumentation package uses eBPF. Future work is planned to do the SDK.
+
+### Registering Providers
+
+The OpenTelemetry API is by default a `no-op`, you must register providers for anything to occur.
+
+_Provider_: an implementation of the OpenTelemetry instrumentation API.
+Providers handle all the API calls.
+_TracerProvider_ creates traces and spans, _MeterProvider_ metrics and instruments, and `LoggerProvider` creates loggers.
+Providers should be registered as early as possible in the application boot cycle, as any API calls prior will be `no-op`.
+
+Why providers?
+
+- Granular install control. Don't have to install anything you don't use/need/want.
+- Loose coupling. Seperates API from implementationc and reduces library weight, dependencies.
+- Flexibility. Can write and use custom providers.
+
+### Providers
+
+SDK, in this context, means a set of provider implementations.
+Each provider is a framework that can be extended and configured through various types of plugins.
+<!-- Approaching word salad here... -->
+
+#### TracerProvider
+
+Implements OpenTelemetry tracing API.
+Consists of _Samplers_, _SpanProcessors_, and _Exporters_.
+
+_Samplers_ choose whether a span is recorded or dropped.
+Different sampling algorithms are available, selecting and configuring one can be confusing.
+It's highly contextual to your application, use case, and visualization software.
+If in doubt, consult an expert or don't sample at all.
+It's better to add sampling later as a response to a specific cost or overhead.
+
+Note: calling a span "sampled" is ambiguous.
+Use "sampled in" to mean recorded, and "sampled out" to mean dropped.
+
+_SpanProcessors_: allow you to collect and modify spans.
+They intercept the span twice, once on commencement, and once on completion.
+The default processor is the _BatchProcessor_.
+This processor buffers span data and manages the exporter plugins.
+_BatchProcessor_ should generally be the *last* _SpanProcessor_ in your processing pipeline.
+Consult the documentation for specific configuration options.
+While you can do quite a bit of processing, its recommended to offload this to the OpenTelemetry collector.
+
+Key configurations: `exporter`, `maxQueueSize`, `scheduledDelayMillis`, `exportTimeoutMillis`, `maxBatchExportSize`
+
+Note: processors are chained together and run in order of registration, linearly.
+
+Note: processing in-application is a decision to make depending on how your application is deployed.
+It may not be desirable to ship unprocessed data, such as PII or other sensitive information.
+
+_Exporters_: plugins that define the format and destination of the telemetry.
+Default is OTLP, which is recommended.
+Primary reason for *not* OTLP is if your storage ingest doesn't support it.
+
+Key configurations: `protocol`, `endpoint`, `headers`, `compression`, `timeout`, certificate files for [m]TLS
+
+#### MeterProvider
+
+Implements OpenTelemetry metrics API.
+Consists of _MetricReaders_, _MetricProducers_, and _MetricExporters_.
+
+_MetricReaders_: metric equivalent of _SpanProcessors_.
+Collect and buffer metric data until export.
+Default is `PeriodicExportingMetricReader`, which collects metric data, and pushes it to an exporter in batches.
+
+Key configurations: `exportIntervalMillis`, `exportTimeoutMillis`
+
+_MetricProducers_: connects existing instrumentation of some kind to the SDK.
+
+_MetricExporters_: send batches of metrics over the network.
+As before, OTLP is recommended.
+If using Prometheus and no collector, you can set up a Prometheus exporter to be scraped.
+If you are using push-based system writing data to the collector, use the standard OTLP exporter, and then expose the
+Prometheus exporter from the collector.
+
+_Views_:

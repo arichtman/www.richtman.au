@@ -418,4 +418,138 @@ If using Prometheus and no collector, you can set up a Prometheus exporter to be
 If you are using push-based system writing data to the collector, use the standard OTLP exporter, and then expose the
 Prometheus exporter from the collector.
 
-_Views_:
+_Views_: (not well defined)
+You may never need to touch these, certainly not for getting started.
+Don't have to create at the SDK level, can use OpenTelemetry collector as well.
+
+_LoggerPRovider_: implements logging API.
+Consists of _LogRecordProcessors_ and _LogRecordExporters_.
+
+_LogRecordProcessors_: work like _SpanProcessors_.
+Default is batch, which you use to register your exporters.
+Recommended to lower `scheduledDelayMillis` config when shipping to a collector.
+
+_LogRecordExporters_: emit the data in variety of formats, OTLP recommended.
+
+#### Shutting Down Providers
+
+Critical to _flush_ telemetry before an application terminates.
+If not, data could be lost.
+Every SDK provider includes a `Shutdown` method, use it.
+Automated instrumentation, well, automates this.
+
+_Flushing_: process of immediately exporting any remaining buffered telemetry in the SDK, while blocking shutdown.
+
+#### Custom Providers
+
+API-SDK separation allows for implementation of custom providers.
+Highly unlikely you will need this.
+
+One example: Envoy.
+All their components must be single-threaded, which is impractical to make an option for the entire SDK.
+
+### Configuration Best Practices
+
+<!-- mmmhm, yes "best practices" -->
+
+Three configuration options for the SDK:
+
+- In code, using exporter, samplers, and processors
+- Environment variables
+- Config file (YAML)
+
+Environment variables are most widely supported.
+Better than hard-coding configuration because you can defer configuration until deployment time.
+Which is crucial as often different environments/deployments have different needs.
+<!-- just imagine hard-coding your export endpoints INTO your build artifacts. See? -->
+You'll often have to tune parameters to handle the volume of data.
+
+_Backpressure_: sending more data than the system can handle, results in dropped telemetry.
+
+Configuration file format has recently been standardized across all implementations.
+Settings may still be overwritten by environment variables.
+Support for the new format is mixed but expected to increaase.
+
+#### Remote Configuration
+
+Open Agent Management Protocol (OAMP) is presently under development.
+It's a remote configuration protocol which aims to allow collectors and SDKs to receive and transmit their configuration.
+With OAMP, a control plane can manage an entire OpenTelemetry deployment without restart or redeploy.
+Theoretically, this could mean dynamic adjustment of things like sampling, to manage cost and saturation.
+<!-- Sampling is hard, and there's hope for an operator pattern here. -->
+
+### Attaching Resources
+
+_Resources_: set of attributes that define the environment in which telemetry is being collected.
+E.g. service, VM, platform, region, cloud provider.
+Things you need to correlate problems with a location or service.
+If telemetry tells you the *what*, resources tells you the *where*.
+
+#### Resource Detectors
+
+Other than service-specific, most resources come from the environment of the application deployment.
+Plug-ins that discover these are called _resource detectors_.
+
+When setting up an environment, enumerate all the resources you want to capture, and seek out resource detectors for them.
+Most resources can be discovered by the collector, and attached to telemetry that passes through it.
+<!-- this could backfire with shared collectors -->
+Accessing some resources to collect information requires API calls, so is not recommended in the application, use a collector instead.
+
+#### Service Resources
+
+Can't be gathered from environment so be sure to define them.
+*Critical* to some analysis tools working at all.
+
+- `service.name`: name of this class of service
+- `service.namespace`: unique namespace of the service
+- `service.instance.id`: unique id for this instance of the service
+- `service.version`: service application version
+
+#### Advanced Resource Annotations
+
+Consider the eventual destination of your telemetry when selecting which collector to detect and add which resources.
+It may make sense to keep local telemetry high fidelity, but longer-term telemetry less granular.
+
+### Installing Instrumentation
+
+Can't just use SDK, need instrumentation too.
+Ideally automation handles this.
+Check the `contrib` repository for each language to find automatic instrumentation for various libraries and frameworks.
+Missing critical instrumentation is a fast and easy way to break traces.
+
+An increasing number of OSS libraries are starting to include OenTelemetry instrumentation.
+This obviates the need for manual or automatic addition.
+
+#### Instrumenting Application Code
+
+Aim to instrument in-house libraries with the same techniques as third-party ones.
+Rewriting instrumentation for every application is undesirable.
+<!-- read: your app devs will kill you -->
+
+#### Decorating Spans
+
+<!-- awww, got me all clucky, live, laugh, love -->
+
+If you wish to add application-specific details to help track down and index spans, don't create new ones.
+Your libraries already generate the correct spans, just get the current span and decorate it with attributes.
+More attributes, less spans, better observability experience.
+
+### How Much Is Too Much?
+
+There's no clear-cut answer, but the rough pattern is:
+unless it is a critical operation, don't worry until you need it.
+Start breadth-first, not depth-first.
+
+End-to-end tracing matters more than fine-grained detail.
+Better to stand everything up with the default instrumentation and progressively add in specific areas where you need more detail.
+Also, focus on smaller, self-contained areas, then broaden as needed.
+
+For both of the above cases, a good proportion of the value is in instrumenting the business logic,
+or other stuff that automatic instrumentation won't capture.
+<!-- gee thanks guys -->
+
+Don't obsess about "the correct amount".
+Work iteratively.
+Make sure you're asking and answering interesting and important questions with your results.
+
+### Layering Spans and Metrics

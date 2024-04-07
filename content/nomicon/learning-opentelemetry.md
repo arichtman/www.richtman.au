@@ -553,3 +553,186 @@ Work iteratively.
 Make sure you're asking and answering interesting and important questions with your results.
 
 ### Layering Spans and Metrics
+
+Metrics can be useful for analyzing long-term trends.
+Histogram metrics are helpful for this.
+Combining exponential histograms across services with _exemplars_ yields highly accurate performance statistics
+as well as contextual links to traces that demonstrate performance for a given bucket.
+
+_Histograms_: specific type of metric stream that _buckets_ values and displays the count of bucketed values.
+Buckets can be standard, pre-defined, or _exponential_.
+
+_Exponential buckets_: automatically adjust for scale and range of inputs.
+This means you can add across histograms, even if their scales and ranges differ.
+
+### Browser and Mobile Clients
+
+Determining impacts to user experience in resource-constrained environments demands telmetry.
+
+_Real User Monitoring_: specific term for client telemetry, currently under active development for browsers, iOS, and Android.
+
+_Signals_: specialized types of telemetry data used in techniques like _RUM_ and _continuous profiling_.
+Currently not stable in OpenTelemetry but under way.
+
+### The Complete Setup Checklist
+
+- Instrumentation available for every important library?
+- SDK has providers for tracing, metrics, and logs?
+- Exporter correctly installed?
+- Correct propagators installed?
+- SDK sending data to the collector?
+- Correct resources emitted?
+- All traces complete.
+- No broken traces.
+
+### Packaging it All Up
+
+Instrumenting an application requires interacting with every part of OpenTelemetry and is not easy.
+After you've completed your first application, write internal docs, and make a package for others.
+One good way is to instrument directly in common libraries and frameworks.
+
+### Conclusion
+
+Due to the amount of work, instrumenting a large system is it's own form of vendor lock-in.
+With OpenTelemetry, it's do-once *only*, since you can use any system atop it.
+
+## Intrumenting Libraries
+
+_Shared Libraries_: ones widely adopted across many applications.
+Notable proprietary ones; Cocoa and SwifUI frameworks from Apple.
+
+_Native Instrumentation_: instrumentation actually in-library and maintained there.
+As opposed to instrumentation being maintained by a third party.
+<!-- I'm not really sure how that would even be possible with some languages but eh -->
+
+### The Importance of Libraries
+
+> Most production problems don't originate from simple bugs in application logic:
+they come from large numbers of concurrent user requests to access shared resources interacting in ways
+that cause unexpected behaviours and cascading failures that do not appear in development.
+
+Most resource utilization occurs in library code, application code merely _directs_ the utilization.
+Of course, there's good and bad directions.
+Bad directions tend to compound ill effects under load.
+This leads to cascading failures.
+
+(The proceed to explain resource contention and deadlocking)
+
+<!-- pyml disable-next-line no-trailing-punctuation -->
+#### Why Provide Native Instrumentation?
+
+##### Observability works by default in native instrumentation
+
+Observability systems are notoriously difficult to set up.
+A good part of that is having to install and instrument plug-ins for every library.
+Doing the hard work ahead lowers barriers to adoption.
+<!-- I mean yea, and the abstraction of a library is about putting the complexity and hard work on one side,
+and utility on the other, so this tracks fundamentatlly -->
+
+##### What's Wrong with Plug-ins?
+
+Delegating features out makes you dependent on another party.
+You won't be able to ship new versions until the plug-in has been updated.
+Plug-ins push instrumentation to security boundaries where you're comfortable executing someone else's code.
+Plugins require hooks, which is another API to support and maintain.
+Architectural changes often impact which hooks are available, which breaks compatibility.
+The more hooks, the worse this all is.
+Plugins and hooks are another layer of indirection, which can cost in performance and mental load.
+
+##### Native Instrumentation Lets You Communicate with Your Users
+
+Owning the telmetry story of your library is both a statement and a creative expression.
+Just as you communicate with documentation and playbooks, so too you can with dashboards and alerts.
+<!-- oh brother, gimmie a break -->
+
+Owning observability means you have a precise schema you can use to explain how your library works.
+Your observability data can highlight incorrect or suboptimal use of the library.
+Also possible to write playbooks for various warnings and errors and how to fix them.
+Finally, you can base tuning instructions on the common telemetry information.
+
+##### Dashboards and Alerts
+
+Anything that emits metrics should ship with default dashboards.
+
+If you don't work observaility into your library, you may accidentally design it so it's impossible,
+similar to how that happens with testing.
+
+##### Native Instrumentation Shows That You Care About Performance
+
+Observability is the _only_ form of testing for production systems.
+<!-- fans of Charity Majors, I see -->
+Alerts are tests, e.g. "I expect that X will not exceed Y for more than Z minutes".
+This is also useful as testing during development.
+
+### Why Aren't Libraries Already Instrumented?
+
+Basically noone does it right now.
+They blame _composition_ and _tracing_.
+
+Previously, observability systems didn't compose well.
+Addint observability meant committing to a client and data format.
+This meant that if two libraries chose differently, anyone running them both would have to run two observability systems.
+More likely they ran some kind of additional agent, translation layer, or other integration.
+
+Tracing is particularly poor with heterogeneous library instrumentation, since traces propagate between application boundaries.
+
+#### How OpenTelemetry is Designed to Support Libraries
+
+Instrumentation is a _cross-cutting concern_.
+
+_Cross-cutting concern_: a subsystem that ends up everywhere, has to interact with every part of an application.
+As such, interfaces to these need to be handled with extreme care.
+Examples include; security, and exception handling.
+
+#### OpenTelemetry Separates the Instrumentation API and the Implementation
+
+This divide creates two areas of concern, with clear owners.
+Library maintainers handle instrumentation, and application developers configure the entire application pipeline.
+The API has almost no dependencies, to reduce conflicts.
+The SDK and all dependencies are referenced only once, by the applicaiton developer, during startup.
+Any conflicts can be dealt with here in one place, by swapping out plugins or implementations.
+
+#### Otel Maintains Backward Compatibility
+
+API/implementation separation isn't enough.
+The API also must maintain compatibility across all libraries that use it.
+Breaking the API frequently would, even with major version changes, create transitive dependency conflicts.
+This is why all OpenTelemetry APIs are backwards-compatible.
+The assumption is that instrumentation may be written once and never updated again.
+`v1.0` of OpenTelemetry is, and will remain, the only major version.
+
+#### Otel Keeps Instrumentation Off by Default
+
+OpenTelemetry API calls are always safe, they never throw an exception.
+If the library is instrumented, and the application does not use Otel, it does nothing.
+Natively, i.e. without wrappers or indirection, the Otel API has zero overhead.
+This means it can be embedded to work out-the-box at no cost.
+Removing the need to do *literally any* individual configuration helps developers and adoption.
+
+### Shared Libraries Checklist
+
+- Enabled OpenTelemetry by default.
+- API isn't wrapped.
+- Using existing semantic conventions?
+- Created new semantic conventions?
+- Import only the API packages.
+- Library pinned to major version.
+- Comprehensive documentation.
+- Performance tested and results published.
+
+### Shared Services Checklist
+
+_Shared Services: entirely self-contained standalone applications e.g. databases, proxies, messaging systems.
+
+Shared services should follow all the same best practices as shared libraries.
+
+In addition:
+
+- Use Otel config file?
+- OTLP output by default.
+- Bundle a local collector.
+
+## Observing Infrastructure
+
+Note: The OpenTelemetry collector is not intended to be public.
+Apply security measures as necessary.

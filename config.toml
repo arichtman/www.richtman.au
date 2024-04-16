@@ -2,7 +2,7 @@
 base_url = "https://www.richtman.au"
 theme = "tabi"
 title = "richtman.au"
-description = "DevOps, Cloud & Platform Engineering, and all things facilitative infrastructure"
+description = "Platform Engineering, Cloud, DevOps, and all things facilitative infrastructure"
 
 generate_feed = true
 

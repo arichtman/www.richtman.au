@@ -3,7 +3,7 @@ name: Update packages
 on:
   # Automatically run once a month.
   schedule:
-  - cron: 0 7 1 * MON
+  - cron: 0 7 1 * *
   # Allow manual triggers.
   workflow_dispatch:
 

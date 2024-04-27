@@ -1,6 +1,7 @@
 +++
 title = "Up Bank"
 description = "If we ever get decent banking APIs..."
+date = 1970-01-01T00:00:00Z
 [taxonomies]
 categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "api", "up-bank" ]

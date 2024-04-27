@@ -1,6 +1,7 @@
 +++
 title = "Rust"
 description = "Ideas for Rust"
+date = 1970-01-01T00:00:00Z
 [taxonomies]
 categories = [ "Technical" ]
 tags = [ "nomicon", "ideas", "rust" ]

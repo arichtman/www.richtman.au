@@ -81,8 +81,7 @@ socials = [
     { name = "GitLab", url = "https://gitlab.com/arichtman", icon = "gitlab"},
     { name = "StackOverflow", url = "https://stackoverflow.com/users/19531788", icon = "stack-overflow"},
     { name = "StackExchange", url = "https://stackexchange.com/users/25787203", icon = "stack-exchange"},
-    # Waiting for https://github.com/welpo/tabi/pull/231
-    # { name = "KeyBase", url = "https://keybase.io/arichtman", icon = ""},
+    { name = "KeyBase", url = "https://keybase.io/arichtman", icon = ""},
     # Keep a template one
     # { name = "", url = "", icon = ""},
 ]

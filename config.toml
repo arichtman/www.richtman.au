@@ -86,6 +86,10 @@ socials = [
     # { name = "", url = "", icon = ""},
 ]
 
+allowed_domains = [
+    { directive = "connect-src", domains = ["umami.dev"]}
+]
+
 [extra.analytics]
 service = "umami"
 id = "aeb4024a-facb-4e4e-814d-2cdf131d453b"

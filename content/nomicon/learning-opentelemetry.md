@@ -734,5 +734,103 @@ In addition:
 
 ## Observing Infrastructure
 
+Infrastructure encompasses not just hardware, but the abstractions built atop it, including managed services.
+
+_Monitoring_ is not _infrastructure observability_.
+
+_Infrastructure Observability_: two primary concerns; _infrastructure providers_ and _infrastructure platforms_.
+
+_Infrastructure Providers_: actual "source" of infra, e.g. data centre, AWS, GCP, Azure etc.
+
+_Infrastructure Platforms_: higher-level abstractions over the _providers_,
+usually some kind of managed service, very varied in size, complexity, and purpose.
+Examples include; Kubernetes, Functions as a Service (FaaS), CICD like Jenkins, VCS like CodeCommit.
+
+Platforms and infra are often shared between applications, which makes correlating stuff difficult.
+Can you establish context (hard _or_ soft) between specific infra and application signals?
+Does understanding these systems through observability actually contribute to business goals?
+If no on both counts, don't incorporate infrastructure into your observability.
+You will still be monitoring the infrastructure anyway.
+
+### Observing Cloud Providers
+
+Usually offer a large variety and volume of data.
+Your job is to retrieve and store only what you need.
+
+Cloud services are broadly two categories.
+
+_Bare Infrastructure_: compute, storage, networking, API gateways, managed databases.
+<!-- not sure about managed databases being in this one... -->
+
+_Managed Services_: Kubernetes clusters, machine learning, stream processors, serverless platforms.
+
+#### Collecting Cloud Metrics and Logs
+
+Cloud Telemetry "iceberg":
+
+Above: CPU/API disk util, instance status, network throughput.
+Below: I/O stats, PID count, file handler, control group, kernel logs, mount status, IPv4/6 unicast, interrupt costs.
+
+Example of "instance status", for a distributed system, one node up or down doesn't actually matter that much,
+and isn't enough to resolve an issue.
+Thinking about it for observability though, it's very important for correlate to say, a wrongly-routed request, or a timeout.
+No signal can be considered individually or without the overall strategy.
+
+Foundational principals for determining what signals are important to collect and how to use them:
+
+- Semantic conventions to build soft context between metric signals and application telemetry.
+  That is, infra and applications should use the same keys and values.
+- Leverage existing integrations and formats.
+  Lots of plug-ins that will handle conversion to OTLP.
+- Be purposeful with data, really consider what you need and how long to collect it.
+  Ensure observability costs and overhead isn't proportionally high.
+
+OpenTelemetry collector configuration and usage best practices.
+
+- Production deployments should use the Collector Builder, not kitchen-sink public Docker images.
+  You can include only components you need and add custom ones where it makes sense.
+- Start off with too many metric attributes at the start.
+  It's easier to drop the data than to add what doesn't exist.
+  Adding a new dimension can cause cardinality explosion, control this by allow-listing metrics in the pipeline.
+- Avoid remapping, find a handful of attributes you'd like shared across preexisting metrics and logs.
+  Then add _them_ to your trace and application metric signals, rather than the other way around.
+  If starting from scratch, start with the collector and SDK to capture system and process telemetry.
+
+OpenTelemetry is agnosting on push/pull metrics.
+OTLP, however, has no notion of pull-based metrics.
+If you use OTLP, your metrics will be pushed.
+
 Note: The OpenTelemetry collector is not intended to be public.
 Apply security measures as necessary.
+
+#### Metamonitoring
+
+Of course, we have to monitor the collector too!
+
+_Ballast_: chunk of memory pre-allocated to the heap.
+
+_Scrape Collision_: when the next scrape is scheduled to start before the current one has completed.
+
+Rough rules for planning collector capacity:
+
+- Experiment per-host or per-workload to determine the size of the ballast for each type of collector.
+  Stress tests can help find the upper bound.
+- Avoid scrape collisions for metrics.
+- Heavier transformations should be later in the pipeline.
+  This is particularly true to avoid overburdening agents and sidecars alongside applications.
+- Better to overprovision than lose data.
+
+NB: the balast extension may be deprecated, see current docs for details.
+
+#### Collectors in Containers
+
+<!-- are you thinking what I'm thinking b1? -->
+
+Good rule is factors of 2 for memory limits and ballast.
+E.g. balast 40% of container memory, limit 80%.
+This shoud improve performance by reducing churn.
+This is because it now cleans up memory by returning it to the heap, and allows the collector to signal producers to back off,
+without crashes or restarts due to running out of memory.
+<!-- not sure I follow the detail here but i get the core idea of letting the collector itself handle memory -->
+
+### Observing Platforms

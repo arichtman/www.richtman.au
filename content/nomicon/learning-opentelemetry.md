@@ -834,3 +834,124 @@ without crashes or restarts due to running out of memory.
 <!-- not sure I follow the detail here but i get the core idea of letting the collector itself handle memory -->
 
 ### Observing Platforms
+
+Cloud native applications are often built for managed platforms, which use different abstractions than bare infrastructure.
+
+#### Kubernetes Platforms
+
+Two broad approaches to integration here;
+monitoring and profiling tooling for applications running *on* the cluster,
+and telemetry data on the Kubernetes components themselves.
+The OpenTelemetry operator handles both of these by managing collector instances, and auto-instrumenting applications.
+
+Applications designed for Kubernetes will often interact directly with the API, making both sets of signals helpful.
+
+#### Kubernetes Telemetry
+
+Recent Kubernetes releases have begun addint tracing for components like the kubelet and API server.
+Depending on size/scale/complexity, you may wish to create separate collector deployments for system and application signals.
+The operator includes a service discovery mechanism called the _Target Allocator_ that allows collectors
+to discover and scrape Prometheus endpoints, evenly distributing the scrape jobs across multiple collectors.
+
+Another option is dedicated receivers.
+There are three receivers available to listen for cluster metrics and logs.
+
+- `k8sclusterreceiver`
+- `k8seventsreceiver`
+- `k8sobjectsreceiver`
+
+There is also `kubeletstatsreceiver`, which can pull pod-level metrics.
+None of the above are mutually exclusive with the TA-based approach of the operator, but you shouldn't double-up either.
+Eventually, the community is expected to settle on one approach or the other, it's just not clear at the time of writing.
+
+The *OpenTelemetry* community generally agrees that _receivers_ are the best way to monitor a cluster.
+However, many things are already set up for Prometheus, including `kube-state-metrics` and `node-exporter` plugins in cluster installs.
+<!-- can confirm, kube-prometheus-stack is a huge amount of value, very standard, and easy to deploy -->
+Long and short of it - they recommend _receivers_ for greenfield clusters, and Operator/TA is acceptable for brownfields.
+
+#### Kubernetes Applications
+
+The operator does automatic detection using TA, sure, but it has other tricks.
+You can use a CRD to configure injecting instrumentation automatically into a pod.
+This adds racing, metrics, or logs to axisting applications.
+One catch is that you can't mix automatic and proprietary/custom instrumentation, they'll conflict.
+
+Personal notes on this:
+- Auto-instrumentation is useful where you don't own the app and don't want to fork it.
+- Auto-instrumentation is apparently _very_ noisy out-the-box, though I suppose the solution is to drop fields in the pipeline.
+
+Production collector architecture deployment tips:
+
+- Start with sidecar collectors.
+  Flushing telemetry out of the process pod relieves memory pressure on the application.
+  It'll also make development and deployment smoother and easier.
+  It allows for cleaner shutdowns and evictions as the main process isn't stuck waiting for busy collector services.
+- Split collectors by signal type so they can scale independently.
+  Create pools per application, per service, based on utilization...
+  Log, trace, and metrics processing all have different resource consumption profiles and constraints.
+- Cleanly separate concerns of telemetry creation and configuration.
+  Redaction and sampling in collectors, not in-process.
+  (essentially) Hard-coding configuration in the process makes it impossible to adjust things in production without redeployment.
+  Adjusting configuration on the fly is far easier.
+
+#### Serverless Platforms
+
+Serverless is on-demand and ephemeral, as well as a bit black-box.
+
+Additional considerations for serverless observability:
+
+- Invokation time? How long did the function run for?
+- Resource usage. How much memory and compute did the function use?
+- Cold start time. Does the function take time to start up when not recently used?
+
+Getting these can be tricky, but OpenTelemtry Lambda Layer (and similar) can help.
+Though they do incur a performance overhead.
+
+If unable to use Lambda Layer etc:
+
+- Ensure the function waits on the export of telemetry
+- Stop recording spans or measurements before returning control to the function invokation library.
+- Try to precompute strings or complex attribute values that won't change from run-to-run so they can be cached.
+- To avoid queueing telemetry and waiting for export, place a collector "close" to them, dedicated to receiving function telemetry.
+
+#### Queues, Service Busses, and Other Async Workflows
+
+Tracing transactions that cross less traditional request/response architectures can be less useful.
+It's unclear whena  given transaction actually ends.
+You'll need to make decisions based on your goals and what you can reasonably optimise.
+What kind of indicators do you want to track?
+Do you want to know how many steps were completed, or the median time for a certain step to run?
+Are you interested in how long it took for a service to process a record and for that record to be handled?
+
+Checks to see if you're in this space:
+
+- Draw architecture and process diagrams
+- Do you have many services operating on a single record?
+- Do the services require human intervention to proceed?
+- Does your workflow start and end at the same place?
+- Does your workflow diagram look less like a tree and more a "tree of trees"?
+
+If so, you probably have an asynchronous workflow.
+
+_Custom Correlation ID_: a unique attribute you ensure is on each parent span by baggage propagation
+
+_Span Links_: allow causal relationship between spans _without_ an explicit parent-child relationship.
+The advantage here is that you can calculate interesting features, like amount of time waiting in queue.
+
+Highly async workflows don't work conceptually as one, single trace.
+Rather it's many subtraces, linked to an origin by either a custom correlation ID or a shared trace ID propagated through span links.
+Discovering these relationships, correlating, and visualizing them is difficult to generalise for.
+So there's not much available in the way of tooling currently.
+
+Finally, not all subtraces in asynchronous transactions have the same utility.
+Use collector filters and samples to say, convert spans to metrics, or filter out specific subtraces and replace them with histograms.
+
+### Conclusion
+
+Infra observability works best when you start with clear and concise goals before implementation.
+<!-- easier said than done -->
+Comparatively, application and service observability are easy.
+Generally, instrumentation strategies for applications don't apply to infrastructure.
+
+**Infrastructure observability strategy needs to be driven by your overall observability goals,
+and aligned to organizational incentives.**

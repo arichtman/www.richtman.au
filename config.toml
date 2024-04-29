@@ -87,7 +87,6 @@ socials = [
 ]
 
 allowed_domains = [
-    { directive = "connect-src", domains = ["api-gateway-eu.umami.dev"]},
     { directive = "font-src", domains = ["'self'", "data:"] },
     { directive = "img-src", domains = ["'self'", "data:"] },
 ]

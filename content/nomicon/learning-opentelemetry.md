@@ -955,3 +955,119 @@ Generally, instrumentation strategies for applications don't apply to infrastruc
 
 **Infrastructure observability strategy needs to be driven by your overall observability goals,
 and aligned to organizational incentives.**
+
+## Designing Telemetry Pipelines
+
+Telemetry is a sustained, high-throughput operation, coupled to the load of the system.
+The collector is better overall at complex operations than any individual language SDK.
+The collector is also a more logical place to perform normalizing or standardizing transformations, as it crosses applications and is centrally configured.
+Mixing telemetry configuration with application configuration couples unrelated changes and neccessitates coordination between teams.
+Telemetry is better treated as it's own service.
+
+The following section progresses upwards in complexity.
+
+### No Collector
+
+Direct SDK connection to backend.
+Misses host metrics and it's inadvisable to collect these via application.
+
+### Local Collector
+
+Most common reason for this is to collect host metrics.
+Additional advantages:
+
+- Gathering environment resources.
+  Usually very useful for observability but opten require API calls.
+  Collector offloads this delay from the application.
+- Avoiding data loss from crashes.
+  Batch export is efficient but suffers during crashes.
+  Local collector allows tuning application batch size down and frequency up, then tune the collector batches separately.
+- Simplified SDK configuration.
+  Default OTLP-over-HTTP to `localhost` "just-works" without additional exporters or plugins.
+  This can be as little as one-line code setup, easy to package, distribute, and keep up-to-date.
+
+### Collector Pools
+
+_Collector Pool_: a set of collectors, each running on its own machine, using a load balancer to manage and distribute traffic.
+
+Advantages:
+
+- Load balancer-managed _backpressure_.
+  Smooth out spikes in data inbound without pressuring the collectors' memory.
+  OTLP itself is stateless, making this distributed memory buffer feasible and managable.
+
+#### Resource Management
+
+Local collectors still consume resources, which are then unavailable to the application itself.
+
+Local collectors have two main purposes; quick application evacuation, and host metric collection.
+Any additional processing beyond this can be handed off to a collector pool, which does not compete for resources.
+
+Collector pools are load balanced, which has two advantages:
+
+- Right-sizing resources.
+  Without conflation of application utilization, resource specification optimization.
+- Pool scaling.
+  Throughput over time can be used to scale the pool horizontally.
+
+#### Deployment and Configuration
+
+Local collectors are always entangled with applications.
+Collector pools are a full and clean and perfect and excellent separation of concerns.
+
+_Open Agent Management Protocol_: an in-development ~dream~ control plane for collector fleets.
+Sampling configuration decisions depend on analysis being performed.
+Every form of analysis has an optimal sampling configuration, providing maximum value with minimal data.
+Finding this point is difficult for humans, so instead we just let the analysis tool control sampling.
+
+#### Gateways and Specialized Workloads
+
+Mostly it's fine to mix pushed telemetry and pulled metrics (Prometheus) via a single collector.
+Specialized collector pools handle scaling size and complexity, though they might look complicated, they are easier to maintain and observe.
+
+Advantages of specialized collector pools:
+
+- Reduced binary size.
+  Normally a non-issue, but in limited environments like embedded, IoT, edge, or FaaS, it matters.
+  Specialized collectors can be custom-compiled to only include plugins required for that environment.
+- Reduced resource consumption.
+  Different pipelines can have very different resource consumption profiles.
+  When these are conflated cumulatively, unpredictability means you need more headroom to mitigate.
+  It's not cut-and-dried though, weigh the network cost of separate pools against slack in machine provisioning.
+  Typically the scale of the system needs to be large to make the savings significant.
+- Tail-based sampling.
+  Tail sampling generally requires all spans for a given trace in order to make a decision.
+  Currently this means all spans for the trace need to land on the same collector.
+  To achieve this, a gateway collector with the load balancing exporter is required.
+  Then the separate processing pool can perform sampling.
+  Notes on tail sampling:
+  Resource requirements can be very high, depending on span throughput, attribute count, and sampling window.
+  Processor defaults assume maximum 50,000 spans per 30-second window.
+  This sounds high but verbose or complex systems can vastly surpass it.
+
+#### Backend-specific Workloads
+
+Different telemetry requires different processing, e.g. Pormetheus for metrics and Jaeger for traces, they both go to different collector pools.
+Prom-specific collector plugins for metrics can live in a pool of collectors that operate after metrics and traces have been separated, and right before the metrics are sent to Prometheus.
+<!-- I think they're talking about Prom the GUI/TSDB, though I'm not sure why one would Otel export then dump it in a limited system -->
+This prevents crossing streams of resource contention.
+
+#### Reducing Egress Costs
+
+<!-- what a world we've come to, where it takes cloud provider charges for network bandwidth to be a consideration -->
+Most analysis tools run in a separate network to the applications under monitoring.
+This can result in high egress costs.
+Data compression is recommended beyong OTLP-standard `gzip`.
+Otel Arrow protocol solves this, though it's only in beta they expect high levels of vendor and OSS support.
+
+Ed. 🤦‍♂️
+<!-- Apache? Existing protocols? Parqet? AVRO? unbridled optimism about support. -->
+
+Arrow limitations
+
+- Throughput.
+  Requires sustained transmission of large amounts of data.
+- Stateful.
+  Doesn't play nicely with load balancers, collector pools, unstable connections, or small amounts of data.
+
+## Pipeline Operations

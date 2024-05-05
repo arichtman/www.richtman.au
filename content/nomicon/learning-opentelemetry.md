@@ -1071,3 +1071,104 @@ Arrow limitations
   Doesn't play nicely with load balancers, collector pools, unstable connections, or small amounts of data.
 
 ## Pipeline Operations
+
+### Filtering and Sampling
+
+First step of every pipeline should be removal of anything unwanted.
+This reduces wasted processing and noise early.
+Two options for this; filtering and sampling.
+In short: _filtering_ is about what you *discard*, _sampling_ is about what you *keep*.
+
+_Filtering_: process of completely removing specific data based on rules.
+Common examples include health checks like `/healthz`.
+This is so common there's actually predefined processors.
+Implementation note: filters are processors, but use varies a bit depending on telemetry type and whether it's SDK or collector.
+It's also possible to invert the logic and use allow lists.
+
+*Most* filtering strategies are possible in both the SDK and collector.
+Broadly, processing is best done in the collector.
+Advantages of this include; separation of concerns, ease of configuration adjustment and deployment.
+However, if wrapping the SDK or distributing an internal observability framework it can make sense to do first-pass filtering at the code level.
+This reduces resource consumption and network overhead by simply not creating spans.
+
+_Sampling_: process of identifying  a statistically representative subset of data and removing the rest.
+Common example of this is extremely common requests like `GET` on `/`.
+Volume of these requests is so high that even statistical outlier sampling will capture a portion of the traffic sufficient for observability.
+Sampling differs from filtering in that its goal is to reduce the overall data volume that the pipeline must process.
+<!-- that barely makes sense -->
+
+There are three main sampling approaches.
+
+#### Head-based
+
+Decision made when the trace starts, often with factors like 1-in-10, or 1-in-100.
+Not recommended as you could miss important traces.
+
+#### Tail-based
+
+Decision made after the trace is completed.
+Allows keeping specific subsets of traces, such as with-errors, or for specific users or groups.
+
+#### Storage-based
+
+Actually implemented in the analysis tool, not the pipeline.
+Requires different storage types with different features.
+Essentially hot-warm-cold-glacier style storage, with some compaction on transition.
+Compaction might be statistical sampling, deletion, compression...
+
+Advice on when to use which approach: they don't have any but they warn that if you mess it up it can be bad.
+
+### Filtering is Easy, Sampling is Dangerous
+
+Example: you're interested in only average latency over time.
+Approach: head-based sampling, effective for controlling costs.
+Averages over time can be easily derived from a completely random sample of traces.
+The lower the sampling rate, the less granular the averages will be.
+Issues: only focusses on latency, doesn't capture all errors, or guarantee to capture any errors.
+Error capture rate is chance and based on sampling rate.
+Solution: switch to tail-based sampling.
+Issue: now all spans for a trace must process on the same collector.
+Since spans are rom different sources, we used a load balancer.
+Collecting spans in one place interferes with load balancing.
+Also, all spans have to stay in-memory until the trace is completed, so more memory is required.
+In some cases, additional machine resource costs could outweigh savings on network and storage reductions.
+
+Additionally, if you're debugging, you want all traces and spans available.
+Which means no sampling at all, shipping in full to the analysis tool.
+
+### Sampling Recommendations
+
+Don't sample until network and storage costs become significant.
+Before sampling, try; avoiding excessive instrumentation, aggressively filtering out telemetry without use, and using compression.
+Even after that, never implement sampling without consulting your analysis tool.
+
+### Discovering Unused Telemetry
+
+Reconcile telemetry streams against what's used in dashboards and queries.
+This can be automated to create filtering rules to drop unused streams.
+Advanced techniques included adding telemetry to queues and setting TTL on incoming streams that deletes if unused for a certain time.
+Can also batch and reaggregate telemetry at ingest to reduce count of distinct events.
+All techniques require significant investments in custom tooling and code.
+There are little to no OSS solutions, but some vendors offer stand-alone or integrated solutions.
+
+### Transforming, Scrubbing, and Versioning
+
+_Transformation_: modifying attributes or signals themselves.
+Includes obfuscating sensitive information, creating new synthetic attributes, using schema transformation to ensure consistency, and adding new attributes from other sources.
+
+Warning: order of operations matters.
+When using tail-based sampling, certain processors require context objects that the sampling process strips.
+Conversely, certain sampling algorithms may require attributes that are added or modified by transformations.
+
+Some specialized transformations are unique to the collector.
+One example of this is converting between signal types, e.g. spans to metrics.
+_Connectors_ allow pipeline chaining, allowing new metrics to be created from existing ones, or turning traces into histograms,
+or analysing logs and creating metrics from them.
+
+Transformation notes:
+Transformations cost resources, and more complex ones cost more resources.
+Transformations take time, this makes actionable information take longer to be available.
+Try to get attributes right at the source, rather than correcting in transformations.
+They can be effective cost-control, converting traces or logs to metrics.
+
+#### Transforming Telemetry with OTTL

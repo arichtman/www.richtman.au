@@ -24,3 +24,4 @@ Short list of RFCs that I find or have found useful and relevant to my work. Not
 - [3849: Example IPv6 addresses for documentation](https://www.rfc-editor.org/rfc/rfc3849)
 - [6761: Example and reserved domains](https://www.rfc-editor.org/rfc/rfc6761)
 - [6890: Special-purpose address registries](https://www.rfc-editor.org/rfc/rfc6890)
+- [9562: UUIDs](https://www.rfc-editor.org/rfc/rfc9562)

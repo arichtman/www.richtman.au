@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-11, macos-12, macos-13-large, ubuntu-latest]
+        os: [macos-12, macos-14, ubuntu-latest]
     steps:
     - uses: actions/checkout@v4
       with:
@@ -19,7 +19,5 @@ jobs:
     - uses: DeterminateSystems/nix-installer-action@main
     - uses: DeterminateSystems/magic-nix-cache-action@main
     - uses: DeterminateSystems/flake-checker-action@main
-    - name: Test nix environment
-      run: nix develop
-    - name: Test website
+    - name: Test website and nix environment
       run: nix develop --command bash -c "zola build"

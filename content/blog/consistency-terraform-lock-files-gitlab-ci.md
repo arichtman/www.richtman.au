@@ -50,13 +50,13 @@ This way if the lock file changes, the cache is invalidated and rebuilt.
 GitLab offers some specific features to tune the cache behaviour.
 My tuning is as follows (most not strictly necessary).
 
-- Cache untracked files, since binaries and even the entire Terraform caching directory should be `.gitignore`d.
 - Don't cache the `.terraform/terrform.tfstate` file, as this can cause clashes on initialization if running more than one plan job in CI.
 - Save even on job failure, since a failed plan shouldn't prevent us from storing the providers.
 - Allow the cache to be shared with unprotected branches, providers are behaviour engines and should never contain sensitive information like credentials.
 - Prefix the cache to make it more identifiable on-disk to humans.
 - Don't push anything into the cache from the apply job.
   Apply shouldn't modify the providers at all.
+- We don't need to exclude untracked files as specifying `paths` [automatically includes untracked](https://docs.gitlab.com/ee/ci/yaml/#cachepaths).
 
 On reducing errors:
 
@@ -71,7 +71,6 @@ Here is the full implementation:
   cache:
     paths:
       - .terraform/providers
-    untracked: true
     unprotect: true
     when: always
     key:
@@ -99,3 +98,7 @@ apply_terraform:
   script:
   - terraform apply tfplan
 ```
+
+### References
+
+- [GitLab documentation](https://docs.gitlab.com/ee/ci/yaml/#cache)

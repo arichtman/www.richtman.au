@@ -117,3 +117,4 @@ We can confirm use of our module and settings after reboot with `wdctl`.
 - [Proxmox forum post](https://forum.proxmox.com/threads/howto-setup-watchdog.54582/)
 - [Linux kernel watchdog docs](https://www.kernel.org/doc/html/latest/admin-guide/lockup-watchdogs.html)
 - [Linux kernel watchdog API docs](https://www.kernel.org/doc/html/latest/watchdog/watchdog-api.html)
+- [Watchdog Ubuntu blog post](https://blog.heckel.io/2020/10/08/reliably-rebooting-ubuntu-using-watchdogs/)

@@ -74,6 +74,7 @@ FLAG           DESCRIPTION               STATUS BOOT-STATUS
 KEEPALIVEPING  Keep alive ping reply          1           0
 MAGICCLOSE     Supports magic close char      0           0
 SETTIMEOUT     Set timeout (in seconds)       0           0
+
 ```
 
 ## Solution
@@ -87,8 +88,18 @@ To set this module on boot we amend the Proxmox HA config.
 WATCHDOG_MODULE=iTCO_wdt
 ```
 
-Optionally, we can tune some settings courtesy of Systemd.
-I ripped these from `/etc/systemd/system.conf`.
+Optionally, we can tune some settings.
+The `softdog` is really not necessary but left here for people who may be using it.
+I like `nowayout` set true as I'd rather reboot than leave it in a zombie state.
+
+`/etc/modprobe.d/watchdog.conf`:
+
+```ini
+options iTCO_wdt nowayout=1 heartbeat=600
+options softdog nowayout=1
+```
+
+The Systemd settings are pulled from `/etc/systemd/system.conf`.
 Adjust these as you see fit, or not at all.
 I wound the runtime duration out to avoid any erroneous restarts.
 
@@ -104,7 +115,25 @@ RuntimeWatchdogSec=30
 #WatchdogDevice=
 ```
 
-We can confirm use of our module and settings after reboot with `wdctl`.
+Reboot and confirm.
+
+```bash
+cat /sys/class/watchdog/watchdog0/state
+
+active
+
+wdctl
+
+Device:        /dev/watchdog0
+Identity:      iTCO_wdt [version 0]
+Timeout:       30 seconds
+Timeleft:      30 seconds
+
+lsof /dev/watchdog0
+
+COMMAND PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+systemd   1 root   56w   CHR  244,0      0t0  883 /dev/watchdog0
+```
 
 ## References
 

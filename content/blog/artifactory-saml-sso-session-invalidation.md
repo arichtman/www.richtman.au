@@ -4,7 +4,7 @@ date = 2024-06-26T15:23:13+10:00
 description = "For any other poor soul out there"
 [taxonomies]
 categories = [ "Technical" ]
-tags = [ "artifactor", "auth", "saml", "authorization", "authentication" ]
+tags = [ "artifactory", "auth", "saml", "authorization", "authentication" ]
 +++
 
 ## Problem

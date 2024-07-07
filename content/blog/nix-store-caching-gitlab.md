@@ -2,10 +2,13 @@
 title = "Nix Store Caching in GitLab CI"
 date = 2024-07-05T12:30:12+10:00
 description = "Save, save save!"
+draft = true
 [taxonomies]
 categories = [ "Technical" ]
 tags = [ "nix", "nixpkgs", "gitlab", "cicd" ]
 +++
+
+<!-- Revoked until I sort out the symlinking issue -->
 
 ## Problem
 

@@ -46,7 +46,7 @@ in
 
 That's it!
 We can realise the package/derivation and produce an OCI-compliant tarball with `nix build .#packages.build-image`.
-Let's check our container `podman image load --input ./result` or something like `docker image load < result`
+Let's check our container `podman image load --input ./result` or something like `./result | docker load`
 
 There are a few more options though that you're likely to want.
 Here we have a base `FROM` image specified, as well as an `ENTRYPOINT` and `WORKDIR`.
@@ -141,6 +141,10 @@ This makes it slightly more costly to build, as you have to compile Skopeo I thi
 It also is opinionated, so if you wanted just a tarball you could unzip and poke around, it makes more work for you.
 
 It _does_ take our `devShell` straight into `copyToRoot`, but it doesn't seem to symlink anything to `/bin`, nor modify `$PATH`.
+
+TODO: looks like it did once take cnotents which probably passed thru...
+https://github.com/nlewo/nix2container/blob/20aad300c925639d5d6cbe30013c8357ce9f2a2e/default.nix#L395
+https://github.com/nix-community/docker-nixpkgs/blob/master/lib/buildCLIImage.nix
 
 ```nix
 {

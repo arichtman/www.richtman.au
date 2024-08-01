@@ -25,18 +25,18 @@ repos:
   - id: forbid-new-submodules
 
 - repo: https://github.com/jackdewinter/pymarkdown
-  rev: v0.9.20
+  rev: v0.9.21
   hooks:
   - id: pymarkdown
     additional_dependencies: [wcwidth, pyyaml]
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.13.0
+  rev: v2.14.0
   hooks:
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2']
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.28.6
+  rev: 0.29.1
   hooks:
   - id: check-renovate
     additional_dependencies: [json5]

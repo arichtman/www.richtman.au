@@ -56,13 +56,15 @@ My tuning is as follows (most not strictly necessary).
 - Prefix the cache to make it more identifiable on-disk to humans.
 - Don't push anything into the cache from the apply job.
   Apply shouldn't modify the providers at all.
-- We don't need to exclude untracked files as specifying `paths` [automatically includes untracked](https://docs.gitlab.com/ee/ci/yaml/#cachepaths).
+- We specify untracked false to avoid [a GitLab bug](https://gitlab.com/gitlab-org/gitlab/-/issues/378734),
+  where it hoovers up the `terraform.tfstate` file into the cache, causing clashes between environments.
 
 On reducing errors:
 
 If the cache is populated, `init` is almost a no-op.
 This still costs us a bit of time as it locks the state (though it can be disabled with `-lock false`).
 If we leave `init` in the `apply` job, it should reduce the amount of erroneous errors where the cache hasn't restored properly.
+We also set `-migrate-state` to blat any changes to backend if it's been run from local machines.
 
 Here is the full implementation:
 
@@ -73,6 +75,7 @@ Here is the full implementation:
       - .terraform/providers
     unprotect: true
     when: always
+    untracked: false
     key:
       prefix: tf-providers-locked
       files:
@@ -83,7 +86,7 @@ plan_terraform:
   extends:
   - .terraform__common
   script:
-  - terraform init
+  - terraform init -migrate-state
   - terraform plan -out tfplan
   artifacts:
     paths:

@@ -7,6 +7,9 @@ categories = [ "Technical" ]
 tags = [ "nix", "nixos", "kubernetes", "k8s", "k8s-nix-way" ]
 +++
 
+Note: This entry is while I was still finding the series' feet.
+Please try the subsequent articles as they are more focussed and better presented.
+
 ## Kubernetes the Nix Way - Part 1
 
 We'll keep using SnowfallOrg's `lib`, I find it convenient for wiring stuff up.

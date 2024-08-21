@@ -27,7 +27,6 @@ taxonomies = [
 # Whether to do syntax highlighting
 # Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
 highlight_code = true
-
 highlight_theme = "monokai"
 
 external_links_target_blank = true
@@ -89,6 +88,7 @@ socials = [
 allowed_domains = [
     { directive = "font-src", domains = ["'self'", "data:"] },
     { directive = "img-src", domains = ["'self'", "data:"] },
+    { directive = "style-src", domains = ["'unsafe-inline'"] },
 ]
 
 [extra.analytics]

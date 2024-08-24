@@ -15,7 +15,7 @@ You can find the template files on the post about Kubernetes with Step CLI.
 ```sh
 step certificate create proxmox-ca pve-root-ca.pem pve-root-ca.key --ca root-ca.pem --ca-key root-ca-key.pem \
   --ca-password-file root-ca-pass.txt --insecure --no-password --template granular-dn-intermediate.tpl \
-  --set-file dn-defaults.json --not-after 8760h
+  --set-file dn-defaults.json --not-after 43830h
 ```
 
 Next up we'll need a leaf node certificate for TLS.
@@ -25,7 +25,8 @@ Substitute your node name as required.
 export NODE_DNS_NAME=proxmox
 step certificate create proxmox-tls pve-ssl.pem pve-ssl.key --ca pve-root-ca.pem --ca-key pve-root-ca.key \
   --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 2160h --bundle \
-  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1 --san "$(getent hosts ${NODE_DNS_NAME} | cut -f1 -d' ')"
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san "${NODE_DNS_NAME}.internal" \
+  --san localhost --san 127.0.0.1 --san ::1 --san "$(getent hosts ${NODE_DNS_NAME} | cut -f1 -d' ')"
 ```
 
 Now we'll load those up on the target machine and restart the service.

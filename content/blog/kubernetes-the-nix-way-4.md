@@ -10,6 +10,9 @@ tags = [ "nix", "nixos", "kubernetes", "k8s", "k8s-nix-way" ]
 
 ## Kubernetes the Nix Way - Part 4
 
+Note: Around this time ICANN approved the `.internal` TLD and I switched my home network over to that.
+This will explain the shift from `.local`.
+
 When we left off last time, the kubelet service was in and starting up, but failing to authorize to do anything with the API server.
 Turns out this is due to the _Authorization Mode_ being left as only RBAC.
 Set it to `RBAC,Node` and badda-bing badda-boom.

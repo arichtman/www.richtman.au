@@ -56,10 +56,10 @@ See [downloads](#downloads) for templates and defaults.
 ```bash
 step certificate create kubernetes-ca ./ca.pem ./ca-key.pem  --ca ./root-ca.pem --ca-key ./root-ca-key.pem \
   --ca-password-file root-ca-pass.txt --insecure --no-password --template granular-dn-intermediate.tpl \
-  --set-file dn-defaults.json --not-after 8760h
+  --set-file dn-defaults.json --not-after 43830h
 step certificate create etcd-ca ./etcd.pem ./etcd-key.pem  --ca ./root-ca.pem --ca-key ./root-ca-key.pem \
   --ca-password-file root-ca-pass.txt --insecure --no-password --template granular-dn-intermediate.tpl \
-  --set-file dn-defaults.json --not-after 8760h
+  --set-file dn-defaults.json --not-after 43830h
 ```
 
 Notes:
@@ -87,7 +87,7 @@ export NODE_DNS_NAME=<yourname>
 # etcd TLS
 step certificate create etcd etcd-tls.pem etcd-tls-key.pem --ca etcd.pem --ca-key etcd-key.pem \
   --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
-  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san "${NODE_DNS_NAME}.internal" --san localhost --san 127.0.0.1 --san ::1
 # kube-apiserver
 step certificate create kube-apiserver-etcd-client kube-apiserver-etcd-client.pem kube-apiserver-etcd-client-key.pem \
   --ca etcd.pem --ca-key etcd-key.pem --insecure --no-password --not-after 8120h \
@@ -138,7 +138,7 @@ We'll need a few new certificates for this one, all leaf type and only one for H
 # Note that your local domain and private IP for in-cluster may vary
 step certificate create kube-apiserver kube-apiserver-tls.pem kube-apiserver-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
   --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
-  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1 --san 10.0.0.1 \
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san "${NODE_DNS_NAME}.internal" --san localhost --san 127.0.0.1 --san ::1 --san 10.0.0.1 \
   --san kubernetes --san kubernetes.default --san kubernetes.default.svc \
   --san kubernetes.default.svc.cluster --san kubernetes.default.svc.cluster.local
 # For client authentication to kubelets
@@ -203,11 +203,11 @@ step certificate create system:kube-scheduler scheduler-apiserver-client.pem sch
 # TLS
 step certificate create kube-scheduler scheduler-tls.pem scheduler-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
   --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
-  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san "${NODE_DNS_NAME}.internal" --san localhost --san 127.0.0.1 --san ::1
 
 step certificate create kube-controllermanager controllermanager-tls.pem controllermanager-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
   --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
-  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san "${NODE_DNS_NAME}.internal" --san localhost --san 127.0.0.1 --san ::1
 ## All node certs
 # Flannel apiserver client
 # This one depends on your RBAC setup, adjust the CN as required, the O might be uneccessary
@@ -225,7 +225,7 @@ step certificate create system:kube-proxy proxy-apiserver-client.pem proxy-apise
 # TLS
 step certificate create kubelet kubelet-tls.pem kubelet-tls-key.pem --ca ca.pem --ca-key ca-key.pem \
   --insecure --no-password --template granular-dn-leaf.tpl --set-file dn-defaults.json --not-after 8760h --bundle \
-  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san localhost --san 127.0.0.1 --san ::1
+  --san "${NODE_DNS_NAME}" --san "${NODE_DNS_NAME}.local" --san "${NODE_DNS_NAME}.internal" --san localhost --san 127.0.0.1 --san ::1
 ```
 
 ## Onwards

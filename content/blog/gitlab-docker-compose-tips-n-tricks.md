@@ -71,12 +71,27 @@ In order to maximise the cache coverage, point your registry FQDN at `gitlab.com
 If you use further down-the-tree projects it'll work but not share them.
 
 ```Dockerfile
-FROM gitlab.com/$<MY_GROUP_NAME>/dependency_proxy/containers/library/alpine:latest
+FROM gitlab.com/silverrailtech/dependency_proxy/containers/library/alpine:latest
+
 # Or
+
+# Articulated for CI
 ARG CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX
 
 FROM $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/library/alpine:latest
+
+# Or
+
+# Articulated for CI and local override
+# Can use Docker defaulting...
+ARG MY_REGISTRY=docker.io
+FROM $MY_REGISTRY/alpine:latest
+# Or shell defaulting
+ARG MY_REGISTRY
+FROM ${MY_REGISTRY:-docker.io}/alpine:latest
 ```
+
+For a GitLab job:
 
 ```YAML
 job:

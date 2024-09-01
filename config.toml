@@ -4,7 +4,7 @@ theme = "tabi"
 title = "richtman.au"
 description = "Platform Engineering, Cloud, DevOps, and all things facilitative infrastructure"
 
-generate_feed = true
+generate_feeds = true
 
 # Don't publish development infrastructure to the website
 ignored_content = [ "flake.*", ".pymarkdown.json", ".pre-commit-config.yaml", "*.lock", ".git*", "renovate.json5", "pyproject.toml" ]

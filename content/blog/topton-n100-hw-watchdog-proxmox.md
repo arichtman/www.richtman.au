@@ -147,3 +147,7 @@ systemd   1 root   56w   CHR  244,0      0t0  883 /dev/watchdog0
 - [Linux kernel watchdog docs](https://www.kernel.org/doc/html/latest/admin-guide/lockup-watchdogs.html)
 - [Linux kernel watchdog API docs](https://www.kernel.org/doc/html/latest/watchdog/watchdog-api.html)
 - [Watchdog Ubuntu blog post](https://blog.heckel.io/2020/10/08/reliably-rebooting-ubuntu-using-watchdogs/)
+- [Antoher watchdog Ubuntu post](http://www.madore.org/~david/linux/iTCO-wdt-test.html)
+- [Adding a module to Linux](https://www.cyberciti.biz/faq/add-remove-list-linux-kernel-modules/)
+- [Debian watchdog daemon post](https://unix.stackexchange.com/questions/64057/how-to-correctly-configure-debian-watchdog-daemon-for-bios-watch-dog)
+- [Sysrq explainer](https://ngelinux.com/what-is-proc-sysrq-trigger-in-linux-and-how-to-use-sysrq-kernel-feature/)

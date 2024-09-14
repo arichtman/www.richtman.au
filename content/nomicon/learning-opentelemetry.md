@@ -1172,3 +1172,88 @@ Try to get attributes right at the source, rather than correcting in transformat
 They can be effective cost-control, converting traces or logs to metrics.
 
 #### Transforming Telemetry with OTTL
+
+_Open Telemetry Transformation Language_ (OTTL): transformation rules that are defined in YAML and are specific to each signal.
+
+Log files can be processed using a multiple recievers including file.
+Log parsing is based on _Stanza_, the GoLang project.
+
+#### Privacy and Regional Regulations
+
+OTTL is a good place to handle regional regulatory requirements like PII, GDPR.
+No specific recommendations but think about it.
+
+#### Buffering and Backpressure
+
+Telemetry is high network volume, you'll need enough buffer space for spikes and will have to scale to errode pressure.
+
+#### Changing Protocols
+
+Finally, export stage.
+No specific recommendations, just suggestions.
+
+De facto OSS stack includes _Prometheus_, _Jaeger_, _OpenSearch_, and _Grafana_.
+Pipelines can route exports based on telemetry attributes themselves, e.g. paid users to better-resourced stacks.
+Exports can also be used to trace unique architectures.
+For example, routing spans from variable-step process into a queue so you can track counts per-step.
+This can also be used to measure time between spans in a trace, allowing you to calculate and either expose metrics or enrich data.
+
+#### Collector Security
+
+Keep collector listens local, don't bind to open IP addresses.
+Anything accepting WAN traffic, use TLS.
+
+#### Kubernetes
+
+OpenTelemetry Kubernetes operator supports deployment types; _DaemonSet_, _Sidecar_, _Deployment_, _StatefulSet_.
+DaemonSet and Sidecar are recommended, with DaemonSet being more efficient.
+Though Deployment and StatefulSet run collector pools, almost all collector configurations are stateless, so deployments are recommended.
+
+The operator can also inject and configure auto-instrumentation into applications.
+Very good for a quick start, but the only supported installation method at present is `kubectl.`
+
+#### Managing Telemetry Costs
+
+Valuating telemetry data piecemeal is difficult, things only become interesting in concert or relatively.
+What was not interesting prior may become crucial in future.
+There are no general guidelines bar:
+
+*_Don't measure what doesn't matter._*
+
+If nobody is looking, then it's not worth keeping track of.
+However, discarding data based on last-accessed or access frequency is naieve.
+Consider cost-to-value ratio, are high-cardinality, bespoke metrics worth it?
+Optimize the _resolution_ of your data.
+Deduplicate, aggregate, discard from the most normal or uninteresting.
+
+### Conclusion
+
+Often there's a big push to roll onto OpenTelemetry, and then it becomes pipeline setup and management ongoing.
+Given volumes and sensitivity, if the organization wants value out of it's data, it needs a clear and consice strategy for managing telemetry pipeline operations.
+
+## Rolling Out Observability
+
+Telemetry is not observability, but you do need it.
+What else do you need?
+
+Observability is a _Value_, the same way trust and transparency are.
+It's a committment to the way you build, operate, interperet etc etc.
+As such, requires organizational commitment, bottom-to-top, to use data as input to processes, practices, decision-making etc.
+<!-- lol, lmao even -->
+
+### The Three Axes of Observability
+
+- Deep vs wide: get very detailed information on a subset, or general information from everything?
+- Rewriting code vs rewriting collection: add net-new instrumentation, or transform existing data?
+- Centralized vs decentralized: strong central observability team or distributed, lighter touch?
+
+#### Deep vs Wide
+
+Most organizations have prior art wrt observability frameworks.
+Inevitable question is "what are we replacing?", and all the corollaries of why, what does it give us, how much will it cost...
+Difficulties answering the deep-vs-wide question lead to difficulties articulating good answers, especailly under budgetary pressure.
+
+To answer the question, look at the biggest problem you're trying to solve.
+How much of the system can you change from where you sit in the organization?
+If you're a small team with large remit, going wide first will provide value across the organization.
+If you're a service team, going deep makes more sense and will provide more value to you directly and faster.

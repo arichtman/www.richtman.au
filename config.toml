@@ -86,6 +86,8 @@ socials = [
     # { name = "", url = "", icon = ""},
 ]
 
+FediverseCreator = {  handle = "arichtman", domain = "eigenmagic.net" }
+
 allowed_domains = [
     { directive = "font-src", domains = ["'self'", "data:"] },
     { directive = "img-src", domains = ["'self'", "data:"] },

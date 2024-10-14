@@ -62,7 +62,7 @@ skin = "indigo_ingot"
 feed_icon = true
 
 remote_repository_url = "https://github.com/arichtman/www.richtman.au"
-favicon = "images/avatar.gif"
+favicon = "images/caricature.jpg"
 
 menu = [
     { url = "", name = "Home" },

@@ -17,8 +17,12 @@ When we left off last time, the kubelet service was in and starting up, but fail
 Turns out this is due to the _Authorization Mode_ being left as only RBAC.
 Set it to `RBAC,Node` and badda-bing badda-boom.
 
-Kubelet was missing `iptables` binary.
-Systemd service options includes `path` option to set packages.
+```
+serviceArgs =
+  [...]
+  "--authorization-mode"
+  "RBAC,Node"
+```
 
 Now, we forgot to set the pod CIDR in our kubelet config.
 This isn't terrible but we want to eventually manage this dynamically,
@@ -44,8 +48,68 @@ tmpfiles.settings."kubelet-config-dropin"."/var/lib/kubelet/config.d" = {
 };
 ```
 
+Having that all up and running, I attempted to run some pods.
+This yielded errors from the kubelet stating that it had failed to execute `mount`, having not found it on `PATH`.
+This seems odd since `mount` is accessible to both `nixos` and `root` users.
+Systemd service options includes `path` option to set packages.
+The solution is to add the `mount` package explicitly to the NixOS service configuration.
+This ensures it will be on `PATH` and available to the service when running.
+
+```
+systemd = {
+  services.k8s-kubelet = {
+    [...]
+    path = with pkgs; [
+      mount
+    ];
+  };
+```
+
+In trying to debug the pod initialization errors, I ran `kubectl logs`, only for it not to work.
+The error complained about not resolving the host name.
+Inspecting the `node` resource yielded some clues.
+
+```yaml
+apiVersion: v1
+kind: Node
+metadata:
+  name: patient-zero
+  labels:
+    kubernetes.io/hostname: patient-zero
+status:
+  addresses:
+  - address: patient-zero
+    type: Hostname
+[...]
+```
+
+The node name being unqualified feels correct, I suspect this is more an issue with GoLang using its own DNS resolution path,
+which presumably is skipping mDNS.
+We verify this by running with some debug flags.
+
+```
+$ GODEBUG=netdns=9 kubectl get no
+
+go package net: confVal.netCgo = false  netGo = false
+go package net: cgo resolver not supported; using Go's DNS resolver
+go package net: hostLookupOrder(fat-controller.local) = files,dns
+[...] Usual output
+```
+
+Still, for now we can hack around this.
+
+```
+serviceArgs =
+  [...]
+  "--hostname-override"
+  "${config.networking.hostName}.local"
+```
+
+This yields the fully qualified mDNS domain, but GoLang is still not using mDNS for resolution,
+so this solves nothing.
+
 ## References
 
-<!-- - [State of Work]() -->
-
+- [State of Work](https://github.com/arichtman/nix/commit/ae11adcfe8fbca335d5451389bcb3bf470c44741)
 - [Systemd tmpfiles](https://www.freedesktop.org/software/systemd/man/tmpfiles.d)
+- [GoLang DNS lookup post](https://jameshfisher.com/2017/08/03/golang-dns-lookup/)

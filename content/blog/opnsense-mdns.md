@@ -52,18 +52,25 @@ I chose to stick with Avahi for consistency and control.
 
 ### mDNS responder and pre-requisites
 
-1. Clone the ports repo, or download a release and decompress it.
-1. Install `avahi` meta-package `cd ports/net/avahi && make`.
+<!--
+1. Set up system-level Make config.
+   `cd /usr && git clone https://github.com/opnsense/tools.git && cd tools && git checkout 24.7.10 && ln -s /usr/tools/config/24.7/make.conf /etc/make.conf`
+   There's probably a more idomatic solution for this, come let me know at one of my contact points - they're on the homepage.
+-->
+
+1. Clone ports into `/usr` and switch to the matching version tag.
+   `cd /usr && git clone https://github.com/opnsense/ports.git && cd ports && git checkout 24.7.10`
+1. Install _Avahi_ meta-package `cd /usr/ports/net/avahi && make`.
    About a zillion things will fly by you, some of them with terrifying dates and version numbers.
    Be brave.
    You did snapshot your VM before this, right?
-1. Avahi requires `dbus`, so `service dbus start`.
+1. Avahi requires `dbus`, so `pkg install --yes dbus && service dbus start`.
 1. Directly test the Avahi daemon `/usr/local/sbin/avahi-daemon`.
 1. Test mDNS resolution from OPNsense for another machine `avahi-resolve-host-name mum.local`.
    Test mDNS resolution from another machine `avahi-resolve-host-name opnsense.local`.
    If this is working, proceed onwards.
    If you want to investigate errors like I had to about it failing to start, `/usr/local/sbin/avahi-daemon --debug`.
-1. Fire it up as an rc daemon `service avahi-daemon start`, and check with `/usr/local/sbin/avahi-daemon -c`.
+1. Fire it up as an rc daemon `service avahi-daemon start`, and check with `/usr/local/sbin/avahi-daemon --check`.
 1. Repeat the test of resolution from another machine.
    If that's all working, proceed.
 1. Set the rc daemons to start automatically: `service dbus enable`, `service avahi-dnsconfd enable`, `service avahi-daemon enable`.
@@ -77,7 +84,7 @@ I chose to stick with Avahi for consistency and control.
 1. Now anything that respects `nsswitch.conf` will use mDNS!
 
 Super unfortunately, basically nothing we need will use this.
-I may go into a future post about setting up authoritative DNS but tbh I expect it to be well covered already.
+I may go into a future post about setting up authoritative DNS but TBH I expect it to be well covered already.
 
 ## References
 
@@ -87,3 +94,4 @@ I may go into a future post about setting up authoritative DNS but tbh I expect 
 - [FreeBSD docs](https://docs.freebsd.org/en/books/handbook/config/#configtuning-rcd)
 - [FreeBSD manual on nsswitch.conf](https://man.freebsd.org/cgi/man.cgi?query=nsswitch.conf&apropos=0&sektion=5&manpath=FreeBSD+14.1-RELEASE&arch=default&format=html)
 - [OPNsense ports](https://github.com/opnsense/ports)
+- [OPNsense forum on port installation](https://forum.opnsense.org/index.php?topic=2004)

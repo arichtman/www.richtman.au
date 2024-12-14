@@ -1,4 +1,4 @@
 [submodule "themes/tabi"]
 	path = themes/tabi
 	url = https://github.com/arichtman/tabi.git
-	ref = fediverse-author
+	ref = umami-fqdn

@@ -5,6 +5,7 @@ description = "Instructions on cloning MiFare classic variety cards"
 [taxonomies]
 categories = [ "Technical" ]
 tags = [ "nfc", "acr122u", "wsl2" ]
+draft = true
 +++
 
 ## Acr122u NFC Cloning on WSL

@@ -20,7 +20,7 @@ grep -icw man
 ./script 2> errors.txt
 sudo systemctl set-default|isolate graphical.target|multi-user.target
 ```
-need to learn about sticky bit and chmod +t??
+need to learn about sticky bit and chmod +t
 suid works on files and execution assumes user/owner permissions, chmod 4xxx
 sgid works on directories chmod 2xxx
 
@@ -73,13 +73,58 @@ need to learn basic Vim
 anacron?
 cron expressions
 dpkg vs apt vs ??
+gpasswd??
+fucking squid config
 
 sysctl -p /etc/sysctl.d/$FILE.conf
 /etc/sysctl.conf
 
+# SELinux
+
+seinfo -u|r|t
 semanage
+semanage boolean --list
+semanage port --list
+setsebool $OPTION 1
+getsebool $OPTION
 sestatus
 selinux-activate
-getenforce
+audit2why --all
+audit2allow --all -M mymodule
+semodule -i mymodule.pp
+chcon -u unconfined_u  -r object_r -t user_home_t $FILE
+chcon  --reference=$FILE
+restorecon -F -R $PATH
+semanage fcontext --add --type $TYPE "$PATH(/.*)?"
+semanage fcontext --list
+avc = access vector cache
+getenforce/setenforce
+/etc/selinux/config
 
 grub security=selinux
+
+# VMs
+
+virt-manager
+
+virsh define
+virsh destroy # force shutdown
+virsh autostart
+virsh dominfo
+virsh setvcpus $NAME 2 --config [--maximum]
+qemu-img resize
+
+# limits
+
+/etc/security/limits.conf
+ulimit -a
+visudo
+
+$user|%$group $host|ALL=ALL|($runas_user1,$runas_user2:[$runas_group1,$runas_group2]) [NOPASSWD:ALL] $command1, $command2
+
+sudo -i requires user's password
+su -l requires root's password
+
+# Networking
+
+netplan try

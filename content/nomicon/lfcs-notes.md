@@ -128,3 +128,107 @@ su -l requires root's password
 # Networking
 
 netplan try
+
+## Disks and volumes
+
+mkfs.xfs|ext4
+tune2fs|xfs_admin
+swapon|swapoff|mkswap
+dd if=/dev/0 --block=1M --count=256 status=progress of=/some/swapfile
+findmnt -t xfs,ext4
+
+/etc/fstab
+$SOURCE_VOLUME $DESTINATION_PATH $FILESYSTEM_TYPE $MOUNT_OPTIONS $DUMP(can be zero) $ERROR_SCANNING
+destination is "none" for swap
+error scanning
+0 - never
+1 - priority scan
+2 - secondary scan (after priority)
+
+### NFS
+
+#### Server
+
+nfs-kernel-server
+exportfs -r
+exportfs -v
+/etc/exports
+
+$SOURCE_PATH $CLIENT_IDENTIFIER_1($OPTIONS_1) [$CLIENT_IDENTIFIER($OPTIONS_2)]
+client identifier can be hosname(with wildcards), ip, or cidr
+rw|ro
+sync|async
+no_subtree_check
+no_root_squash maps client roots to "nobody" local user
+
+#### Client
+
+nfs-common
+mount $IDENTIFIER:$PATH $PATH
+
+### NBD
+
+#### Server
+
+nbd-server
+/etc/nbd-server/config
+
+allowlist = true <- actually means let clients list available block devices
+
+[$EXPORT_NAME]
+  exportname=$SOURCE_VOLUME (?path?)
+
+#### Client
+
+nbd-client
+modprobe nbd
+/etc/modules-load.d/modules.conf
+
+nbd-client-l $IDENTIFIER
+nbd-client $IDENTIFIER -N $EXPORT_NAME
+nbd-client -d /dev/nbd0
+
+### LVM
+
+lvm2
+
+physical volume - entire disk or partition
+volume group
+logical volume
+physical extent
+
+lvmdiskscan
+pvcreate
+pvs
+vgcreate $NAME $PV [$PV]
+pvcreate|pvremove
+vgextend|vgreduce
+lvcreate
+lvs
+lvresize [--resizefs]
+
+/dev/$VG_NAME/$LV_NAME
+
+### Storage monitoring
+
+sysstat
+
+iostat -h -d #device only
+iostat -p all|sda
+pidstat --human -d #device only
+dmsetup info /dev/dm-0
+
+stress comes from either velocity or volume
+high tps = high volume, high kbps = high velocity
+
+### Advanced permissions
+
+setfacl --modify --recursive user|group:$USERNAME:rw|--- $PATH
+setfacl --remove|remove-all
+getfacl $PATH
+
+mask is maximum permissions
+
+chattr +a $PATH #allow append only
+chattr +i $PATH #immutable
+lsattr $PATH

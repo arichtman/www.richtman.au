@@ -2,10 +2,10 @@
 title = "Acr122u NFC Cloning on WSL2"
 date = 2022-08-28T11:31:43Z
 description = "Instructions on cloning MiFare classic variety cards"
+draft = true
 [taxonomies]
 categories = [ "Technical" ]
 tags = [ "nfc", "acr122u", "wsl2" ]
-draft = true
 +++
 
 ## Acr122u NFC Cloning on WSL

@@ -91,7 +91,7 @@ FediverseCreator = {  handle = "arichtman", domain = "eigenmagic.net" }
 allowed_domains = [
     { directive = "font-src", domains = ["'self'", "data:"] },
     { directive = "img-src", domains = ["'self'", "data:"] },
-    { directive = "style-src", domains = ["'unsafe-inline'"] },
+    { directive = "style-src", domains = ["'self'", "data:"] },
 ]
 
 [extra.analytics]

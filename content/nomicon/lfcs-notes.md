@@ -38,6 +38,7 @@ systemd-cat -t $APP_NAME -p alert|info|warning|err|crit
 systemctl daemon-reload # Picks up changes to unit files/startup DAG
 
 # Handy for examples
+
 /lib/systemd/system/$SERVICE_FILES
 
 niceness range -20 -> 19, lower is higher priority.
@@ -57,17 +58,17 @@ pkill -KILL $NAME # Can omit SIG prefix
 lsof -p $PID
 
 # Find last user logins
+
 last
 lastlog
 
 journalctl \
-  $(which sudo) \ # specifci program
+  $(which sudo) \ # specific program
   -p info \ # level
   -g '^b' \ # grep
   -S 13:00 \ # since
   -U '2024-12-30 14:01:15' \ # until
   -b 0 \ for this boot
-
 
 need to learn basic Vim
 anacron?
@@ -106,6 +107,19 @@ grub security=selinux
 # VMs
 
 virt-manager
+virt-install
+  -n myRHELVM1 \
+  --description "Test VM with RHEL 6" \
+  --os-type=Linux \
+  --os-variant=rhel6 \
+  --ram=2048 \
+  --vcpus=2 \
+  --disk path=/var/lib/libvirt/images/myRHELVM1.img,bus=virtio,size=10 \
+  --graphics none \
+  --cdrom /var/rhel-server-6.5-x86_64-dvd.iso \
+  --network bridge:br0
+
+[ref](https://unix.stackexchange.com/questions/309788/how-to-create-a-vm-from-scratch-with-virsh)
 
 virsh define
 virsh destroy # force shutdown
@@ -215,8 +229,11 @@ sysstat
 
 iostat -h -d #device only
 iostat -p all|sda
-pidstat --human -d #device only
+pidstat --human -d 1
 dmsetup info /dev/dm-0
+
+dstat --top-io --top-bio
+lsof -p $PID
 
 stress comes from either velocity or volume
 high tps = high volume, high kbps = high velocity
@@ -232,3 +249,32 @@ mask is maximum permissions
 chattr +a $PATH #allow append only
 chattr +i $PATH #immutable
 lsattr $PATH
+
+
+### Kodekloud
+
+need to learn nftables properly, especially adding rules and persisting
+
+### NFTables
+
+nft list ruleset > rs.nft
+nft -f rs.nft
+
+```
+table ip nat {
+  chain prerouting {
+    type nat hook prerouting priority -100;
+    ip saddr 10.5.5.0/24 tcp dport 81 dnat to 192.168.5.2:80
+  }
+  chain postrouting {
+    type nat hook postrouting priority 100;
+    masquerade
+  }
+}
+```
+
+### NTP
+
+`/etc/systemd/timesyncd.conf`
+
+`timedatectl`

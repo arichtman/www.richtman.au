@@ -7,7 +7,8 @@
       url = "github:numtide/flake-utils";
     };
     arichtman = {
-      url = "github:arichtman/nix";
+      # TODO: switch back to main after this passes
+      url = "github:arichtman/nix/updates";
     };
     mado = {
       url = "github:akiomik/mado";

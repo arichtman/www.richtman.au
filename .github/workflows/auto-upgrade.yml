@@ -20,9 +20,8 @@ jobs:
     - name: Update stuff
       run: |
         nix flake update
-        nix develop --command pre-commit autoupdate
-        nix develop --command poetry update
-        git submodule update --remote
+        nix develop --command prefligit autoupdate
+        git submodule update --init --remote
     - uses: peter-evans/create-pull-request@v6
       with:
         branch: auto-updates

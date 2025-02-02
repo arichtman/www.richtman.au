@@ -1,0 +1,11 @@
+# Always fails with front matter
+[lint.md002]
+level = 2
+
+# Fails on nested headings
+[lint.md024]
+# plugins.no-duplicate-header.enabled = false
+
+[lint.md013]
+line-length = 180
+# plugins.line-length.code_block_line_length = 180

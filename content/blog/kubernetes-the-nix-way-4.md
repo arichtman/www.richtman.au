@@ -1,8 +1,7 @@
 +++
 title = "Kubernetes the Nix Way - Part 4"
 date = 2024-08-21T18:05:30+10:00
-description = ""
-draft = true
+description = "Kubernetes foibles"
 [taxonomies]
 categories = [ "Technical" ]
 tags = [ "nix", "nixos", "kubernetes", "k8s", "k8s-nix-way" ]
@@ -17,7 +16,7 @@ When we left off last time, the kubelet service was in and starting up, but fail
 Turns out this is due to the _Authorization Mode_ being left as only RBAC.
 Set it to `RBAC,Node` and badda-bing badda-boom.
 
-```
+```nix
 serviceArgs =
   [...]
   "--authorization-mode"
@@ -55,7 +54,7 @@ Systemd service options includes `path` option to set packages.
 The solution is to add the `mount` package explicitly to the NixOS service configuration.
 This ensures it will be on `PATH` and available to the service when running.
 
-```
+```nix
 systemd = {
   services.k8s-kubelet = {
     [...]
@@ -87,7 +86,7 @@ The node name being unqualified feels correct, I suspect this is more an issue w
 which presumably is skipping mDNS.
 We verify this by running with some debug flags.
 
-```
+```text
 $ GODEBUG=netdns=9 kubectl get no
 
 go package net: confVal.netCgo = false  netGo = false
@@ -98,7 +97,7 @@ go package net: hostLookupOrder(fat-controller.local) = files,dns
 
 Still, for now we can hack around this.
 
-```
+```nix
 serviceArgs =
   [...]
   "--hostname-override"

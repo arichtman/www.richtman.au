@@ -1,0 +1,8 @@
+plugins:
+  first-line-heading:
+    enabled: false
+  no-duplicate-header:
+    enabled: false
+  line-length:
+    line_length: 180
+    code_block_line_length: 180

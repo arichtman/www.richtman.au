@@ -2,7 +2,6 @@
 title = "Debugging a Kubernetes CNI plugin with Containerd"
 date = 2025-02-08T14:33:27+10:00
 description = "It's hell out there"
-draft = true
 [taxonomies]
 categories = [ "Technical" ]
 tags = [ "kubernetes", "k8s", "networking", "cni", "containers", "linux" , "containerd", "troubleshooting" ]
@@ -11,6 +10,8 @@ tags = [ "kubernetes", "k8s", "networking", "cni", "containers", "linux" , "cont
 ## Problem
 
 Our CNI is misbehaving.
+Pods are either refusing to pull or launch citing sandbox errors,
+or they're running and localhost health checks are failing.
 
 ## Analysis
 
@@ -329,6 +330,8 @@ Path: /opt/cni/bin
 StdinData: {"cniOutput":"/tmp/cni-output.txt","cniVersion":"1.1.0","name":"my-cni","prevResult":{"cniVersion":"1.1.0"},"type":"debug"
 ```
 
+## Solution
+
 Plumbing the `containerd` source code for the error we find the source of the message.
 It's [checking the CNI plugin result for IPs](https://github.com/containerd/containerd/blob/59c8cf6ea5f4175ad512914dd5ce554942bf144f/internal/cri/server/sandbox_run.go#L409)
 on the [default interface name](https://github.com/containerd/containerd/blob/59c8cf6ea5f4175ad512914dd5ce554942bf144f/internal/cri/server/helpers.go#L68).
@@ -358,9 +361,6 @@ I think it's actually a Linux thing.
 }
 ```
 
-The container is now pulling image and running!
-Health checks are still failing though.
-
 ```bash
 # Check host network interfaces, verify vEth has been created
 ifconfig
@@ -383,7 +383,15 @@ With this we can see that:
 - Our `nginx` service is listening on port 80
 - Host routing to the vEth interface is working
 
-## Solution
+The container is now pulling image and running!
+Health checks are still failing though.
+For this we need to loosen the kernel's _reverse path filtering_.
+
+Turns out the kernel can be configured to reject packets that would return via a different network interface.
+In our case, I believe the Kubelet is sending the health checks, which would originate with the host netns default interface IP.
+This would be IP forwarded or otherwise land on the vEth interface, which is in a different subnet, causing the return routing to not match.
+It may also be in the pod netns where the reverse pathing doesn't quite line up, I am out of energy to dig further into it.
+At any rate, setting `net.ipv{4,6}.conf.{all,default,$interface}.rp_filter` to off (`0`) or loose (`2`) seemed to fix the health checks.
 
 ## References
 
@@ -394,3 +402,4 @@ With this we can see that:
   [CNI](https://github.com/f1ko/demystifying-cni)
   [CRI](https://github.com/f1ko/demystifying-cri)
 - [Eran Yanay's CNI from scratch](https://github.com/eranyanay/cni-from-scratch)
+- [Antonio's Istio->Cilium post](https://blog.goorzhel.com/istio-to-cilium-a-grand-yak-shave/)

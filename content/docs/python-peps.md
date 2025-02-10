@@ -2,10 +2,13 @@
 title = "Python PEP Reference List"
 date = 2023-06-04T16:20:32+10:00
 description = "Short list of personally useful PEPs"
+draft = true
 [taxonomies]
 categories = [ "Technical" ]
 tags = ["rfc", "reference" ]
 +++
+
+<!-- deprecated, I no longer use Python enough to bother with this -->
 
 ## Python PEP reference list
 

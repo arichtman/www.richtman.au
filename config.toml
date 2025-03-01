@@ -68,6 +68,7 @@ menu = [
     { url = "", name = "Home" },
     { url = "blog", name = "Blog" },
     { url = "docs", name = "Docs" },
+    { url = "til", name = "TIL" },
     { url = "nomicon", name = "Nomicon" },
     { url = "tags", name = "Tags" },
     { url = "categories", name = "Categories" },

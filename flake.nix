@@ -8,7 +8,7 @@
     };
     arichtman = {
       # TODO: switch back to main after this passes
-      url = "github:arichtman/nix/updates";
+      url = "github:arichtman/nix";
     };
     mado = {
       url = "github:akiomik/mado";

@@ -15,16 +15,15 @@
         "yaml2nix": "yaml2nix"
       },
       "locked": {
-        "lastModified": 1738481220,
-        "narHash": "sha256-HixqA/CyFAbUQew+m+l+3tma0vaYLuJNpIzN7jKVFhg=",
+        "lastModified": 1740309422,
+        "narHash": "sha256-mtlfaM8gS3B8TB3Cf+GlZtCopV5pPzbshN+LOMrsaxc=",
         "owner": "arichtman",
         "repo": "nix",
-        "rev": "89286f38c1d2693143c42edf18ba5ad805c4f79f",
+        "rev": "fec26bc2282631febc495ca972f7044b4e4616b5",
         "type": "github"
       },
       "original": {
         "owner": "arichtman",
-        "ref": "updates",
         "repo": "nix",
         "type": "github"
       }

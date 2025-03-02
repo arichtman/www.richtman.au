@@ -1,20 +1,18 @@
 +++
-title = "ICMP Redirect"
-date = 2025-03-01
+title = "Systemd-resolved Configuration Source"
+date = 2025-03-02
 [taxonomies]
 categories = [ "TIL" ]
-tags = [ "networking", "icmp" ]
+tags = [ "networking", "dns", "systemd" ]
 +++
 
-Gateways can offer something of a dynamic redirect using an ICMP feature.
-If a gateway receives a packet on an interface with an onward destination, and the routing table says the next hop
-is back out the same interface to the same network, it may send an ICMP redirect.
-This tells the traffic originator to direct future traffic for that destination directly to that gateway instead.
-
-Since obeying the redirect is client-side it's presumably optional and configurable.
-There appear to be some security concerns with this also.
+Systemd-resolved orchestrates the well-known `/etc/resolv.conf` file, so that it's local service is used for DNS queries.
+Configuration for the service is a usual combination of `/etc/systemd/resolved.conf` and drop-ins in `/etc/systemd/resolved.conf.d/`.
+The resultant actual resolution configuration is stored at `/run/systemd/resolve/resolv.conf`.
+This is useful specifically in Kubernetes contexts with CoreDNS, where you have a local stub resolver for the nodes,
+but you don't want pods attempting to access DNS on the loopback interface, as nothing will be listening, and it won't be routed to the host.
 
 ## References
 
-- [Cisco documentation](https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13714-43.html)
-- [ICMP RFC](https://www.rfc-editor.org/rfc/rfc792)
+- [ArchWiki](https://wiki.archlinux.org/title/Systemd-resolved)
+- [CoreDNS Loop Troubleshooting](https://coredns.io/plugins/loop/#troubleshooting-loops-in-kubernetes-clusters)

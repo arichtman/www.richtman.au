@@ -38,6 +38,6 @@ I'm really not sure how effective UDP scanning is since there's no return packet
 
 Some `ping` commands use UDP apparently, maybe BSD/Mac, mind that.
 
-Tcpdump filter: `icmp6[icmp6type]=icmp6-echo[reply]`
+Tcpdump filter: `icmp6[icmp6type]=icmp6-echo[reply]|icmp6-routeradvert`
 
 Set size: `-s 1024`

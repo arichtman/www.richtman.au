@@ -28,5 +28,6 @@ Short list of RFCs that I find or have found useful and relevant to my work. Not
 - [6750: OAuth 2.0 bearer tokens](https://www.rfc-editor.org/rfc/rfc6750)
 - [6761: Example and reserved domains](https://www.rfc-editor.org/rfc/rfc6761)
 - [6890: Special-purpose address registries](https://www.rfc-editor.org/rfc/rfc6890)
+- [8415: DHCPv6](https://www.rfc-editor.org/rfc/rfc8415)
 - [8446: TLS 1.3](https://www.rfc-editor.org/rfc/rfc8446)
 - [9562: UUIDs](https://www.rfc-editor.org/rfc/rfc9562)

@@ -24,7 +24,7 @@ They were made with my experience, organizational context and needs in mind.
   - No boilerplate solution
 - KDL
   - Disliked syntax
-  - Seems to hold
+  - Seems to hold XML as an inspiration
   - Less documentation
 - KRO
   - Brand new

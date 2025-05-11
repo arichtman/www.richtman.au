@@ -12,9 +12,10 @@ tags = []
 
 Many words have been spilled about DevOps and DevOps teams.
 This post assumes some familiarity with the tired arguments like;
-DevOps isn't a team
-DevOps isn't part of the org structure
-DevOps is just a buzzword
+
+- DevOps isn't a team
+- DevOps isn't part of the org structure
+- DevOps is just a buzzword
 
 If you were here for those, sorry.
 
@@ -22,7 +23,7 @@ DevOps/Platform Engineering is a consultancy.
 
 And it should be managed as such.
 
-The fact is that internal platforms, most of them, could be co-owned by multiple internal functions, to better meet the needs of all users.
+Most internal platforms, would better meets the needs of all users, if co-owned by the internal functions.
 It's effective governance and the systems thereof that prohibit this.
 
 How often have you had to interact with an HR or marketing system that seemed to eb totally alien to your needs as a user from a different discipline?
@@ -54,7 +55,7 @@ Case A: Your client is completely new to everything - you provide full implement
 You gather requirements, design solutions, implement, maybe there's even a budget for QA and training (ha!)
 
 Case B:
-Client is somewhat familiar with the suite, you offer to tackle some of the unknown unknowns, sharp areas and hairy chasms.
+Client is somewhat familiar with the suite, you offer to tackle some of the unknown unknowns, sharp areas, wooly balls, and hairy chasms.
 You can rely on them for some basic architecture and configuration, but they still need some hand-holding.
 The dark is scary, after all.
 

@@ -17,6 +17,7 @@ Short list of RFCs that I find or have found useful and relevant to my work. Not
 - [2136: DNS dynamic update](https://www.rfc-editor.org/rfc/rfc2136)
 - [2142: Mailbox names](https://www.rfc-editor.org/rfc/rfc2142)
 - [2782: SRV records](https://www.rfc-editor.org/rfc/rfc2782)
+- [3123: DNS prefix records](https://www.rfc-editor.org/rfc/rfc3123)
 - [3339: Date formatting](https://www.rfc-editor.org/rfc/rfc3339)
 - [3849: Example IPv6 addresses for documentation](https://www.rfc-editor.org/rfc/rfc3849)
 - [4193: Private IPv6 ranges](https://www.rfc-editor.org/rfc/rfc4193)

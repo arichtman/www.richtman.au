@@ -77,6 +77,21 @@ Index cross-reference:
 Whole-of-cluster search:
 `GET _all/_search?q=field:value`
 
+Get distinct for field:
+```
+GET kibana_sample_data_logs/_search
+{
+  "size": "0",
+  "aggs": {
+    "unique_values": {
+      "terms": {
+        "field": "agent.keyword"
+      }
+    }
+  }
+}
+```
+
 ## Manipulation
 
 Add document:
@@ -174,7 +189,7 @@ Check shard settings:
 `GET _cluster/settings?filter_path=persistent.cluster.max_shards_per_node`
 
 Find phat indexes:
-`GET _cat/indices/otel-v1-apm-span-000*?v&s=pri.store.size:desc`
+`GET _cat/indices?v&s=pri.store.size:desc`
 
 Find unassigned shards:
 `GET _cat/shards?v=true&h=index,shard,prirep,state,node,unassigned.reason&s=state`

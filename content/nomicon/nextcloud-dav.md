@@ -10,7 +10,7 @@ tags = [ "nomicon", "nextcloud" ]
 
 Endpoints:
 
-- Addressbook: https://murena.io/remote.php/dav/addressbooks/users/arichtman@e.email/contacts/
-- Files access: https://murena.io/remote.php/dav/files/arichtman%40e.email/
-- Generic DAV: https://murena.o/remote.php/dav/
-- Carddav: https://murena.o/remote.php/carddav/
+- Addressbook: https://nextcloud.richtman.au/remote.php/dav/addressbooks/users/arichtman/contacts/
+- Files access: https://nextcloud.richtman.au/remote.php/dav/files/arichtman/
+- Generic DAV: https://nextcloud.richtman.au/remote.php/dav/
+- Carddav: https://nextcloud.richtman.au/remote.php/carddav/

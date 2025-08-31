@@ -110,6 +110,10 @@ subjects:
 
 ## Configure the client
 
+Finally, we need to let the client know to initiate an implicit auth flow.
+We'll be using [the kubelogin plugin](https://github.com/int128/kubelogin) to do this, as it'll handle making the calls, receiving the token, and transforming it into
+the required schema for `kubectl`.
+
 `~/.kube/config`:
 
 ```yaml
@@ -135,6 +139,8 @@ subjects:
   I'm still learning the nuances of Oauth2+OIDC and there's a bit of magic using the kubectl plugin reformatting tokens.
 - I could probably hone the scopes down a little, it's not exactly sensitive stuff though.
 - It _may_ be possible to do something cool and dynamic here with ABAC, I would like to look into it later.
+- I did take a stab at using `step-cli` for the `kubectl` configuration but it has no caching or refresh facilities.
+  It's supposed to be used to retrieve a certificate immediately from `step-ca` and not much else it seems.
 - You probably want to use a verified email for username, rather than something like `preferred_name` which;
   a) is user-mutable, b) is probably not enforced unique.
 

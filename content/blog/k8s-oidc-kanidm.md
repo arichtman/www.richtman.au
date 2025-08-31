@@ -17,7 +17,7 @@ High-level we need to:
 ## Create an Oauth2 client in Kanidm
 
 Since we don't want to be shipping our client secret to every user,
-nor making a new client for every user, we opt for a trustless client/implicit/PKCE flow.
+nor making a new client for every user, we opt for a trustless mode, authorization code with PKCE.
 
 ```bash
 export MY_APISERVER_ADDRESS="k8s.internal"
@@ -110,7 +110,7 @@ subjects:
 
 ## Configure the client
 
-Finally, we need to let the client know to initiate an implicit auth flow.
+Finally, we need to let the client know to initiate an authorization code flow with PKCE.
 We'll be using [the kubelogin plugin](https://github.com/int128/kubelogin) to do this, as it'll handle making the calls, receiving the token, and transforming it into
 the required schema for `kubectl`.
 

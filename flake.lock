@@ -12,15 +12,14 @@
         "nixpkgs-release": "nixpkgs-release",
         "snowfall-lib": "snowfall-lib",
         "snowfall-thaw": "snowfall-thaw",
-        "valheim-server": "valheim-server",
         "yaml2nix": "yaml2nix"
       },
       "locked": {
-        "lastModified": 1759184493,
-        "narHash": "sha256-FdrjGuGnGep0+DnYXQJxRlkf9Oxf8OdPlb4v5WcgB/Q=",
+        "lastModified": 1761605844,
+        "narHash": "sha256-6zM5u1kRJjf1yCGBBKkJDehSDzAP1bLsgvyoNQvWVP0=",
         "owner": "arichtman",
         "repo": "nix",
-        "rev": "fd86eec66b95029501c678f402b44c3be1c871a2",
+        "rev": "1688e1a49f73a28e97e1d3709519d4794a32b4b5",
         "type": "github"
       },
       "original": {
@@ -608,11 +607,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1759070547,
-        "narHash": "sha256-JVZl8NaVRYb0+381nl7LvPE+A774/dRpif01FKLrYFQ=",
+        "lastModified": 1761880412,
+        "narHash": "sha256-QoJjGd4NstnyOG4mm4KXF+weBzA2AH/7gn1Pmpfcb0A=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "647e5c14cbd5067f44ac86b74f014962df460840",
+        "rev": "a7fc11be66bdfb5cdde611ee5ce381c183da8386",
         "type": "github"
       },
       "original": {
@@ -727,28 +726,6 @@
       "original": {
         "owner": "snowfallorg",
         "repo": "thaw",
-        "type": "github"
-      }
-    },
-    "steam-fetcher": {
-      "inputs": {
-        "nixpkgs": [
-          "arichtman",
-          "valheim-server",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1714795926,
-        "narHash": "sha256-PkgC9jqoN6cJ8XYzTA2PlrWs7aPJkM3BGiTxNqax0cA=",
-        "owner": "nix-community",
-        "repo": "steam-fetcher",
-        "rev": "12f66eafb7862d91b3e30c14035f96a21941bd9c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "steam-fetcher",
         "type": "github"
       }
     },
@@ -942,29 +919,6 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "valheim-server": {
-      "inputs": {
-        "nixpkgs": [
-          "arichtman",
-          "nixpkgs"
-        ],
-        "steam-fetcher": "steam-fetcher"
-      },
-      "locked": {
-        "lastModified": 1744061401,
-        "narHash": "sha256-islY8WOjZpWdsEbcTjCDfR1vCCfLQT1eMHIvwTSyInI=",
-        "owner": "arichtman",
-        "repo": "valheim-server-flake",
-        "rev": "7330e7805e8d1ac733069fd9cc40f521a64d56d2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "arichtman",
-        "ref": "patch-0-220-5",
-        "repo": "valheim-server-flake",
         "type": "github"
       }
     },

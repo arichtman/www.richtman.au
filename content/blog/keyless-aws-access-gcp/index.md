@@ -14,13 +14,15 @@ We want external, _human_ users to be able to access our resources via AWS APIs
 (e.g. read a bucket).
 We don't want to hand out any long-lived keys or IAM users.
 We can't use IAM Identity Center, it only supports one Identity Provider and that's in use for our company workforce.
-We don't want to use SAML Identity Provider as it only supports the browser and copying credentials out of cookies is nasty.
+We don't want to use AWS's IAM _Identity Provider_ with [SAML](https://auth0.com/blog/how-saml-authentication-works/)
+as it only supports the browser and copying credentials out of cookies is nasty.
 
 ## Analysis
 
-Essentially, we tell AWS to trust GCP's attestations of users.
-Then, we rely on the signed JWT identity attestation, to know who's trying to access AWS.
-From there, we pop them onto any resource or trust policy we like.
+Effectively, we tell AWS to trust GCP's attestations of users.
+Then, we rely on the signed [JWT](https://www.jwt.io/introduction) identity attestation, to know who's trying to access AWS.
+By trusting this JWT attestation, we achieve *authentication*, we know *who* the user is.
+To achieve *authorization*, we allow certain _authenticated_ users to assume an AWS role.
 
 ![Keyless AWS access from GCP](./keyless-gcp-aws.drawio.svg)
 
@@ -73,8 +75,13 @@ It's somewhat limited since we don't have any more claims like groups, so we'll 
 
 1. Create a role with whichever permissions you want.
 1. Set the trust policy to allow Oauth users to assume it based on audience.
+   Note that this **must** match the issuer and audience to be secure.
+   If we don't set the issuer correctly, anyone who has access to the issuer's domain could sign attestations and gain access.
+   If we don't limit the audience, then attestations signed _for another application_ would get access.
+   For additional security, limit the subject as well.
+   This will mean both sides need to make a change to allow additional users access.
 
-```json
+```json5
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -86,7 +93,8 @@ It's somewhat limited since we don't have any more claims like groups, so we'll 
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
         "StringEquals": {
-          "accounts.google.com:aud": "999999999999-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.apps.googleusercontent.com"
+          "accounts.google.com:aud": "999999999999-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.apps.googleusercontent.com",
+          "accounts.google.com:sub": ["555555555555555555555", "666666666666666666666"]
         }
       }
     }
@@ -111,7 +119,7 @@ export CLIENT_SECRET=GOCSPX-bbbbbbbbbbbbbbbbbbbbbbbbbbbb
 # ...using Step CLI
 step oauth --provider https://accounts.google.com \
 --client-id $CLIENT_ID \
---scope "openid profile" \
+--scope "openid" \
 --listen "localhost:5000" \
 --prompt none \
 --client-secret $CLIENT_SECRET \
@@ -124,7 +132,7 @@ step oauth --provider https://accounts.google.com \
 -client-id $CLIENT_ID \
 -pkce \
 -state $(uuidgen) \
--scopes "openid profile" \
+-scopes "openid" \
 -client-secret $CLIENT_SECRET \
 | jq -r ' .id_token ' > $AWS_WEB_IDENTITY_TOKEN_FILE
 
@@ -152,23 +160,27 @@ aws sts get-caller-identity
 ## Notes
 
 - There are other properties in the attestation you can use in the Trust Policy.
+  Namely, the subject, which is the primary key/unique identifier for the actual Google account that has authenticated.
   For simplicity these are excluded here but you can punch the token into [any JWT](https://oauth.tools) [of choice](https://jwt.io) and view them.
+  **Warning: When implementing your account management system, you shouldn't use the email field in the ID token as a unique identifier for a user.
+  Always use the sub field as it is unique to a Google Account even if the user changes their email address.**
 - Technically I don't think the `id_token` is supposed to be used for this but hey, it works.
-- There _should_ be a way to get proper PKCE/implicit/untrusted flow working with GCP's Oauth.
-  I had trouble with getting the tools to generate the correct URL parameter incantation, so opted to allow the client secret to be used.
-  It's not particularly sensitive in this use case since the user still has to auth to GCP but it is poor.
-- Oauth-CLI used here is a pet project of someone's.
-  I just needed to get this working and it was sufficent for that.
 - By default, Step-CLI will randomize the listening port.
   This has never once played nicely for me with authorized/trusted redirect URI configurations on Oauth apps.
   This is why we fix the port number, other wise you'll just get `redirect_uri_mismatch` errors.
-- I had a look at getting untrusted flows working via iOS/Android/TV flows but mobile has deprecated loopback listens in favor of
+- There _should_ be a way to get proper PKCE authorization code flow working with GCP's Oauth.
+  However the token exchange API seems to insist on a `client_secret`.
+  I had a look at getting untrusted flows working via iOS/Android/TV flows but mobile has deprecated loopback listens in favor of
   whatever mobile APIs there are, so localhost redirect URIs are blocked.
   The device flow _could_ maybe work but involves entering a code into *another* webpage so seemed a big step worse.
+  I haven't tried exhaustively since it's not particularly sensitive in this use case since the user still has to auth to GCP but it is poor.
 - Not sure why but the env vars weren't taking for me for the `assume-role-...` call so I added the arguments directly.
   Hopefully it works nicely for you.
 - There are some session duration controls on the role, set these as suits your security demands.
-- You _could_ add a check for the subject on the JWT (which equates to the user), but that defeats a lot of the benefits of delegation.
+
+## Thanks
+
+- [KCA](https://eigenmagic.net/@kca) for reviewing this
 
 ## References
 

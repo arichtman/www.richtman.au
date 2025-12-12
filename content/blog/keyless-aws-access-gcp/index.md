@@ -2,7 +2,6 @@
 title = "Keyless AWS auth from GCP"
 date = 2025-12-03T18:17:54+10:00
 description = "Tractable security"
-draft = false
 [taxonomies]
 categories = [ "Technical" ]
 tags = [ "aws", "gcp", "auth", "oauth2", "oauth", "oidc", "authorization", "authentication" ]
@@ -48,7 +47,7 @@ Decoding the JWT in the `id_token` field yields the signed payload.
   "iss": "https://accounts.google.com",
   "azp": "999999999999-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.apps.googleusercontent.com",
   "aud": "999999999999-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.apps.googleusercontent.com",
-  "sub": "777777777777777777777",
+  "sub": "555555555555555555555",
   "at_hash": "S1_EDzKDkRfSnYDTDwT_WA",
   "iat": 1764900145,
   "exp": 1764903745
@@ -68,7 +67,7 @@ It's somewhat limited since we don't have any more claims like groups, so we'll 
    - Type: Web application
    - Authorized redirect URIs:
      Depends, for Step-CLI it will be whatever we set the argument to,
-     and for OIDC-CLI it was `http://localhost:9555/callback`
+     and for `oidc-cli` it was `http://localhost:9555/callback`
 1. Note the client ID and secret.
 
 ### AWS
@@ -79,7 +78,7 @@ It's somewhat limited since we don't have any more claims like groups, so we'll 
    If we don't set the issuer correctly, anyone who has access to the issuer's domain could sign attestations and gain access.
    If we don't limit the audience, then attestations signed _for another application_ would get access.
    For additional security, limit the subject as well.
-   This will mean both sides need to make a change to allow additional users access.
+   This will mean both sides need to make a change to allow additional users access, which negates some advantages of delegation.
 
 ```json5
 {
@@ -105,23 +104,29 @@ It's somewhat limited since we don't have any more claims like groups, so we'll 
 ### Usage
 
 ```bash
-export AWS_ROLE_SESSION_NAME="$(whoami)"
-export AWS_WEB_IDENTITY_TOKEN_FILE='./token.txt'
+# Role to assume
 export AWS_ROLE_ARN='arn:aws:iam::888888888888:role/MyGCPRole'
+# Session name to identify us in AWS systems, since we're sharing the role
+export AWS_ROLE_SESSION_NAME="$(whoami)@$(hostname)/$(date --rfc-3339=seconds --utc | tr -d ' ')"
+# Consistent file name
+export AWS_WEB_IDENTITY_TOKEN_FILE='./token.txt'
 # Used for login hint to GCP Oauth prompt
 export MY_EMAIL=ariel.richtman@silverrailtech.com
+# Google Oauth issuer
 export ISSUER=https://accounts.google.com
+# Your GCP Oauth application details
 export CLIENT_ID=999999999999-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.apps.googleusercontent.com
 export CLIENT_SECRET=GOCSPX-bbbbbbbbbbbbbbbbbbbbbbbbbbbb
 
 # Get our GCP attestation...
 
 # ...using Step CLI
-step oauth --provider https://accounts.google.com \
+step oauth --provider $ISSUER \
 --client-id $CLIENT_ID \
 --scope "openid" \
 --listen "localhost:5000" \
 --prompt none \
+--auth-param login_hint=$MY_EMAIL \
 --client-secret $CLIENT_SECRET \
 | jq -r ' .id_token ' > $AWS_WEB_IDENTITY_TOKEN_FILE
 
@@ -130,6 +135,7 @@ step oauth --provider https://accounts.google.com \
 -login-hint $MY_EMAIL \
 -issuer $ISSUER \
 -client-id $CLIENT_ID \
+-prompt none \
 -pkce \
 -state $(uuidgen) \
 -scopes "openid" \
@@ -161,26 +167,32 @@ aws sts get-caller-identity
 
 - There are other properties in the attestation you can use in the Trust Policy.
   Namely, the subject, which is the primary key/unique identifier for the actual Google account that has authenticated.
-  For simplicity these are excluded here but you can punch the token into [any JWT](https://oauth.tools) [of choice](https://jwt.io) and view them.
+  For simplicity these are excluded here but you can punch the token into [any JWT](https://oauth.tools) tool [of choice](https://jwt.io) and view them.
   **Warning: When implementing your account management system, you shouldn't use the email field in the ID token as a unique identifier for a user.
   Always use the sub field as it is unique to a Google Account even if the user changes their email address.**
 - Technically I don't think the `id_token` is supposed to be used for this but hey, it works.
 - By default, Step-CLI will randomize the listening port.
   This has never once played nicely for me with authorized/trusted redirect URI configurations on Oauth apps.
   This is why we fix the port number, other wise you'll just get `redirect_uri_mismatch` errors.
-- There _should_ be a way to get proper PKCE authorization code flow working with GCP's Oauth.
-  However the token exchange API seems to insist on a `client_secret`.
+- There _should_ be a way to get proper PKCE authorization code flow working *without* `client_secret`.
+  However the token exchange API
+  [seems to insist on it](https://stackoverflow.com/questions/70239201/why-does-google-oauth-api-requires-client-secret-for-the-device-flow-is-it-safe).
+  It seems at [at one point they were going to remove the requirement](https://groups.google.com/g/oauth2-dev/c/HnFJJOvMfmA/m/JzZ8JA717BYJ).
+  Since then it seems that client secret is just considered not sensitive in this context, [and may be retained for consistency](https://stackoverflow.com/a/7476709)
   I had a look at getting untrusted flows working via iOS/Android/TV flows but mobile has deprecated loopback listens in favor of
   whatever mobile APIs there are, so localhost redirect URIs are blocked.
   The device flow _could_ maybe work but involves entering a code into *another* webpage so seemed a big step worse.
   I haven't tried exhaustively since it's not particularly sensitive in this use case since the user still has to auth to GCP but it is poor.
-- Not sure why but the env vars weren't taking for me for the `assume-role-...` call so I added the arguments directly.
+- Not sure why but the env vars weren't taking for me for the `assume-role-with-web-identity` call so I added the arguments directly.
   Hopefully it works nicely for you.
 - There are some session duration controls on the role, set these as suits your security demands.
+- The GCP JWT attestation expires an hour from issuance.
+  I didn't see any option to adjust this, but it seems a reasonable duration.
 
 ## Thanks
 
-- [KCA](https://eigenmagic.net/@kca) for reviewing this
+- [KCA](https://eigenmagic.net/@kca)
+- [Mitchell Pomery](https://www.pommers.org/)
 
 ## References
 

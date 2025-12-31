@@ -1,10 +1,9 @@
 +++
 title = "Container Security"
 description = "Summary of the book"
-draft = true
 [taxonomies]
 categories = [ "Personal", "Meta" ]
-tags = [ "reference", "book", "professional-development", "summary" ]
+tags = [ "reference", "book", "professional-development", "summary", "docker", "containers" ]
 +++
 
 # Container Security
@@ -27,9 +26,9 @@ Can prevent sticky bit/setuid escalation with `--security-opt no-new-privileges`
 - `CAP_SYS_MODULE` kernel module modification
 - `CAP_BPF` eBPF modification
 
-`getcap $(which ping)`
+See capabilities of an file: `getcap $(which ping)`
 
-`getpcaps $(pgrep ping)`
+See capabilities of a process: `getpcaps $(pgrep ping)`
 
 ## Control Groups
 
@@ -68,7 +67,7 @@ Namespaces:
 - Cgroups
 - Time
 
-Need to sudo `lsns` to see everything.
+Need to `sudo lsns` to see everything.
 `unshare` allows process child/fork to change namespaces.
 You probably need `--fork` when using `sudo unshare` for it to work.
 `ps` reads `/proc` directly, so even `unshare`ing the PID namespace doesn't impact visibility of system processes.
@@ -83,7 +82,8 @@ Proc mounts and any other mounts made won't get cleaned up on process exit, and 
 Network namespaces always come with loopback.
 <!-- Aha! This I learned the hard way with Cilium CNI assuming such -->
 
-`sudo ip link add ve1 netns 28586 type veth peer name ve2 netns 1`
+Add a vEth peer:
+`sudo ip link add ve1 netns 28586 type veth peer name ve2 netns 1` then
 `sudo ip link set ve2 up`
 
 User namespaces get numeric ID mappings, `/proc/$(pgrep sleep)/uid_map`.
@@ -218,7 +218,6 @@ Approaches to making custom profiles:
 - `strace`
 - Security Profiles Operator
 - Commercial tools
-- Falco/gVisor (mine)
 
 Since syscalls change all the time, new kernel versions require testing and adjustment.
 
@@ -227,9 +226,9 @@ Since syscalls change all the time, new kernel versions require testing and adju
 Linux security module.
 Profiles can be bound to executables.
 
-_Mandatory Access Controls_ (MAC):controlled by central admin with zero chance for users to modify or pass.
+_Mandatory Access Controls_ (MAC): controlled by central admin with zero chance for users to modify or pass.
 
-Linux file permissions are _Discretionary Access Controls_ (DAC).
+Linux file permissions are _Discretionary Access Controls_ (DAC), can be modified by users.
 
 Check with `/sys/kernel/security/lsm`.
 Profiles under `/etc/apparmor.d/`, use `apparmor_parser`to load, check with either `/sys/kernel/security/apparmor/profiles` or `apparmor_status`.
@@ -281,7 +280,7 @@ Examples: IBM Nabla, Unikraft.
 Strip everything out of the kernel except what the application needs.
 Requires per-application builds but boots natively on hypervisors.
 
-### Breaking Container Isolation
+## Breaking Container Isolation
 
 Containers default to running as root.
 Configure your runtimes etc to at least to u/gid mapping.
@@ -292,3 +291,203 @@ Sticky bit usually works, unless the app developers have specifically written so
 
 Some apps still demand root, e.g. Nginx cause of port binding, or for installing software.
 Docker now defaults to allowing unprivileged port binding to all with `net.ipv4.ip_unprivileged_port_start=0`.
+
+Kernel modules are less safe, need `CAP_SYS_MODULE`, eBPF preferred, need `CAP_BPF` at least, plus others depending on what BPF program is doing.
+
+Rootless container support still coming along, Alpha in kubernetes and some things like capabilities behave differently due to user namespace.
+Another example is `CAP_NET_BIND_SERVICE` for low port numbers - won't work on host even if granted to rootless container.
+Also FS must support user id remapping.
+
+Docker defaults to a subset of root capabilities, `--privileged` immediately grants all.
+`libpcap`'s `capsh` tool can show current caps.
+`libbpf-tools`'s `capable` tool can show cap events, allowing you to build a tailored set.
+
+Gotcha: volume mounts _within_ a `readOnly` volume mount can be writeable, use `recursiveReadOnly`.
+
+Docker with `--pid=host` is a bad idea since it shares way too much with the container i.e. it can see and send signals to other containerized processes.
+
+## Container Network Security
+
+_Microsegmentation_: where network policies are defined in terms of workloads and services rather than between individual containers.
+
+Weirdly, K8s _NetworkPolicy_ is native, but CNIs are not required to implement.
+
+_netfilter_ is the underlying engine, `iptables` is the legacy tool to configure them.
+
+ IPVS, which was more performant for kube-proxy’s case. But IPVS never really took off for a number of reasons:
+it requires ip_vs kernel modules (which can be brittle),
+it wasn’t adopted by public cloud providers, and the ecosystem of tooling that many operators grew familiar with around iptables didn’t work with it.
+nftables is another more modern approach, and there is a project to use it for a more performant version of kube-proxy.
+But the Kubernetes community has already moved on to eBPF-based solutions.
+
+Cilum-cli stuff:
+
+- `cilium-dbg bpf lb list`
+- `cilium-dbg identity list`
+- `cilium-dbg bpf policy get $ID`
+
+If using sidecars for service mesh, ensure `CAP_NET_ADMIN` etc is not made available to the application container, lest it try to circumvent the proxy sidecar.
+
+## Securely Connecting Components
+
+Netscape never published SSLv1 cause it was shit.
+SSLv3 became (mostly) TLSv1.0.
+
+Wireguard isn't FIPS-compliant just cause it's a beaurocratic headache.
+WolfSSL swaps out the crypto suite with FIPS-compliant bits.
+
+IPsec works on existing interfaces, rather than dedicated ones like Wireguard.
+IPsec has two modes, tunnel and transport.
+Tunnel mode is considered more secure because it encrypts the IP header for the original packet,
+which includes the source and destination IP addresses, and it can be used where the packets will traverse NAT devices.
+Transport mode generally has better performance, and it’s perfectly suitable in a private network where the IP addresses are not considered sensitive.
+
+Just enrypting traffic between hosts/nodes using their own identity may be sufficient for security.
+
+## Passing Secrets to Containers
+
+Environment variables, even set at runtime, are not ideal:
+
+- Visible unecessarily on inspecting the resource
+- Often dumped by processes/logging
+- Can be inspected from the host under the `/proc` directory.
+- Can't be updated once running (though I think updating while running isn't so straightforward, even with files).
+
+Secret store CSI driver is good, but a lot of the native ways of consuming secrets rely on k8s secret resources, so you lose some of the advantages of the other either way.
+Apparently Kubernetes now has a native encryption option for secrets which is customizable, but most people go with what their cloud provider offers.
+
+Even `tmpfs`-mounted secrets are accessible to root user, so as always, mind yer roots.
+
+## Container Runtime Protection
+
+Broad-strokes approaches:
+
+- Image runtime policies
+- Network traffic restrictions
+- Limiting executables
+- File access controls
+- Users and groups
+
+### Technology Options for Runtime Security
+
+`LD_PRELOAD` can be used to forcibly override system libraries with instrumented or limited ones.
+Doesn't work on statically linked binaries, can be worked around, difficult to make one-size-fits-all with different library versions like `musl`.
+
+`ptrace` can be used to track a process.
+Has huge overhead, is easily detected by the traced process, requires `CAP_SYS_PTRACE` which opens other holes, typically crippled for this use case by default on many distros.
+Practically - unworkable.
+
+Seccomp, AppArmor, SELinux: more static in nature, crude policies in some, abstractions make it difficult to express Kubernetes concepts.
+Limited observability - crude logging with no Kubernetes information.
+Cannot help with a malicious program that remains within policy.
+
+Kernel-based is a great option vantage-point-wise and lifecycle-wise.
+Kernel modules though are brittle and fail poorly.
+
+eBPF - no surprise she likes it.
+`libbpf-tools`'s `execsnoop`.
+
+### Container Runtime Security Tools
+
+- Falco (the big one)
+- Tetragon
+- Tracee
+- Inspektor Gadget
+- Commercial options
+
+Falco has no enforcment options in-kernel, best you can do are user-space tools which is effectively just kill the container.
+Falco has paid options for enterprise.
+
+Tetragon includes an agent for exporting to SEIM, and uses in-kernel filtering to keep the data from being noisy.
+Can use the Linux Security Module (LSM) API (same as AppArmor) but in conjunction with eBPF to do complex dynamic policies.
+Enforcement has options, including; report, override, kill.
+In-kernel enforcement means the syscall never completes before the SIGKILL is sent.
+Has Prom metrics.
+Tetragon has paid options for enterprise.
+
+Tracee is AquaSec, and also detection but no enforcement.
+_Does_ do in-kernel filtering, but kludgily.
+
+Inspektor Gadget is a collection of gadgets not a solution, so neither detection nor enforcement.
+Useful for; execution monitoring, capabilities monitoring, network tracing, syscall tracing, file access auditing.
+
+Prevention vs Alerting is a balance. Too lax and you're too late, too tight and you're in self-inflicted pain with Kubernetes fighting your tool killing the pod.
+You may wish to quarantine a container for later investigation, `docker pause` can do this but Kubernetes has no such concept.
+For Kubernetes though you could isolate it using a focussed NetPol, cordon/taint the node to preserve it's state, and use the kubelet checkpoint API to capture state.
+
+eBPF changes can roll out live, so policy changes and evolution can move fast.
+
+## Containers and OWASP Top 10
+
+### Broken Access Control
+
+- Don’t run containers as root.
+- Limit the capabilities granted to each container.
+- In Kubernetes, use RBAC to limit permissions.
+- Use rootless containers, if possible.
+
+### Cryptographic Failures
+
+- Encrypt both at rest and in-transit
+- Mind your ciphers and algorithms
+- Least priv on accessing decryption keys
+- Maybe secrets scanning
+
+### Injection
+
+This is up to the application, no specific container mitigations (though I would consider WAF in service mesh maybe).
+
+### Insecure Design
+
+Microservices allows breaking down threat models to bite-size pieces, Kubernetes allows platform-level approaches.
+
+### Security Misconfiguration
+
+- Benchmarks like CIS
+- Cloud Security Posture Management (CPSM).
+  OSS options include; Cloud Custodian, Prowler, CloudSploit.
+  Vendor options as well.
+- Env vars only for non-sensitive data
+- Private container registry with secured access
+- NetPol
+
+### Vulnerable and Outdated Components
+
+Image scanners, with capabilities of; rebuilding container images with up-to-date packages, identify running vulnerable containers and replace.
+
+### Identification and Authentication Failure
+
+Standard advice for application-level implementation.
+Credentials that the apps _themselves_ use treated as secrets.
+Consider offloading authentication to service mesh.
+
+### Software and Data Integrity Failures
+
+This includes supply chain security failures.
+Signing images, verifying containers, and securing CI/CD.
+
+Data integrity includes deserialization bugs, which are not affected by containerization.
+
+### Security Logging and Monitoring Failures
+
+IBM report _Cost of Data Breaches_ (2025) reckons average 181 days to identify breach, further 60 for containment.
+
+Centralized logging including:
+
+- Container start/stop, image identity, user that launched
+- Access to secrets
+- Modification of privileges
+- Modification of container payload
+- Inbound and outbound network connections
+- Volume mounts
+- Failed actions
+
+### Server-Side Request Forgery
+
+Container-wise, she thinks this would be higher as you could convince an application to hit the cloud provider's metadata API or the control plane.
+Limit these services' access to only trusted workloads.
+
+## Conclusions
+
+This wasn't really a conclusions section, nor a summary.
+Just kindof a little end cap.

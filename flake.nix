@@ -6,10 +6,6 @@
     flake-utils = {
       url = "github:numtide/flake-utils";
     };
-    arichtman = {
-      # TODO: switch back to main after this passes
-      url = "github:arichtman/nix";
-    };
     mado = {
       url = "github:akiomik/mado";
     };
@@ -28,13 +24,8 @@
               inputs.mado.packages.${system}.default
               zola
               actionlint
-              inputs.arichtman.packages.${system}.prefligit
-              # Required for prefligit
-              uv
+              prek
             ];
-            shellHook = ''
-              prefligit install
-            '';
           };
     }
   );

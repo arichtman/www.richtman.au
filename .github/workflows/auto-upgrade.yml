@@ -11,7 +11,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v6.0.2
       with:
         fetch-depth: 1
         submodules: recursive
@@ -19,9 +19,7 @@ jobs:
     - name: Update stuff
       run: |
         nix flake update
-        # Unimplemented for now
-        # Ref: https://github.com/j178/prefligit/issues/35
-        # nix develop --command prefligit autoupdate
+        nix develop --command prek autoupdate
         git submodule update --init --remote
     - uses: peter-evans/create-pull-request@v6
       with:

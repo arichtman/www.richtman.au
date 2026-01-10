@@ -25,6 +25,8 @@
               zola
               actionlint
               prek
+              # Required for mado in prek
+              rustc
             ];
           };
     }

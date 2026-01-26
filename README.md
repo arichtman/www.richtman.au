@@ -1,5 +1,7 @@
 # Ariel Richtman blog
 
+** Moved to [Codeberg](https://codeberg.org/arichtman/www.richtman.au) **
+
 Contains Zola theme + content for my blog
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/8f94c53a-9d4f-4f62-aa11-cdcc6b741442/deploy-status)](https://app.netlify.com/sites/darling-muffin-a39ab1/deploys)
